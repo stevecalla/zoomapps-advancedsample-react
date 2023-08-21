@@ -121,7 +121,7 @@ function Participants(props) {
 
   useEffect(() => {
     getDate();
-  }, []);
+  });
 
   return (
     <div className="api-scrollview">
@@ -137,12 +137,13 @@ function Participants(props) {
           style={{ width: "75%", padding: "7px" }}
         />
         <FontAwesomeIcon
-          // icon="fa-XmarkCircle"
-          icon="fa-trash"
+          icon="fa-solid fa-xmark-circle"
+          size="lg"
+          // icon="fa-trash"
           style={{
             position: "absolute",
             right: "85px",
-            top: "22px",
+            top: "20px",
             color: "gray",
           }}
           className=""
@@ -194,31 +195,3 @@ function Participants(props) {
 }
 
 export default Participants;
-
-//todo Participant List
-//DONE locaton of trash icon absolute
-//DONE delete should remove participant from list
-//DONE delete should remove participant by name, not index
-//todo Search Box
-//DONE location of trash icon absolute
-//DONE add clear icon
-//DONE clear should remove value & restore list
-//switch trash icon to x icon; need to delete/rebuild docker
-//todo restore deleted participants
-//DONE create button
-//DONE disable button until deleted exists
-//DONE restore deleted participants
-//todo count & datetime
-//DONE number of participants
-//DONE dateStamp & time stamp
-
-//todo other
-//pull from api again to refresh the list
-
-//show participant string
-//add clear icon
-//create about this app info
-//only host or cohost can use
-//can i put a link to say a donate... buy me a coffee link
-//copied
-//put timer on copied; clipboard goes to "" after timer done

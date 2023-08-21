@@ -1,7 +1,10 @@
 import { invokeZoomAppsSdk } from "../apis";
-import "../assets/images/";
+// import "../assets/images/";
+
+import buyCoffee from "./assets/images/bmc-button.png"
 
 function BuyACoffee() {
+  
   const api = {
     name: "openUrl",
     options: {
@@ -11,13 +14,14 @@ function BuyACoffee() {
 
   return (
       <img 
-        src="./bmc-button.png" 
+        // src="./bmc-button.png" 
+        src={buyCoffee}
         alt="Buy Me A Coffee"
         onClick={invokeZoomAppsSdk(api)}
 
       style={{ 
-        height: "41px !important", 
-        width: "174px !important",
+        width: "300px",
+        height: "60px",
         boxShadow: "0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important", 
       }}/>
       
