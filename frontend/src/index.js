@@ -6,6 +6,18 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { createHashHistory } from "history";
 
+import { library } from "@fortawesome/fontawesome-svg-core";
+
+import {
+  faTrash,
+  faXmarkCircle,
+} from "@fortawesome/free-solid-svg-icons";
+
+library.add(
+  faTrash,
+  faXmarkCircle,
+);
+
 const history = createHashHistory();
 
 ReactDOM.render(

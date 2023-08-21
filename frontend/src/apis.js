@@ -1,30 +1,23 @@
 /* globals zoomSdk */
-// let participants = ['whatever'];
 
-// const invokeZoomAppsSdk = api => () => {
-//   const { name, buttonName = '', options = null } = api
-//   const zoomAppsSdkApi = zoomSdk[name].bind(zoomSdk)
+const invokeZoomAppsSdk = api => () => {
+  const { name, buttonName = '', options = null } = api
+  const zoomAppsSdkApi = zoomSdk[name].bind(zoomSdk)
 
-//   zoomAppsSdkApi(options)
-//     .then(clientResponse => {
-//       console.log(`${buttonName || name} success with response: ${JSON.stringify(clientResponse)}`);
+  console.log(api);
+  console.log(name, buttonName, options);
+  console.log(name);
+  console.log(buttonName);
+  console.log(options);
 
-//       console.log('test test test');
-//       console.log(buttonName);
-//       console.log(`${buttonName || name}`);
-      
-//       if (`${buttonName || name}` === "getMeetingParticipants") {
-//         console.log(clientResponse);
-//         console.log(clientResponse.participants[0].screenName);
-//         participants = clientResponse.participants;
-//         console.log(participants);
-//       }
-//       return clientResponse;
-//     })
-//     .catch(clientError => {
-//       console.log(`${buttonName || name} error: ${JSON.stringify(clientError)}`);
-//     });
-// }
+  zoomAppsSdkApi(options)
+    .then(clientResponse => {
+      console.log(`${buttonName || name} success with response: ${JSON.stringify(clientResponse)}`);
+    })
+    .catch(clientError => {
+      console.log(`${buttonName || name} error: ${JSON.stringify(clientError)}`);
+    });
+}
 
 const sortListByName = (curr, next) => {
   const currName = curr.name.toLowerCase();
@@ -149,4 +142,4 @@ const apis = [
 ].sort(sortListByName);
 
 // module.exports = { apis, invokeZoomAppsSdk, participants }
-module.exports = { apis }
+module.exports = { apis, invokeZoomAppsSdk }
