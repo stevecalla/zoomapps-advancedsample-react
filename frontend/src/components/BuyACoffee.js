@@ -1,6 +1,4 @@
 import { invokeZoomAppsSdk } from "../apis";
-// import "../assets/images/";
-
 import buyCoffee from "./assets/images/bmc-button.png"
 
 function BuyACoffee() {

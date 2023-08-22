@@ -11,6 +11,7 @@ import "./ApiScrollview.css";
 function ApiScrollview() {
   const [apiSearchText, setApiSearchText] = useState("");
   const [participants, setParticipants] = useState([]);
+  const [x, setX] = useState([]);
 
   const searchHandler = (e) => {
     let lowerCase = e.target.value.toLowerCase();
@@ -34,21 +35,25 @@ function ApiScrollview() {
       .then(clientResponse => {
         console.log(`${buttonName || name} success with response: ${JSON.stringify(clientResponse)}`);
   
-        console.log('test test test');
-        console.log(buttonName);
-        console.log(`${buttonName || name}`);
+        // console.log('test test test');
+        // console.log(buttonName);
+        // console.log(`${buttonName || name}`);
         
         if (`${buttonName || name}` === "getMeetingParticipants") {
-          console.log(clientResponse);
-          console.log(clientResponse.participants[0].screenName);
+          // console.log(clientResponse);
+          // console.log(clientResponse.participants[0].screenName);
+          // console.log(clientResponse.participants[0].participantId);
 
           clientResponse.participants.forEach((participant) => {
             !participants.includes(participant.screenName) 
               && setParticipants([...participants, participant.screenName])
-
           });
 
-          console.log(participants);
+          clientResponse.participants.map(({screenName, participantId, role}) => {
+            // console.log(screenName, participantId, role);
+            return setX([...x, {id: participantId, name: screenName, role: role}]);
+          });
+          console.log(x);
         }
         return clientResponse;
       })
@@ -83,7 +88,15 @@ function ApiScrollview() {
       {
         participants.length > 0 && 
         <Participants 
-          handleParticipants={participants} 
+          handleParticipants={participants}
+          mockParticipants={[
+            {id: "16778240", name: "Steve Calla", role: "host"},
+            {id: "16778241", name: "Calla, Steve", role: "host"},
+            {id: "16778242", name: "Alexander, Jose", role: "host"},
+            {id: "16778243", name: "Barry Jones", role: "host"},
+            {id: "16778244", name: "Jones, Barry", role: "host"},
+            {id: "16778245", name: "Alexander, Jose", role: "host"},
+          ]}
         />
       }
 

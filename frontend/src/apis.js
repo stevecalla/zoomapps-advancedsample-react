@@ -1,23 +1,21 @@
 /* globals zoomSdk */
 
 const invokeZoomAppsSdk = api => () => {
-  const { name, buttonName = '', options = null } = api
-  const zoomAppsSdkApi = zoomSdk[name].bind(zoomSdk)
+  const { name, buttonName = '', options = null } = api;
+  const zoomAppsSdkApi = zoomSdk[name].bind(zoomSdk);
 
-  console.log(api);
-  console.log(name, buttonName, options);
-  console.log(name);
-  console.log(buttonName);
-  console.log(options);
-
-  zoomAppsSdkApi(options)
-    .then(clientResponse => {
-      console.log(`${buttonName || name} success with response: ${JSON.stringify(clientResponse)}`);
-    })
-    .catch(clientError => {
-      console.log(`${buttonName || name} error: ${JSON.stringify(clientError)}`);
-    });
-}
+  return new Promise((resolve, reject) => {
+    zoomAppsSdkApi(options)
+      .then(clientResponse => {
+        console.log(`${buttonName || name} success with response: ${JSON.stringify(clientResponse)}`);
+        resolve(clientResponse); // Resolve the promise with the clientResponse
+      })
+      .catch(clientError => {
+        console.log(`${buttonName || name} error: ${JSON.stringify(clientError)}`);
+        reject(clientError); // Reject the promise with the clientError
+      });
+  });
+};
 
 const sortListByName = (curr, next) => {
   const currName = curr.name.toLowerCase();
@@ -26,6 +24,15 @@ const sortListByName = (curr, next) => {
   if (currName > nextName) { return 1; }
   return 0;
 }
+
+const mockParticipantData = [
+  {participantId: "16778240", screenName: "Steve Calla", role: "host"},
+  {participantId: "16778241", screenName: "Calla, Steve", role: "host"},
+  {participantId: "16778242", screenName: "Alexander, Jose", role: "host"},
+  {participantId: "16778243", screenName: "Barry Jones", role: "host"},
+  {participantId: "16778244", screenName: "Jones, Barry", role: "host"},
+  {participantId: "16778245", screenName: "Alexander, Jose", role: "host"},
+];
 
 // New apis are constantly created and may not be included here
 // Please visit the Zoom Apps developer docs for comprehensive list
@@ -141,5 +148,4 @@ const apis = [
   },
 ].sort(sortListByName);
 
-// module.exports = { apis, invokeZoomAppsSdk, participants }
-module.exports = { apis, invokeZoomAppsSdk }
+module.exports = { apis, mockParticipantData, invokeZoomAppsSdk }

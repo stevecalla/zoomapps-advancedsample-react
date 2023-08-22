@@ -11,11 +11,13 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faTrash,
   faXmarkCircle,
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
   faTrash,
   faXmarkCircle,
+  faSearch,
 );
 
 const history = createHashHistory();

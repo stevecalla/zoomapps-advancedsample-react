@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 
 function Export(props) {
   const { handleParticipants } = props;
-  console.log('hp= ' + handleParticipants[0]);
+  // console.log('hp= ' + handleParticipants[0]);
   const [copied, setCopied] = useState(false);
 
   const dataToCopy = ['Steve Calla', 'Calla, Steve', 'Barry Jones', 'Jones, Barry'];

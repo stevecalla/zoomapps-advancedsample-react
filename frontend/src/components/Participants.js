@@ -1,34 +1,112 @@
 import React, { useState, useEffect } from "react";
-// import { participants } from "../apis";
+import { invokeZoomAppsSdk, mockParticipantData } from "../apis";
+import Export from "./Export";
+import BuyACoffee from "./BuyACoffee";
 
 import Button from "react-bootstrap/Button";
-import "./ApiScrollview.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./ApiScrollview.css";
+import "./styles/spinner.css";
 
-function Participants(props) {
-  const { handleParticipants } = props;
-  const [participantSearchText, setParticipantSearchText] = useState("");
-  const [isDisabled, setIsDisabled] = useState(true);
-  const [numberOfParticipants, setNumberOfParticipants] = useState(
-    handleParticipants.length
-  );
-  const [dateStamp, setDateStamp] = useState("");
-  const [timeStamp, setTimeStamp] = useState("");
+function Participants() {
+  const [ participants, setParticipants ] = useState([]); //original array
+  const [ participantsCopy, setParticipantsCopy ] = useState(); //mutable copy of original
+  // const [ mockParticipantsCopy, setMockParticipantsCopy ] = useState();
+  const [ renderParticipants, setRenderParticipants ] = useState(false);
 
-  const mockParticipants = [
-    "Steve Calla",
-    "Calla, Steve",
-    "Barry Jones",
-    "Jones, Barry",
-    "Alexander, Jose",
-  ];
-  // const [participants, setParticipants] = useState(mockParticipants);
-  const [participants, setParticipants] = useState(handleParticipants);
-  console.log(participants);
+  const [ participantSearchText, setParticipantSearchText ] = useState("");
+  const [ isDisabled, setIsDisabled]  = useState(true);
+  // const [ renderFilteredLength, setRenderFilteredLength ] = useState(false);
 
+  const [ dateStamp, setDateStamp ] = useState("");
+  const [ timeStamp, setTimeStamp ] = useState("");
+
+  // GET PARTICIPANT DATA FROM API
+  const handleInvokeApi = async () => {
+
+    console.log('api invoked');
+    
+    try {
+      // Define your API configuration
+      const apiConfig = {
+        name: 'getMeetingParticipants', // Replace with the actual API name
+        buttonName: null, // Optional, replace with a button name
+        options: null // Optional, replace with API options
+      };
+
+      // Call the invokeZoomAppsSdk function
+      const clientResponse = await invokeZoomAppsSdk(apiConfig)();
+      //convert response to an array
+      // convertObjectToArray(clientResponse);
+
+      //fix //todo  prod = clientResponse.participants; dev = mockParticipationData
+      const mode = "dev"; 
+      // const mode = "prod";
+      console.log(clientResponse.participants);
+      console.log(mockParticipantData);
+      console.log(clientResponse.participants[0]);
+
+      let sortedParticipants = sortHander(mode === "dev" ? 
+        mockParticipantData : 
+        clientResponse.participants
+      ); 
+      setParticipants(sortedParticipants);
+      setParticipantsCopy(sortedParticipants);
+      setIsDisabled(true);
+      console.log('Received clientResponse:', clientResponse);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+  //INITIAL API CALL
+  useEffect(() => {
+    // timeout allows the api to configure preventing error
+    setTimeout(() => {
+      handleInvokeApi();
+      setRenderParticipants(true);
+      setIsDisabled(true);
+    }, 2000);
+    /* eslint-disable */
+  }, []);
+  
+  // CREATE NEW ARRAY & SORT
+  useEffect(() => {
+    let sortedParticipants = sortHander(participants);
+    setParticipantsCopy(sortedParticipants);
+    /* eslint-disable */
+  }, [participants]);
+
+  const filteredParticipants = participantsCopy?.filter(({ screenName }) => {
+    if (participantSearchText === "") {
+      return screenName;
+    } else {
+      return screenName.toLowerCase().includes(participantSearchText);
+    }
+  });
+
+  // DELETE HANLDERS
+  const deleteHandlers = (event) => {
+    let targetId = event.currentTarget.getAttribute("data-participantid");
+    const updatedParticipantData = participantsCopy.filter(
+      ({ screenName, participantId }) => {
+        return targetId !== participantId;
+      }
+    );
+    setParticipantsCopy(updatedParticipantData);
+    setIsDisabled(false);
+    // setRenderFilteredLength(true);
+  };
+
+  const revertDeleteHandler = () => {
+    let sortedParticipants = sortHander(participants);
+    setParticipantsCopy(sortedParticipants);
+    setIsDisabled(true);
+    // setRenderFilteredLength(false);
+  };
+
+  // SEARCH HANDLERS
   const searchHandler = (e) => {
-    console.log(e);
-
     //eliminate undefined
     let searchBoxTarget =
       e.target?.value === undefined ? "" : e.target?.value?.toLowerCase();
@@ -37,62 +115,27 @@ function Participants(props) {
         ? ""
         : e.currentTarget?.previousElementSibling?.value.toLowerCase();
 
-    // console.log('1');
-    // console.log(searchBoxTarget);
-    // console.log(e.target.value === undefined);
-    // console.log(e.target?.value);
-    // console.log('2');
-    // console.log(deleteIconTarget);
-    // console.log(e.currentTarget.previousElementSibling?.value === undefined);
-    // console.log(e.currentTarget?.previousElementSibling?.value);
-    // console.log('3');
-    // console.log(e.target?.value?.toLowerCase() ? e.target?.value?.toLowerCase() : e.currentTarget?.previousElementSibling?.value.toLowerCase())
-
     let searchInputText = searchBoxTarget ? searchBoxTarget : deleteIconTarget;
     let lowerCase = searchInputText;
     setParticipantSearchText(lowerCase);
   };
 
-  const filteredParticipants = participants?.sort().filter((participant) => {
-    if (participantSearchText === "") {
-      return participant;
-    } else {
-      return participant.toLowerCase().includes(participantSearchText);
-    }
-  });
-
-  const resetSearchInputValue = (event) => {
-    // console.log(event);
-    // console.log(event.target);
-    // console.log(event.currentTarget);
-    // console.log(event.currentTarget.previousElementSibling);
+  const resetSearchHandler = (event) => {
     let searchInputText = event.currentTarget.previousElementSibling;
     searchInputText.value = "";
     searchHandler(event);
   };
 
-  const deleteParticipant = (event) => {
-    let participantName = event.currentTarget.getAttribute("data-name");
-    const updatedParticipantData = participants.filter((participant) => {
-      console.log(participant + " " + participantName);
-      return participant !== participantName;
-    });
-    console.log(updatedParticipantData);
-    setParticipants(updatedParticipantData);
-    console.log(participants);
-    setIsDisabled(false);
-  };
-
-  const restoreList = () => {
-    // setParticipants(mockParticipants);
-    setParticipants(handleParticipants);
-    setIsDisabled(true);
-  };
+  // UTILITY FUNCTIONS
+  //get date
+  useEffect(() => {
+    getDate();
+  });
 
   const getDate = () => {
     //GET TODAY'S dateListlet date = new Date();
     let date = new Date();
-    console.log(date);
+    // console.log(date);
 
     // set options for date
     let options = {
@@ -119,78 +162,161 @@ function Participants(props) {
     // "12:34 PM MDT"
   };
 
-  useEffect(() => {
-    getDate();
-  });
+  const sortHander = (items) => {
+    return [...items].sort((a, b) => a.screenName.localeCompare(b.screenName));
+  };
 
   return (
     <div className="api-scrollview">
-      <p>Total Participants: {numberOfParticipants} </p>
-      <p>Date: {dateStamp}</p>
-      <p>Time: {timeStamp}</p>
+      <p
+        style={{
+          position: "relative",
+          margin: "0",
+          width: "200px",
+          paddingLeft: "5px",
+        }}
+      >
+        Total Participants:{" "}
+        <span style={{ position: "absolute", left: "175px" }}>
+          {participants.length === 0 ? "Loading..." : participants.length}
+        </span>
+      </p>
+        <p
+          style={{
+            position: "relative",
+            margin: "0",
+            width: "200px",
+            paddingLeft: "5px",
+          }}
+        >
+          Filtered Participants:{" "}
+          <span style={{ position: "absolute", left: "175px" }}>
+            {participantsCopy?.length ? participantsCopy.length : "Loading"}
+          </span>
+        </p>
+      <hr className="hr-scroll-border"></hr>
+      <p
+        style={{
+          position: "relative",
+          margin: "0",
+          width: "250px",
+          paddingLeft: "5px",
+        }}
+      >
+        Date:{" "}
+        <span style={{ position: "absolute", left: "100px" }}>{dateStamp}</span>
+      </p>
+      <p
+        style={{
+          position: "relative",
+          margin: "0",
+          width: "250px",
+          paddingLeft: "5px",
+        }}
+      >
+        Time:{" "}
+        <span style={{ position: "absolute", left: "100px" }}>{timeStamp}</span>
+      </p>
+      <hr className="hr-scroll-border"></hr>
       <div style={{ position: "relative" }}>
         <input
           placeholder="Search for participants"
           onChange={searchHandler}
           label="Search"
           id="api-scrollview-input"
-          style={{ width: "75%", padding: "7px" }}
+          style={{ width: "300px", marginTop: "0px", marginBottom: "0px", padding: "7px", paddingLeft: "32px" }}
+        />
+        <FontAwesomeIcon
+          icon="fa-search"
+          size="lg"
+          style={{
+            position: "absolute",
+            right: "280px",
+            top: "10px",
+            color: "gray",
+            backgroundColor: "white",
+          }}
         />
         <FontAwesomeIcon
           icon="fa-solid fa-xmark-circle"
           size="lg"
-          // icon="fa-trash"
           style={{
             position: "absolute",
-            right: "85px",
-            top: "20px",
+            right: "20px",
+            top: "10px",
             color: "gray",
           }}
           className=""
-          onClick={resetSearchInputValue}
+          onClick={resetSearchHandler}
         />
       </div>
       <div className="api-buttons-list">
-        {filteredParticipants?.map((participant, index) => (
-          <div key={index} style={{ position: "relative" }}>
-            <p
-              style={{
-                width: "98%",
-                cursor: "default",
-                color: "white",
-                backgroundColor: "#0d6efd",
-                borderRadius: "7px",
-                textAlign: "center",
-                padding: "7px",
-              }}
-            >
-              {participant}
-            </p>
-            <FontAwesomeIcon
-              icon="fa-trash"
-              className=""
-              data-target={`${index}`}
-              data-name={`${participant}`}
-              onClick={deleteParticipant}
-              style={{
-                position: "absolute",
-                right: "20px",
-                top: "10px",
-                color: "white",
-              }}
-            />
-          </div>
-        ))}
+        {renderParticipants ? 
+          filteredParticipants?.map(({ screenName, participantId }, index) => (
+            <div key={participantId} style={{ position: "relative", paddingLeft: "10px", }}>
+              <p
+                style={{
+                  width: "98%",
+                  cursor: "default",
+                  // border: "1px solid black",
+                  borderRadius: "7px",
+                  textAlign: "left",
+                  margin: 0,
+                  padding: "7px 7px 0px 10px",
+                }}
+              >
+                {`${index + 1}) ${screenName}`}
+              </p>
+              <FontAwesomeIcon
+                icon="fa-trash"
+                className=""
+                data-participantid={`${participantId}`}
+                data-screenname={`${screenName}`}
+                onClick={deleteHandlers}
+                style={{
+                  position: "absolute",
+                  right: "20px",
+                  top: "13px",
+                  color: "black",
+                }}
+              />
+            </div>
+        ))
+          : 
+          <>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "300px", height: "200px" }}>
+              <div className="lds-hourglass"></div>
+            </div>
+          </>
+        }
       </div>
       <hr className="hr-scroll-border"></hr>
-      <Button
-        onClick={restoreList}
-        disabled={isDisabled}
-        style={{ width: "300px", height: "38px" }}
-      >
-        Restore Deleted Participants
-      </Button>
-    </div>
+      <hr className="hr-scroll-border"></hr>
+      <div style={{ display: "flex", flexDirection: "column", }}>
+        <Button
+          onClick={revertDeleteHandler}
+          disabled={isDisabled}
+          style={{ width: "300px", height: "38px" }}
+        >
+          Undo Deleted Participants
+        </Button>
+        <Button
+          onClick={handleInvokeApi}
+          style={{ width: "300px", height: "38px" }}
+        >
+          Get Current Participants
+        </Button>
+
+        {
+          <Export 
+            handleParticipants={participants} 
+          />
+        }
+        {
+          <BuyACoffee />
+        }
+      </div>
+      </div>
   );
 }
 
