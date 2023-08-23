@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { invokeZoomAppsSdk, mockParticipantData } from "../apis";
-import CopyToClipBoard from "./CopyToClipBoard";
 import BuyACoffee from "./BuyACoffee";
 
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./ApiScrollview.css";
 import "./styles/spinner.css";
+
+// import CopyToClipBoard from "./CopyToClipBoard";
+const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 
 function Participants() {
   const [ participants, setParticipants ] = useState([]); //original array
@@ -362,11 +364,15 @@ function Participants() {
         >
           Get Current Participants
         </Button>
-        {<CopyToClipBoard 
-            allParticipants={participants}
-            filteredParticipants={filteredParticipants}
-        />}
-        {<BuyACoffee />}
+
+        <Suspense fallback={<div>Loading...</div>}>
+          <CopyToClipBoard 
+              allParticipants={participants}
+              filteredParticipants={filteredParticipants}
+          />
+        </Suspense>
+
+        <BuyACoffee />
       </div>
     </div>
   );
