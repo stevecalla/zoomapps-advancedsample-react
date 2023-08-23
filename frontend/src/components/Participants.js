@@ -9,17 +9,17 @@ import "./ApiScrollview.css";
 import "./styles/spinner.css";
 
 function Participants() {
-  const [participants, setParticipants] = useState([]); //original array
-  const [participantsCopy, setParticipantsCopy] = useState(); //mutable copy of original
+  const [ participants, setParticipants ] = useState([]); //original array
+  const [ participantsCopy, setParticipantsCopy ] = useState(); //mutable copy of original
   // const [ mockParticipantsCopy, setMockParticipantsCopy ] = useState();
-  const [renderParticipants, setRenderParticipants] = useState(false);
+  const [ renderParticipants, setRenderParticipants ] = useState(false);
 
-  const [participantSearchText, setParticipantSearchText] = useState("");
-  const [isDisabled, setIsDisabled] = useState(true);
+  const [ participantSearchText, setParticipantSearchText ] = useState("");
+  const [ isDisabled, setIsDisabled ] = useState(true);
   // const [ renderFilteredLength, setRenderFilteredLength ] = useState(false);
 
-  const [dateStamp, setDateStamp] = useState("");
-  const [timeStamp, setTimeStamp] = useState("");
+  const [ dateStamp, setDateStamp ] = useState("");
+  const [ timeStamp, setTimeStamp ] = useState("");
 
   // GET PARTICIPANT DATA FROM API
   const handleInvokeApi = async () => {
@@ -41,7 +41,7 @@ function Participants() {
       //fix //todo  prod = clientResponse.participants; dev = mockParticipationData
       const mode = "dev";
       // const mode = "prod";
-      
+
       // console.log(clientResponse.participants);
       // console.log(mockParticipantData);
       // console.log(clientResponse.participants[0]);
@@ -83,6 +83,29 @@ function Participants() {
       return screenName.toLowerCase().includes(participantSearchText);
     }
   });
+
+  // MARK HANLDERS
+  //fix
+  const checkHandler = (event) => {
+    let targetId = event.currentTarget.getAttribute("data-participantid");
+    let targetColor = event.currentTarget.getAttribute("data-color");
+    const targetElement = document.querySelector(`[data-participantid="${targetId}"]`);
+
+    targetColor === "gray" ? targetElement.setAttribute("style", "color: green; position: absolute; right: 60px; top: 11px; transform: scale(1.3); ") : targetElement.setAttribute("style", "color: gray; position: absolute; right: 60px; top: 11px; ");
+
+    targetColor === "gray" ? targetElement.setAttribute("data-color", "green") : targetElement.setAttribute("data-color", "gray");
+
+  };
+
+  const xMarkHandler = (event) => {
+    let targetId = event.currentTarget.getAttribute("data-participantid");
+    let targetColor = event.currentTarget.getAttribute("data-color");
+    const targetElement = document.querySelector(`[data-participantid="${targetId}"]`);
+
+    targetColor === "gray" ? targetElement.setAttribute("style", "color: red; position: absolute; right: 40px; top: 11px; transform: scale(1.3); ") : targetElement.setAttribute("style", "color: gray; position: absolute; right: 40px; top: 11px; ");
+
+    targetColor === "gray" ? targetElement.setAttribute("data-color", "red") : targetElement.setAttribute("data-color", "gray");
+  };
 
   // DELETE HANLDERS
   const deleteHandlers = (event) => {
@@ -129,7 +152,7 @@ function Participants() {
   //get date
   useEffect(() => {
     getDate();
-  });
+  }, []);
 
   const getDate = () => {
     //GET TODAY'S dateListlet date = new Date();
@@ -168,6 +191,7 @@ function Participants() {
   return (
     <div className="api-scrollview">
       <hr className="hr-scroll-border" style={{ margin: "0", height: "5px", borderRadius: "5px", backgroundColor: "#0d6efd", }}></hr>
+      <hr className="hr-scroll-border" style={{ margin: "0", height: "15px", borderRadius: "5px", backgroundColor: "#ffdc03", }}></hr>
       <p
         style={{
           position: "relative",
@@ -265,16 +289,47 @@ function Participants() {
                 {`${index + 1}) ${screenName}`}
               </p>
               <FontAwesomeIcon
-                icon="fa-trash"
+                icon="fa-solid fa-check"
+                size="lg"
                 className=""
+                data-participantid={`${participantId - 1000}`}
+                data-color={"gray"}
+                // onClick={(event) => {
+                //   checkHandler(event);
+                // }}
+                onClick={checkHandler}
+                style={{
+                  position: "absolute",
+                  right: "60px",
+                  top: "11px",
+                  color: "gray",
+                }}
+              />
+              <FontAwesomeIcon
+                icon="fa-solid fa-xmark"
+                size="lg"
+                data-participantid={`${participantId + 1000}`}
+                // onClick={(event) => {
+                //   xMarkHandler(event);
+                // }}
+                onClick={xMarkHandler}
+                style={{
+                  position: "absolute",
+                  right: "40px",
+                  top: "11px",
+                  color: "gray",
+                }}
+              />
+              <FontAwesomeIcon
+                icon="fa-solid fa-trash"
                 data-participantid={`${participantId}`}
                 data-screenname={`${screenName}`}
                 onClick={deleteHandlers}
                 style={{
                   position: "absolute",
-                  right: "20px",
+                  right: "18px",
                   top: "13px",
-                  color: "black",
+                  color: "gray",
                 }}
               />
             </div>

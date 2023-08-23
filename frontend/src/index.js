@@ -12,12 +12,21 @@ import {
   faTrash,
   faXmarkCircle,
   faSearch,
+  faCheck,
+  faXmark,
+  faCopy,
+  faClipboard,
+
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
   faTrash,
   faXmarkCircle,
   faSearch,
+  faCheck,
+  faXmark,
+  faCopy,
+  faClipboard,
 );
 
 const history = createHashHistory();

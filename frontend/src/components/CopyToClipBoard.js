@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import Button from "react-bootstrap/Button";
+import React, { useState, useEffect } from 'react';
+// import Button from "react-bootstrap/Button";
 import Accordion from 'react-bootstrap/Accordion';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function CopyToClipBoard(props) {
   const { allParticipants = [], filteredParticipants = [] } = props;
@@ -71,12 +72,31 @@ function CopyToClipBoard(props) {
   //   }
   // };
 
+  useEffect(() => {
+    setAccordionStyle();
+
+  }, [])
+
+  const setAccordionStyle = () => {
+    let buttons = document.querySelectorAll('.accordion-header button');
+
+    buttons.forEach(button => {
+      button.setAttribute("style", "width: 298px; height: 38px;");
+    });
+
+  }
   return (
     <>
+      {/* ajust styles... */}
       {/* add copy font awesome icon */}
-      
+      {/* x[0].setAttribute("disabled", "false")
+      x[0].removeAttribute("disabled")
+      let x = document.querySelectorAll('.accordion-header button'); */}
+
+    
       {/* <Accordion defaultActiveKey="0"> */}
-      <Accordion>
+      <Accordion style={{ width: "300px", marginBottom: "5px", }}>
+        {/* <FontAwesomeIcon icon="fa-sharp fa-light fa-clipboard" /> */}
         <Accordion.Item eventKey="0">
           <Accordion.Header
             onClick={() => copyToClipboard(allParticipantsString, "allData")}
