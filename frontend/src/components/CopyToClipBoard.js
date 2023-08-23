@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 // import Button from "react-bootstrap/Button";
 import Accordion from 'react-bootstrap/Accordion';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClipboard } from '@fortawesome/free-regular-svg-icons';
 
 function CopyToClipBoard(props) {
   const { allParticipants = [], filteredParticipants = [] } = props;
@@ -93,11 +94,23 @@ function CopyToClipBoard(props) {
       x[0].removeAttribute("disabled")
       let x = document.querySelectorAll('.accordion-header button'); */}
 
-    
-      {/* <Accordion defaultActiveKey="0"> */}
-      <Accordion style={{ width: "300px", marginBottom: "5px", }}>
-        {/* <FontAwesomeIcon icon="fa-sharp fa-light fa-clipboard" /> */}
+      <Accordion style={{ position: "relative", width: "300px", marginBottom: "5px", }}>
         <Accordion.Item eventKey="0">
+          <FontAwesomeIcon 
+            icon={faClipboard} 
+            size="lg"
+            onClick={() => copyToClipboard(allParticipantsString, "allData")}
+            style={{
+              position: "absolute",
+              top: "10px",
+              left: "235px",
+              color: "gray",
+              backgroundColor: "white",
+              zIndex: "5",
+              transform: "scale(1.2)",
+              cursor: "pointer",
+            }}
+          />
           <Accordion.Header
             onClick={() => copyToClipboard(allParticipantsString, "allData")}
             style={{ width: "300px", }}
@@ -111,6 +124,21 @@ function CopyToClipBoard(props) {
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey="1">
+          <FontAwesomeIcon 
+            icon={faClipboard} 
+            size="lg"
+            onClick={() => copyToClipboard(filteredParticipantsString, "filteredData")}
+            style={{
+              position: "absolute",
+              top: "53px",
+              left: "235px",
+              color: "gray",
+              backgroundColor: "white",
+              zIndex: "5",
+              transform: "scale(1.2)",
+              cursor: "pointer",
+            }}
+          />
           <Accordion.Header 
             onClick={() => copyToClipboard(filteredParticipantsString, "filteredData")}
             style={{ width: "300px", }}

@@ -85,7 +85,6 @@ function Participants() {
   });
 
   // MARK HANLDERS
-  //fix
   const checkHandler = (event) => {
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
@@ -294,9 +293,6 @@ function Participants() {
                 className=""
                 data-participantid={`${participantId - 1000}`}
                 data-color={"gray"}
-                // onClick={(event) => {
-                //   checkHandler(event);
-                // }}
                 onClick={checkHandler}
                 style={{
                   position: "absolute",
@@ -309,9 +305,6 @@ function Participants() {
                 icon="fa-solid fa-xmark"
                 size="lg"
                 data-participantid={`${participantId + 1000}`}
-                // onClick={(event) => {
-                //   xMarkHandler(event);
-                // }}
                 onClick={xMarkHandler}
                 style={{
                   position: "absolute",

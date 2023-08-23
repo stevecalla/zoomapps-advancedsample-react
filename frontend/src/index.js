@@ -7,7 +7,6 @@ import reportWebVitals from "./reportWebVitals";
 import { createHashHistory } from "history";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-
 import {
   faTrash,
   faXmarkCircle,
@@ -16,7 +15,6 @@ import {
   faXmark,
   faCopy,
   faClipboard,
-
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
