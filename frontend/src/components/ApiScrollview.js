@@ -1,7 +1,7 @@
 /* globals zoomSdk */
 import { React, useState } from 'react';
 import Participants from "./Participants";
-import Export from "./Export";
+import Export from "./CopyToClipBoard";
 import BuyACoffee from "./BuyACoffee";
 import Button from "react-bootstrap/Button";
 // import { apis, invokeZoomAppsSdk, participants } from "../apis";
