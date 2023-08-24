@@ -12,9 +12,10 @@ function BuyACoffee() {
 
   return (
       <img 
-        // src="./bmc-button.png" 
+        // src="./bmc-button.png"
+        title="Click to support my coding with a small donation"
         src={buyCoffee}
-        alt="Buy Me A Coffee"
+        alt="Buy Me A Coffee to support my coding"
         onClick={invokeZoomAppsSdk(api)}
 
       style={{ 

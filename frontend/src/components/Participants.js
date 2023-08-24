@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from "react";
+import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { invokeZoomAppsSdk, mockParticipantData } from "../apis";
 import BuyACoffee from "./BuyACoffee";
 
@@ -11,21 +11,52 @@ import "./styles/spinner.css";
 const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 
 function Participants() {
-  const [ participants, setParticipants ] = useState([]); //original array
-  const [ participantsCopy, setParticipantsCopy ] = useState(); //mutable copy of original
-  // const [ mockParticipantsCopy, setMockParticipantsCopy ] = useState();
-  const [ renderParticipants, setRenderParticipants ] = useState(false);
+  const [participants, setParticipants] = useState([]); //original array
+  const [participantsCopy, setParticipantsCopy] = useState(); //mutable copy of original
+  const [renderParticipants, setRenderParticipants] = useState(false);
 
-  const [ participantSearchText, setParticipantSearchText ] = useState("");
-  const [ isDisabled, setIsDisabled ] = useState(true);
-  // const [ renderFilteredLength, setRenderFilteredLength ] = useState(false);
+  const [participantSearchText, setParticipantSearchText] = useState("");
+  const [isDisabled, setIsDisabled] = useState(true);
 
-  const [ dateStamp, setDateStamp ] = useState("");
-  const [ timeStamp, setTimeStamp ] = useState("");
+  const [dateStamp, setDateStamp] = useState("");
+  const [timeStamp, setTimeStamp] = useState("");
+  const inputFocusRef = useRef(null);
+
+  //Focus the search input on load
+  useEffect(() => {
+    // Focus on the input element when the component is mounted
+    if (inputFocusRef.current) {
+      inputFocusRef.current.focus();
+    }
+  }, []);
+
+  //INITIAL API CALL
+  useEffect(() => {
+    // timeout allows the api to configure preventing error
+    setTimeout(() => {
+      handleInvokeApi();
+      setRenderParticipants(true);
+      setIsDisabled(true);
+    }, 2000);
+    /* eslint-disable */
+  }, []);
+
+  // CREATE PARTICIPANTS ARRAY & SORT
+  useEffect(() => {
+    let sortedParticipants = sortHander(participants);
+    setParticipantsCopy(sortedParticipants);
+    /* eslint-disable */
+  }, [participants]);
+
+  //get date
+  useEffect(() => {
+    getDate();
+  }, []);
 
   // GET PARTICIPANT DATA FROM API
   const handleInvokeApi = async () => {
     console.log("api invoked");
+    getDate();
 
     try {
       // Define your API configuration
@@ -44,10 +75,6 @@ function Participants() {
       const mode = "dev";
       // const mode = "prod";
 
-      // console.log(clientResponse.participants);
-      // console.log(mockParticipantData);
-      // console.log(clientResponse.participants[0]);
-
       let sortedParticipants = sortHander(
         mode === "dev" ? mockParticipantData : clientResponse.participants
       );
@@ -60,24 +87,7 @@ function Participants() {
     }
   };
 
-  //INITIAL API CALL
-  useEffect(() => {
-    // timeout allows the api to configure preventing error
-    setTimeout(() => {
-      handleInvokeApi();
-      setRenderParticipants(true);
-      setIsDisabled(true);
-    }, 2000);
-    /* eslint-disable */
-  }, []);
-
-  // CREATE NEW ARRAY & SORT
-  useEffect(() => {
-    let sortedParticipants = sortHander(participants);
-    setParticipantsCopy(sortedParticipants);
-    /* eslint-disable */
-  }, [participants]);
-
+  //Filter the participants array based on search input
   const filteredParticipants = participantsCopy?.filter(({ screenName }) => {
     if (participantSearchText === "") {
       return screenName;
@@ -90,22 +100,59 @@ function Participants() {
   const checkHandler = (event) => {
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
-    const targetElement = document.querySelector(`[data-participantid="${targetId}"]`);
+    const targetElement = document.querySelector(
+      `[data-participantid="${targetId}"]`
+    );
 
-    targetColor === "gray" ? targetElement.setAttribute("style", "color: green; position: absolute; right: 60px; top: 11px; transform: scale(1.3); ") : targetElement.setAttribute("style", "color: gray; position: absolute; right: 60px; top: 11px; ");
+    targetColor === "gray"
+      ? targetElement.setAttribute(
+          "style",
+          "color: green; position: absolute; right: 60px; top: 11px; transform: scale(1.3); "
+        )
+      : targetElement.setAttribute(
+          "style",
+          "color: gray; position: absolute; right: 60px; top: 11px; "
+        );
 
-    targetColor === "gray" ? targetElement.setAttribute("data-color", "green") : targetElement.setAttribute("data-color", "gray");
+    targetColor === "gray"
+      ? targetElement.setAttribute("data-color", "green")
+      : targetElement.setAttribute("data-color", "gray");
 
+    const prevElement = targetElement.parentElement.querySelectorAll("svg")[1];
+    prevElement.setAttribute("data-color", "gray");
+    prevElement.setAttribute(
+      "style",
+      "color: gray; position: absolute; right: 40px; top: 11px; "
+    );
   };
 
   const xMarkHandler = (event) => {
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
-    const targetElement = document.querySelector(`[data-participantid="${targetId}"]`);
+    const targetElement = document.querySelector(
+      `[data-participantid="${targetId}"]`
+    );
 
-    targetColor === "gray" ? targetElement.setAttribute("style", "color: red; position: absolute; right: 40px; top: 11px; transform: scale(1.3); ") : targetElement.setAttribute("style", "color: gray; position: absolute; right: 40px; top: 11px; ");
+    targetColor === "gray"
+      ? targetElement.setAttribute(
+          "style",
+          "color: red; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
+        )
+      : targetElement.setAttribute(
+          "style",
+          "color: gray; position: absolute; right: 40px; top: 11px; "
+        );
 
-    targetColor === "gray" ? targetElement.setAttribute("data-color", "red") : targetElement.setAttribute("data-color", "gray");
+    targetColor === "gray"
+      ? targetElement.setAttribute("data-color", "red")
+      : targetElement.setAttribute("data-color", "gray");
+
+    const prevElement = targetElement.parentElement.querySelectorAll("svg")[0];
+    prevElement.setAttribute("data-color", "gray");
+    prevElement.setAttribute(
+      "style",
+      "color: gray; position: absolute; right: 60px; top: 11px; "
+    );
   };
 
   // DELETE HANLDERS
@@ -150,11 +197,6 @@ function Participants() {
   };
 
   // UTILITY FUNCTIONS
-  //get date
-  useEffect(() => {
-    getDate();
-  }, []);
-
   const getDate = () => {
     //GET TODAY'S dateListlet date = new Date();
     let date = new Date();
@@ -191,8 +233,24 @@ function Participants() {
 
   return (
     <div className="api-scrollview">
-      <hr className="hr-scroll-border" style={{ margin: "0", height: "5px", borderRadius: "5px", backgroundColor: "#0d6efd", }}></hr>
-      <hr className="hr-scroll-border" style={{ margin: "0", height: "15px", borderRadius: "5px", backgroundColor: "#ffdc03", }}></hr>
+      <hr
+        className="hr-scroll-border"
+        style={{
+          margin: "0",
+          height: "5px",
+          borderRadius: "5px",
+          backgroundColor: "#0d6efd",
+        }}
+      ></hr>
+      <hr
+        className="hr-scroll-border"
+        style={{
+          margin: "0",
+          height: "15px",
+          borderRadius: "5px",
+          backgroundColor: "#ffdc03",
+        }}
+      ></hr>
       <p
         style={{
           position: "relative",
@@ -202,36 +260,43 @@ function Participants() {
         }}
       >
         Total Participants:{" "}
-        <span 
-          style={{ 
-            position: "absolute", 
+        <span
+          style={{
+            position: "absolute",
             left: "175px",
             left: "268px",
             textAlign: "right",
-          }}>
+          }}
+        >
           {participants.length === 0 ? "..." : participants.length}
         </span>
       </p>
-        <p
+      <p
+        style={{
+          position: "relative",
+          margin: "0",
+          width: "200px",
+          paddingLeft: "5px",
+        }}
+      >
+        Filtered Participants:{" "}
+        <span
           style={{
-            position: "relative",
-            margin: "0",
-            width: "200px",
-            paddingLeft: "5px",
+            position: "absolute",
+            left: "175px",
+            left: "268px",
           }}
         >
-          Filtered Participants:{" "}
-          <span style={{ 
-            position: "absolute", 
-            left: "175px",
-            left: "268px"
-          }}>
-            {participantsCopy?.length ? participantsCopy.length : "..."}
-          </span>
-        </p>
-      <hr className="hr-scroll-border" style={{ margin: "0 0 7px 0", backgroundColor: "#0d6efd", }}></hr>
+          {participantsCopy?.length ? participantsCopy.length : "..."}
+        </span>
+      </p>
+      <hr
+        className="hr-scroll-border"
+        style={{ margin: "0 0 7px 0", backgroundColor: "#0d6efd" }}
+      ></hr>
       <div style={{ position: "relative" }}>
         <input
+          ref={inputFocusRef}
           placeholder="Search for participants"
           onChange={searchHandler}
           label="Search"
@@ -257,6 +322,7 @@ function Participants() {
           }}
         />
         <FontAwesomeIcon
+          title="Clear search"
           icon="fa-solid fa-xmark-circle"
           size="lg"
           style={{
@@ -270,7 +336,7 @@ function Participants() {
           onClick={resetSearchHandler}
         />
       </div>
-      <div className="api-buttons-list" style={{ height: "300px"}}>
+      <div className="api-buttons-list" style={{ height: "300px" }}>
         {renderParticipants ? (
           filteredParticipants?.map(({ screenName, participantId }, index) => (
             <div
@@ -290,6 +356,7 @@ function Participants() {
                 {`${index + 1}) ${screenName}`}
               </p>
               <FontAwesomeIcon
+                title="Verified"
                 icon="fa-solid fa-check"
                 size="lg"
                 className=""
@@ -304,6 +371,7 @@ function Participants() {
                 }}
               />
               <FontAwesomeIcon
+                title="Not verified"
                 icon="fa-solid fa-xmark"
                 size="lg"
                 data-participantid={`${participantId + 1000}`}
@@ -316,6 +384,7 @@ function Participants() {
                 }}
               />
               <FontAwesomeIcon
+                title="Delete from list"
                 icon="fa-solid fa-trash"
                 data-participantid={`${participantId}`}
                 data-screenname={`${screenName}`}
@@ -346,9 +415,18 @@ function Participants() {
         )}
       </div>
 
-      <hr className="hr-scroll-border" style={{ margin: "0", backgroundColor: "#0d6efd", }}></hr>
-      <p style={{ margin: "0", width: "300px", textAlign: "center" }}>{`${dateStamp} ${timeStamp}`}</p> 
-      <hr className="hr-scroll-border" style={{ margin: "0 0 4px 0", backgroundColor: "#0d6efd", }}></hr>
+      <hr
+        className="hr-scroll-border"
+        style={{ margin: "0", backgroundColor: "#0d6efd" }}
+      ></hr>
+      <p
+        title="Timestamp when data was refreshed"
+        style={{ margin: "0", width: "300px", textAlign: "center" }}
+      >{`${dateStamp} ${timeStamp}`}</p>
+      <hr
+        className="hr-scroll-border"
+        style={{ margin: "0 0 4px 0", backgroundColor: "#0d6efd" }}
+      ></hr>
 
       <div style={{ display: "flex", flexDirection: "column" }}>
         <Button
@@ -366,9 +444,9 @@ function Participants() {
         </Button>
 
         <Suspense fallback={<div>Loading...</div>}>
-          <CopyToClipBoard 
-              allParticipants={participants}
-              filteredParticipants={filteredParticipants}
+          <CopyToClipBoard
+            allParticipants={participants}
+            filteredParticipants={filteredParticipants}
           />
         </Suspense>
 
