@@ -3,6 +3,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { apis } from "./apis";
 import { Authorization } from "./components/Authorization";
+import { Main } from "./components/Main";
 import ApiScrollview from "./components/ApiScrollview";
 import Participants from "./components/Participants";
 import "./App.css";
@@ -204,7 +205,10 @@ function App() {
 
       {/* <ApiScrollview /> */}
       
-      <Participants />
+
+      <Main />
+
+      {/* <Participants /> */}
 
       {/* <Authorization
         handleError={setError}
@@ -213,6 +217,7 @@ function App() {
         user={user}
         userContextStatus={userContextStatus}
       /> */}
+
 
     </div>
   );
