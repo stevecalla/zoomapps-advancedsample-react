@@ -1,4 +1,4 @@
-header {
+/* header {
   width: 300px;
 }
 
@@ -11,7 +11,7 @@ header ul {
 }
 
 header li {
-  padding: 10px;  /*fix*/
+  padding: 10px;
   background-color: #F6F7F8;
   color: #95bcf0;
   border: 1px solid #dee2e6;
@@ -27,12 +27,16 @@ header a {
 }
 
 header li:active,
-header li:hover,
 header li.active,
-header a:hover,
 header a:active,
 header a.active {
   background-color: white;
-  /* color: black; */
+  color: black;
   border-bottom: none;
 }
+
+header li:not(.active):hover,
+header a:not(.active):hover {
+  color: #074EAF;
+  border: 1px thin #dee2e6;
+} */

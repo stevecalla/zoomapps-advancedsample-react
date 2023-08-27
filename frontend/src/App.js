@@ -1,9 +1,12 @@
 /* globals zoomSdk */
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom-v5-compat";
+import { CompatRouter } from "react-router-dom-v5-compat";
 import { useLocation, useHistory } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { apis } from "./apis";
 import { Authorization } from "./components/Authorization";
-import { Main } from "./components/Main";
+import { MainPortal } from "./components/MainPortal";
 import ApiScrollview from "./components/ApiScrollview";
 import Participants from "./components/Participants";
 import "./App.css";
@@ -204,9 +207,8 @@ function App() {
       </p> */}
 
       {/* <ApiScrollview /> */}
-      
 
-      <Main />
+      <MainPortal />
 
       {/* <Participants /> */}
 
