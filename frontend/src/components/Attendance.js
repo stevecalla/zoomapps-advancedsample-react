@@ -4,10 +4,10 @@ import BuyACoffee from "./BuyACoffee";
 
 import { getDate, getTime } from "../utils/dateInfo";
 import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
+import { handleSimilarityScores } from "../utils/similarityScoring";
 
 import Button from "react-bootstrap/Button";
 import Accordion from "react-bootstrap/Accordion";
-import stringSimilarity from 'string-similarity';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./ApiScrollview.css";
@@ -168,39 +168,6 @@ function Attendance() {
     }));
   }
 
-  const handleSimilarityScores =  () => {
-    const maxSimilarityScores = [];
-    let count = 0;
-  
-    attendeeRoster.forEach(attendee => {
-      let maxSimilarity = 0;
-      let matchName = "";
-      count++;
-  
-      participants.forEach(participant => {
-        const similarity = stringSimilarity.compareTwoStrings(attendee.toLowerCase(), participant.screenName.toLowerCase());
-        if (similarity > maxSimilarity) {
-          maxSimilarity = similarity;
-          matchName = participant.screenName;
-        }
-      });
-  
-      maxSimilarityScores.push({ index: count, attendee: attendee, matchName: matchName, maxSimilarity });
-    });
-  
-    setMatchResults(maxSimilarityScores.map(match => {
-      console.log(match);
-      return { matchResults,
-        index: match.index,
-        attendee: match.attendee,
-        matchName: match.matchName,
-        maxSimilarity: match.maxSimilarity,
-      }
-    }));
-
-    return maxSimilarityScores;
-  };
-
   // MARK ATTENDANCE
   const markAttendance = () => {
     let attendanceRosterDivs = document.querySelectorAll('.attendance-roster');
@@ -208,7 +175,17 @@ function Attendance() {
 
     let scores = [];
     setTimeout(() => {
-      scores = handleSimilarityScores();
+      scores = handleSimilarityScores(attendeeRoster, participants);
+      setMatchResults(scores.map(match => {
+        console.log(match);
+        return { 
+          matchResults,
+          index: match.index,
+          attendee: match.attendee,
+          matchName: match.matchName,
+          maxSimilarity: match.maxSimilarity,
+        }
+      }));
     }, 1000);
 
     setTimeout(() => {
