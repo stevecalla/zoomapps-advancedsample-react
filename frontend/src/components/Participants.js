@@ -4,6 +4,7 @@ import BuyACoffee from "./BuyACoffee";
 
 import { getDate, getTime } from "../utils/dateInfo";
 import { sortHandlerScreenName } from "../utils/sort";
+import { getParticipantData } from "../utils/getParticipantData";
 
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -59,38 +60,76 @@ function Participants() {
 
   // GET PARTICIPANT DATA FROM API
   const handleInvokeApi = async () => {
-    console.log("api invoked");
-    setDateStamp(getDate());
-    setTimeStamp(getTime());
-
     try {
-      // Define your API configuration
-      const apiConfig = {
-        name: "getMeetingParticipants", // Replace with the actual API name
-        buttonName: null, // Optional, replace with a button name
-        options: null, // Optional, replace with API options
-      };
+      let clientResponse = await getParticipantData("getMeetingParticipants");
 
-      // Call the invokeZoomAppsSdk function
-      const clientResponse = await invokeZoomAppsSdk(apiConfig)();
-      //convert response to an array
-      // convertObjectToArray(clientResponse);
+      // clientResponse?.participants ? console.log(clientResponse?.participants) : console.log(clientResponse);
 
       //fix //todo  prod = clientResponse.participants; dev = mockParticipationData
-      const mode = "dev";
-      // const mode = "prod";
+      // const mode = "dev";
+      const mode = "prod";
 
-      let sortedParticipants = sortHandlerScreenName(
-        mode === "dev" ? mockParticipantData : clientResponse.participants
-      );
-      setParticipants(sortedParticipants);
-      setParticipantsCopy(sortedParticipants);
-      setIsDisabled(true);
-      console.log("Received clientResponse:", clientResponse);
+      setParticipantLists(clientResponse);
+
+      // let sortedParticipants = sortHandlerScreenName(
+      //   mode === "dev" ? mockParticipantData : clientResponse.participants
+      // );
+      // setParticipants(sortedParticipants);
+      // setParticipantsCopy(sortedParticipants);
+      // setIsDisabled(true);
+
     } catch (error) {
       console.error("Error:", error);
+      // alert(error);
     }
   };
+  // handleInvokeAPI2();
+
+  const setParticipantLists = (clientResponse) => {
+      //fix //todo  prod = clientResponse.participants; dev = mockParticipationData
+      // const mode = "dev";
+      const mode = "prod";
+    let sortedParticipants = sortHandlerScreenName(
+      mode === "dev" ? mockParticipantData : clientResponse.participants
+    );
+    setParticipants(sortedParticipants);
+    setParticipantsCopy(sortedParticipants);
+    setIsDisabled(true);
+  };
+
+  // const handleInvokeApiOriginal = async () => {
+  //   console.log("api invoked");
+  //   setDateStamp(getDate());
+  //   setTimeStamp(getTime());
+
+  //   try {
+  //     // Define your API configuration
+  //     const apiConfig = {
+  //       name: "getMeetingParticipants", // Replace with the actual API name
+  //       buttonName: null, // Optional, replace with a button name
+  //       options: null, // Optional, replace with API options
+  //     };
+
+  //     // Call the invokeZoomAppsSdk function
+  //     const clientResponse = await invokeZoomAppsSdk(apiConfig)();
+  //     //convert response to an array
+  //     // convertObjectToArray(clientResponse);
+
+  //     //fix //todo  prod = clientResponse.participants; dev = mockParticipationData
+  //     const mode = "dev";
+  //     // const mode = "prod";
+
+  //     let sortedParticipants = sortHandlerScreenName(
+  //       mode === "dev" ? mockParticipantData : clientResponse.participants
+  //     );
+  //     setParticipants(sortedParticipants);
+  //     setParticipantsCopy(sortedParticipants);
+  //     setIsDisabled(true);
+  //     console.log("Received clientResponse:", clientResponse);
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // };
 
   //Filter the participants array based on search input
   const filteredParticipants = participantsCopy?.filter(({ screenName }) => {

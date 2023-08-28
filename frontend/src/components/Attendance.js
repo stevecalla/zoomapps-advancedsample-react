@@ -5,6 +5,7 @@ import BuyACoffee from "./BuyACoffee";
 import { getDate, getTime } from "../utils/dateInfo";
 import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
 import { handleSimilarityScores } from "../utils/similarityScoring";
+import { getParticipantData } from "../utils/getParticipantData";
 
 import Button from "react-bootstrap/Button";
 import Accordion from "react-bootstrap/Accordion";
@@ -82,6 +83,44 @@ function Attendance() {
   }, [dateStamp, timeStamp]);
 
   // GET PARTICIPANT DATA FROM API
+  // const handleInvokeApi = async () => {
+  //   try {
+  //     let clientResponse = await getParticipantData("getMeetingParticipants");
+
+  //     // clientResponse?.participants ? console.log(clientResponse?.participants) : console.log(clientResponse);
+
+  //     //fix //todo  prod = clientResponse.participants; dev = mockParticipationData
+  //     // const mode = "dev";
+  //     const mode = "prod";
+
+  //     setParticipantLists(clientResponse);
+
+  //     // let sortedParticipants = sortHandlerScreenName(
+  //     //   mode === "dev" ? mockParticipantData : clientResponse.participants
+  //     // );
+  //     // setParticipants(sortedParticipants);
+  //     // setParticipantsCopy(sortedParticipants);
+  //     // setIsDisabled(true);
+
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     // alert(error);
+  //   }
+  // };
+  // // handleInvokeAPI2();
+  
+  // const setParticipantLists = (clientResponse) => {
+  //     //fix //todo  prod = clientResponse.participants; dev = mockParticipationData
+  //     // const mode = "dev";
+  //     const mode = "prod";
+  //   let sortedParticipants = sortHandlerScreenName(
+  //     mode === "dev" ? mockParticipantData : clientResponse.participants
+  //   );
+  //   setParticipants(sortedParticipants);
+  //   setParticipantsCopy(sortedParticipants);
+  //   setIsDisabled(true);
+  // };
+
   const handleInvokeApi = async () => {
     console.log("api invoked");
     
