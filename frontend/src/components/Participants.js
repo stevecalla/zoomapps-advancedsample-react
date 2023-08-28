@@ -2,6 +2,8 @@ import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { invokeZoomAppsSdk, mockParticipantData } from "../apis";
 import BuyACoffee from "./BuyACoffee";
 
+import { getDate, getTime } from "../utils/dateInfo";
+
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./ApiScrollview.css";
@@ -50,13 +52,15 @@ function Participants() {
 
   //get date
   useEffect(() => {
-    getDate();
-  }, []);
+    setDateStamp(getDate());
+    setTimeStamp(getTime());
+  }, [dateStamp, timeStamp]);
 
   // GET PARTICIPANT DATA FROM API
   const handleInvokeApi = async () => {
     console.log("api invoked");
-    getDate();
+    setDateStamp(getDate());
+    setTimeStamp(getTime());
 
     try {
       // Define your API configuration
@@ -197,36 +201,6 @@ function Participants() {
   };
 
   // UTILITY FUNCTIONS
-  const getDate = () => {
-    //GET TODAY'S dateListlet date = new Date();
-    let date = new Date();
-    // console.log(date);
-
-    // set options for date
-    let options = {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    };
-
-    setDateStamp(Intl.DateTimeFormat("en-US", options).format(date));
-    // "Mon, Aug 21, 2023"
-    getTime(date);
-  };
-
-  const getTime = (date) => {
-    // set options for hour minute timezone
-    let options = {
-      hour: "numeric",
-      minute: "numeric",
-      timeZoneName: "short",
-    };
-
-    setTimeStamp(Intl.DateTimeFormat("en-US", options).format(date));
-    // "12:34 PM MDT"
-  };
-
   const sortHander = (items) => {
     return [...items].sort((a, b) => a.screenName.localeCompare(b.screenName));
   };
@@ -436,6 +410,7 @@ function Participants() {
         >
           Undo Deleted Participants
         </Button>
+
         <Button
           onClick={handleInvokeApi}
           style={{ width: "300px", height: "38px" }}
