@@ -3,6 +3,7 @@ import { invokeZoomAppsSdk, mockParticipantData } from "../apis";
 import BuyACoffee from "./BuyACoffee";
 
 import { getDate, getTime } from "../utils/dateInfo";
+import { sortHandlerScreenName } from "../utils/sort";
 
 import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -45,7 +46,7 @@ function Participants() {
 
   // CREATE PARTICIPANTS ARRAY & SORT
   useEffect(() => {
-    let sortedParticipants = sortHander(participants);
+    let sortedParticipants = sortHandlerScreenName(participants);
     setParticipantsCopy(sortedParticipants);
     /* eslint-disable */
   }, [participants]);
@@ -79,7 +80,7 @@ function Participants() {
       const mode = "dev";
       // const mode = "prod";
 
-      let sortedParticipants = sortHander(
+      let sortedParticipants = sortHandlerScreenName(
         mode === "dev" ? mockParticipantData : clientResponse.participants
       );
       setParticipants(sortedParticipants);
@@ -173,7 +174,7 @@ function Participants() {
   };
 
   const revertDeleteHandler = () => {
-    let sortedParticipants = sortHander(participants);
+    let sortedParticipants = sortHandlerScreenName(participants);
     setParticipantsCopy(sortedParticipants);
     setIsDisabled(true);
     // setRenderFilteredLength(false);
@@ -198,11 +199,6 @@ function Participants() {
     let searchInputText = event.currentTarget.previousElementSibling;
     searchInputText.value = "";
     searchHandler(event);
-  };
-
-  // UTILITY FUNCTIONS
-  const sortHander = (items) => {
-    return [...items].sort((a, b) => a.screenName.localeCompare(b.screenName));
   };
 
   return (
