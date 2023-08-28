@@ -3,6 +3,7 @@ import { invokeZoomAppsSdk, mockParticipantData } from "../apis";
 import BuyACoffee from "./BuyACoffee";
 
 import { getDate, getTime } from "../utils/dateInfo";
+import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
 
 import Button from "react-bootstrap/Button";
 import Accordion from "react-bootstrap/Accordion";
@@ -69,12 +70,12 @@ function Attendance() {
 
   // CREATE PARTICIPANTS ARRAY & SORT
   useEffect(() => {
-    let sortedParticipants = sortHander(participants);
+    let sortedParticipants = sortHandlerScreenName(participants);
     setParticipantsCopy(sortedParticipants);
     /* eslint-disable */
   }, [participants]);
 
-  //get date
+  //get date / time
   useEffect(() => {
     setDateStamp(getDate());
     setTimeStamp(getTime());
@@ -104,7 +105,7 @@ function Attendance() {
       const mode = "dev";
       // const mode = "prod";
 
-      let sortedParticipants = sortHander(mode === "dev" ? mockParticipantData : clientResponse.participants);
+      let sortedParticipants = sortHandlerScreenName(mode === "dev" ? mockParticipantData : clientResponse.participants);
       setParticipants(sortedParticipants);
       setParticipantsCopy(sortedParticipants);
       setIsDisabled(true);
@@ -133,7 +134,12 @@ function Attendance() {
     // console.log(event.currentTarget.value);
     const getAttendeeInput = async () => {
       const attendees = await event.currentTarget.value.split("; ").map(name => name);
-      setAttendeeRoster(attendees);
+
+      console.log(attendees);
+      let sortedAttendees = sortHandlerNames(attendees);
+      setAttendeeRoster(sortedAttendees);
+
+      // setAttendeeRoster(attendees);
     };
   
     getAttendeeInput(); // run it, run it
@@ -162,7 +168,6 @@ function Attendance() {
     }));
   }
 
-  // const handleSimilarityScores =  (attendeeRoster, participants) => {
   const handleSimilarityScores =  () => {
     const maxSimilarityScores = [];
     let count = 0;
@@ -328,7 +333,7 @@ function Attendance() {
   };
 
   const revertDeleteHandler = () => {
-    let sortedParticipants = sortHander(participants);
+    let sortedParticipants = sortHandlerScreenName(participants);
     setParticipantsCopy(sortedParticipants);
     setIsDisabled(true);
     // setRenderFilteredLength(false);
@@ -355,11 +360,6 @@ function Attendance() {
 
     setParticipantSearchText("");
     searchHandler(event);
-  };
-
-  // UTILITY FUNCTIONS
-  const sortHander = (items) => {
-    return [...items].sort((a, b) => a.screenName.localeCompare(b.screenName));
   };
 
   return (
