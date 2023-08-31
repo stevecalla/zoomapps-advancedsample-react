@@ -26,7 +26,6 @@ function BuyACoffee() {
       
     //</a>
   );  
-
 }
 
 export default BuyACoffee;
