@@ -1,30 +1,31 @@
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
-import { invokeZoomAppsSdk, mockParticipantData } from "../apis";
-import BuyACoffee from "./BuyACoffee";
+import { mockParticipantData } from "../apis";
 
-import { getDate, getTime } from "../utils/dateInfo";
-import { sortHandlerScreenName } from "../utils/sort";
+import HorizontalLine from "./HorizontalLine";
+import TimeStamp from "./TimeStamp";
+import ButtonData from "./ButtonData";
+
 import { getParticipantData } from "../utils/getParticipantData";
+import { sortHandlerScreenName } from "../utils/sort";
+// import { getDate, getTime } from "../utils/dateInfo";
 
-import Button from "react-bootstrap/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button from "react-bootstrap/Button";
 import "./ApiScrollview.css";
 import "./styles/spinner.css";
+import SearchInput from "./SearchInput";
 
-// import CopyToClipBoard from "./CopyToClipBoard";
 const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
+const BuyACoffee = lazy(() => import("./BuyACoffee"));
 
 function Participants() {
-  const [participants, setParticipants] = useState([]); //original array
-  const [participantsCopy, setParticipantsCopy] = useState(); //mutable copy of original
+  const [participantsNonMutable, setParticipantsOriginal] = useState([]); //original array
+  const [participantsMutable, setParticipantsMutable] = useState(); //mutable copy of original
   const [renderParticipants, setRenderParticipants] = useState(false);
 
-  const [participantSearchText, setParticipantSearchText] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
-
-  const [dateStamp, setDateStamp] = useState("");
-  const [timeStamp, setTimeStamp] = useState("");
   const inputFocusRef = useRef(null);
+  const [retrieveDate, setRetrieveDate] = useState(false);
 
   //Focus the search input on load
   useEffect(() => {
@@ -45,100 +46,37 @@ function Participants() {
     /* eslint-disable */
   }, []);
 
-  // CREATE PARTICIPANTS ARRAY & SORT
+  // CREATE participantsNonMutable ARRAY & SORT
   useEffect(() => {
-    let sortedParticipants = sortHandlerScreenName(participants);
-    setParticipantsCopy(sortedParticipants);
+    setParticipantsMutable(participantsNonMutable);
     /* eslint-disable */
-  }, [participants]);
+  }, [participantsNonMutable]);
 
-  //get date
-  useEffect(() => {
-    setDateStamp(getDate());
-    setTimeStamp(getTime());
-  }, [dateStamp, timeStamp]);
+  // useEffect(() => {
+  //   setRetrieveDate(!retrieveDate);
+  // }, [])
 
   // GET PARTICIPANT DATA FROM API
   const handleInvokeApi = async () => {
     try {
       let clientResponse = await getParticipantData("getMeetingParticipants");
 
-      // clientResponse?.participants ? console.log(clientResponse?.participants) : console.log(clientResponse);
-
-      //fix //todo  prod = clientResponse.participants; dev = mockParticipationData
+      //todo //prod = clientResponse.participants; dev = mockParticipationData
       // const mode = "dev";
       const mode = "prod";
 
-      setParticipantLists(clientResponse);
+      let sortedParticipants = sortHandlerScreenName(
+        mode === "dev" ? mockParticipantData : clientResponse.participants
+      );
 
-      // let sortedParticipants = sortHandlerScreenName(
-      //   mode === "dev" ? mockParticipantData : clientResponse.participants
-      // );
-      // setParticipants(sortedParticipants);
-      // setParticipantsCopy(sortedParticipants);
-      // setIsDisabled(true);
-
+      setParticipantsOriginal(sortedParticipants);
+      setParticipantsMutable(sortedParticipants);
     } catch (error) {
       console.error("Error:", error);
-      // alert(error);
     }
+
+    setRetrieveDate(!retrieveDate);
   };
-  // handleInvokeAPI2();
-
-  const setParticipantLists = (clientResponse) => {
-      //fix //todo  prod = clientResponse.participants; dev = mockParticipationData
-      // const mode = "dev";
-      const mode = "prod";
-    let sortedParticipants = sortHandlerScreenName(
-      mode === "dev" ? mockParticipantData : clientResponse.participants
-    );
-    setParticipants(sortedParticipants);
-    setParticipantsCopy(sortedParticipants);
-    setIsDisabled(true);
-  };
-
-  // const handleInvokeApiOriginal = async () => {
-  //   console.log("api invoked");
-  //   setDateStamp(getDate());
-  //   setTimeStamp(getTime());
-
-  //   try {
-  //     // Define your API configuration
-  //     const apiConfig = {
-  //       name: "getMeetingParticipants", // Replace with the actual API name
-  //       buttonName: null, // Optional, replace with a button name
-  //       options: null, // Optional, replace with API options
-  //     };
-
-  //     // Call the invokeZoomAppsSdk function
-  //     const clientResponse = await invokeZoomAppsSdk(apiConfig)();
-  //     //convert response to an array
-  //     // convertObjectToArray(clientResponse);
-
-  //     //fix //todo  prod = clientResponse.participants; dev = mockParticipationData
-  //     const mode = "dev";
-  //     // const mode = "prod";
-
-  //     let sortedParticipants = sortHandlerScreenName(
-  //       mode === "dev" ? mockParticipantData : clientResponse.participants
-  //     );
-  //     setParticipants(sortedParticipants);
-  //     setParticipantsCopy(sortedParticipants);
-  //     setIsDisabled(true);
-  //     console.log("Received clientResponse:", clientResponse);
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
-
-  //Filter the participants array based on search input
-  const filteredParticipants = participantsCopy?.filter(({ screenName }) => {
-    if (participantSearchText === "") {
-      return screenName;
-    } else {
-      return screenName.toLowerCase().includes(participantSearchText);
-    }
-  });
 
   // MARK HANLDERS
   const checkHandler = (event) => {
@@ -200,66 +138,51 @@ function Participants() {
   };
 
   // DELETE HANLDERS
-  const deleteHandlers = (event) => {
+  const deleteParticipantHandler = (event) => {
     let targetId = event.currentTarget.getAttribute("data-participantid");
-    const updatedParticipantData = participantsCopy.filter(
-      ({ screenName, participantId }) => {
+
+    const updatedParticipantData = participantsMutable.filter(
+      ({ participantId }) => {
         return targetId !== participantId;
       }
     );
-    setParticipantsCopy(updatedParticipantData);
+    setParticipantsMutable(updatedParticipantData);
     setIsDisabled(false);
-    // setRenderFilteredLength(true);
   };
 
-  const revertDeleteHandler = () => {
-    let sortedParticipants = sortHandlerScreenName(participants);
-    setParticipantsCopy(sortedParticipants);
+  const revertDeletedParticipantHandler = () => {
+    setParticipantsMutable(participantsNonMutable);
     setIsDisabled(true);
-    // setRenderFilteredLength(false);
   };
 
   // SEARCH HANDLERS
   const searchHandler = (e) => {
-    //eliminate undefined
-    let searchBoxTarget =
-      e.target?.value === undefined ? "" : e.target?.value?.toLowerCase();
-    let deleteIconTarget =
-      e.currentTarget?.previousElementSibling?.value === undefined
-        ? ""
-        : e.currentTarget?.previousElementSibling?.value.toLowerCase();
+    let searchBoxValue = e.target?.value?.toLowerCase();
 
-    let searchInputText = searchBoxTarget ? searchBoxTarget : deleteIconTarget;
-    let lowerCase = searchInputText;
-    setParticipantSearchText(lowerCase);
+    const searchResultsParticipants = participantsNonMutable?.filter(
+      ({ screenName }) => {
+        if (searchBoxValue === "") {
+          return screenName;
+        } else {
+          return screenName.toLowerCase().includes(searchBoxValue);
+        }
+      }
+    );
+
+    setParticipantsMutable(searchResultsParticipants);
+    setIsDisabled(true);
   };
 
-  const resetSearchHandler = (event) => {
-    let searchInputText = event.currentTarget.previousElementSibling;
-    searchInputText.value = "";
-    searchHandler(event);
+  const clearSearchHandler = () => {
+    let searchInputText = document.getElementById("api-scrollview-input");
+    searchInputText.value = null;
+    setParticipantsMutable(participantsNonMutable);
   };
 
   return (
     <div className="api-scrollview">
-      <hr
-        className="hr-scroll-border"
-        style={{
-          margin: "0",
-          height: "5px",
-          borderRadius: "5px",
-          backgroundColor: "#0d6efd",
-        }}
-      ></hr>
-      <hr
-        className="hr-scroll-border"
-        style={{
-          margin: "0",
-          height: "15px",
-          borderRadius: "5px",
-          backgroundColor: "#ffdc03",
-        }}
-      ></hr>
+      <HorizontalLine height="5px" backgroundColor="#0d6efd" />
+      <HorizontalLine height="15px" backgroundColor="#ffdc03" />
       <p
         style={{
           position: "relative",
@@ -274,10 +197,11 @@ function Participants() {
             position: "absolute",
             left: "175px",
             left: "268px",
-            textAlign: "right",
           }}
         >
-          {participants.length === 0 ? "..." : participants.length}
+          {participantsNonMutable?.length === 0
+            ? "..."
+            : participantsNonMutable.length}
         </span>
       </p>
       <p
@@ -296,58 +220,21 @@ function Participants() {
             left: "268px",
           }}
         >
-          {participantsCopy?.length ? participantsCopy.length : "..."}
+          {participantsMutable?.length ? participantsMutable.length : "..."}
         </span>
       </p>
-      <hr
-        className="hr-scroll-border"
-        style={{ margin: "0 0 7px 0", backgroundColor: "#0d6efd" }}
-      ></hr>
-      <div style={{ position: "relative" }}>
-        <input
-          ref={inputFocusRef}
-          placeholder="Search for participants"
-          onChange={searchHandler}
-          label="Search"
-          id="api-scrollview-input"
-          style={{
-            width: "300px",
-            marginTop: "0px",
-            marginBottom: "0px",
-            padding: "7px",
-            paddingLeft: "32px",
-          }}
-        />
-        <FontAwesomeIcon
-          icon="fa-search"
-          size="lg"
-          style={{
-            position: "absolute",
-            // right: "280px",
-            left: "10px",
-            top: "10px",
-            color: "gray",
-            backgroundColor: "white",
-          }}
-        />
-        <FontAwesomeIcon
-          title="Clear search"
-          icon="fa-solid fa-xmark-circle"
-          size="lg"
-          style={{
-            position: "absolute",
-            // right: "20px",
-            left: "272px",
-            top: "10px",
-            color: "gray",
-          }}
-          className=""
-          onClick={resetSearchHandler}
-        />
-      </div>
+      
+      <HorizontalLine height="" backgroundColor="#0d6efd" margin="0 0 7px 0" />
+
+      <SearchInput
+        onChangeHandler={searchHandler}
+        onClickHandlerXmark={clearSearchHandler}
+        ref={inputFocusRef}
+      />
+
       <div className="api-buttons-list" style={{ height: "300px" }}>
         {renderParticipants ? (
-          filteredParticipants?.map(({ screenName, participantId }, index) => (
+          participantsMutable?.map(({ screenName, participantId }, index) => (
             <div
               key={participantId}
               style={{ position: "relative", paddingLeft: "10px" }}
@@ -397,7 +284,7 @@ function Participants() {
                 icon="fa-solid fa-trash"
                 data-participantid={`${participantId}`}
                 data-screenname={`${screenName}`}
-                onClick={deleteHandlers}
+                onClick={deleteParticipantHandler}
                 style={{
                   position: "absolute",
                   right: "18px",
@@ -424,43 +311,33 @@ function Participants() {
         )}
       </div>
 
-      <hr
-        className="hr-scroll-border"
-        style={{ margin: "0", backgroundColor: "#0d6efd" }}
-      ></hr>
-      <p
-        title="Timestamp when data was refreshed"
-        style={{ margin: "0", width: "300px", textAlign: "center" }}
-      >{`${dateStamp} ${timeStamp}`}</p>
-      <hr
-        className="hr-scroll-border"
-        style={{ margin: "0 0 4px 0", backgroundColor: "#0d6efd" }}
-      ></hr>
+      <HorizontalLine backgroundColor="#0d6efd" />
+
+      <TimeStamp retrieveDate={retrieveDate} />
+
+      <HorizontalLine backgroundColor="#0d6efd" margin="0 0 4px 0" />
 
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <Button
-          onClick={revertDeleteHandler}
-          disabled={isDisabled}
-          style={{ width: "300px", height: "38px" }}
-        >
-          Undo Deleted Participants
-        </Button>
-
-        <Button
-          onClick={handleInvokeApi}
-          style={{ width: "300px", height: "38px" }}
-        >
-          Get Current Participants
-        </Button>
-
+        <ButtonData
+          content="Undo Deleted Participants"
+          onClickHandler={revertDeletedParticipantHandler}
+          isDisabled={isDisabled}
+        />
+        <ButtonData
+          content="Get Current Participants"
+          onClickHandler={handleInvokeApi}
+          isDisabled={false}
+        />
         <Suspense fallback={<div>Loading...</div>}>
           <CopyToClipBoard
-            allParticipants={participants}
-            filteredParticipants={filteredParticipants}
+            allParticipants={participantsNonMutable}
+            filteredParticipants={participantsMutable}
           />
         </Suspense>
 
-        <BuyACoffee />
+        <Suspense fallback={<div>Loading...</div>}>
+          <BuyACoffee />
+        </Suspense>
       </div>
     </div>
   );

@@ -8,7 +8,8 @@ import Attendance from "./Attendance";
 export const MainPortal = () => {
   return (
       <Tabs
-        defaultActiveKey="attendance"
+        // defaultActiveKey="attendance"
+        defaultActiveKey="participants"
         id="justify-tab-example"
         className="mb-3 flex-nowrap"
         fill
