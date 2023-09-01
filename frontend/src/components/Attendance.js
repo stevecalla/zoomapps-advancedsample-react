@@ -556,7 +556,7 @@ function Attendance() {
         </Accordion.Item>
       </Accordion>
 
-      <div className="api-buttons-list" style={{ height: "300px" }}>
+      <div className="attendee-list" style={{ height: "300px" }}>
         {renderParticipants ? (
           filteredParticipants?.map(( attendee, index ) => (
             <div

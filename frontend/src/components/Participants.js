@@ -1,20 +1,18 @@
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { mockParticipantData } from "../apis";
 
+import AttendeeList from "./AttendeeList";
+import SearchInput from "./SearchInput";
+import CountInfo from "./CountInfo";
 import HorizontalLine from "./HorizontalLine";
 import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 
 import { getParticipantData } from "../utils/getParticipantData";
 import { sortHandlerScreenName } from "../utils/sort";
-// import { getDate, getTime } from "../utils/dateInfo";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Button from "react-bootstrap/Button";
 import "./ApiScrollview.css";
 import "./styles/spinner.css";
-import SearchInput from "./SearchInput";
-import CountInfo from "./CountInfo";
 
 const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
@@ -31,9 +29,9 @@ function Participants() {
   //Focus the search input on load
   useEffect(() => {
     // Focus on the input element when the component is mounted
-    if (inputFocusRef.current) {
+    // if (inputFocusRef.current) {
       inputFocusRef.current.focus();
-    }
+    // }
   }, []);
 
   //INITIAL API CALL
@@ -52,10 +50,6 @@ function Participants() {
     setParticipantsMutable(participantsNonMutable);
     /* eslint-disable */
   }, [participantsNonMutable]);
-
-  // useEffect(() => {
-  //   setRetrieveDate(!retrieveDate);
-  // }, [])
 
   // GET PARTICIPANT DATA FROM API
   const handleInvokeApi = async () => {
@@ -184,101 +178,37 @@ function Participants() {
     <div className="api-scrollview">
       <HorizontalLine height="5px" backgroundColor="#0d6efd" />
       <HorizontalLine height="15px" backgroundColor="#ffdc03" />
-      <CountInfo 
-        countDescription="Total Participants"
-        contentLength={participantsNonMutable?.length === 0
+
+      <CountInfo
+        contentDescription="Total Participants"
+        contentLength={
+          participantsNonMutable?.length === 0
             ? "..."
-            : participantsNonMutable.length}
-      />     
-      <CountInfo 
-        countDescription="Filtered Participants"
-        contentLength={participantsMutable?.length ? participantsMutable.length : "..."}
+            : participantsNonMutable.length
+        }
       />
+      <CountInfo
+        contentDescription="Filtered Participants"
+        contentLength={
+          participantsMutable?.length ? participantsMutable.length : "..."
+        }
+      />
+
       <HorizontalLine height="" backgroundColor="#0d6efd" margin="0 0 7px 0" />
+
       <SearchInput
         onChangeHandler={searchHandler}
         onClickHandlerXmark={clearSearchHandler}
         ref={inputFocusRef}
       />
 
-      <div className="api-buttons-list" style={{ height: "300px" }}>
-        {renderParticipants ? (
-          participantsMutable?.map(({ screenName, participantId }, index) => (
-            <div
-              key={participantId}
-              style={{ position: "relative", paddingLeft: "10px" }}
-            >
-              <p
-                style={{
-                  width: "98%",
-                  cursor: "default",
-                  borderRadius: "7px",
-                  textAlign: "left",
-                  margin: 0,
-                  padding: "7px 7px 0px 10px",
-                }}
-              >
-                {`${index + 1}) ${screenName}`}
-              </p>
-              <FontAwesomeIcon
-                title="Verified"
-                icon="fa-solid fa-check"
-                size="lg"
-                className=""
-                data-participantid={`${participantId - 1000}`}
-                data-color={"gray"}
-                onClick={checkHandler}
-                style={{
-                  position: "absolute",
-                  right: "60px",
-                  top: "11px",
-                  color: "gray",
-                }}
-              />
-              <FontAwesomeIcon
-                title="Not verified"
-                icon="fa-solid fa-xmark"
-                size="lg"
-                data-participantid={`${participantId + 1000}`}
-                onClick={xMarkHandler}
-                style={{
-                  position: "absolute",
-                  right: "40px",
-                  top: "11px",
-                  color: "gray",
-                }}
-              />
-              <FontAwesomeIcon
-                title="Delete from list"
-                icon="fa-solid fa-trash"
-                data-participantid={`${participantId}`}
-                data-screenname={`${screenName}`}
-                onClick={deleteParticipantHandler}
-                style={{
-                  position: "absolute",
-                  right: "18px",
-                  top: "13px",
-                  color: "gray",
-                }}
-              />
-            </div>
-          ))
-        ) : (
-          <>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "300px",
-                height: "200px",
-              }}
-            >
-              <div className="lds-hourglass"></div>
-            </div>
-          </>
-        )}
-      </div>
+      <AttendeeList 
+        renderParticipants={renderParticipants}
+        participantsMutable={participantsMutable}
+        checkHandler={checkHandler}
+        xMarkHandler={xMarkHandler}
+        deleteParticipantHandler={deleteParticipantHandler}
+      />
 
       <HorizontalLine backgroundColor="#0d6efd" />
 
