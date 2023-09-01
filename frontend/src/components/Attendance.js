@@ -626,18 +626,11 @@ function Attendance() {
         )}
       </div>
 
-      <hr
-        className="hr-scroll-border"
-        style={{ margin: "0", backgroundColor: "#0d6efd" }}
-      ></hr>
-      <p
-        title="Timestamp when data was refreshed"
-        style={{ margin: "0", width: "300px", textAlign: "center" }}
-      >{`${dateStamp} ${timeStamp}`}</p>
-      <hr
-        className="hr-scroll-border"
-        style={{ margin: "0 0 4px 0", backgroundColor: "#0d6efd" }}
-      ></hr>
+      <HorizontalLine backgroundColor="#0d6efd" />
+
+      <TimeStamp retrieveDate={retrieveDate} />
+
+      <HorizontalLine backgroundColor="#0d6efd" margin="0 0 4px 0" />
 
       <div style={{ display: "flex", flexDirection: "column" }}>
         <Button
