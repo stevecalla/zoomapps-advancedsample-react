@@ -28,10 +28,7 @@ function Participants() {
 
   //Focus the search input on load
   useEffect(() => {
-    // Focus on the input element when the component is mounted
-    // if (inputFocusRef.current) {
       inputFocusRef.current.focus();
-    // }
   }, []);
 
   //INITIAL API CALL

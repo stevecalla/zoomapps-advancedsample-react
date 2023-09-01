@@ -383,24 +383,10 @@ function Attendance() {
 
   return (
     <div className="api-scrollview">
-      <hr
-        className="hr-scroll-border"
-        style={{
-          margin: "0",
-          height: "5px",
-          borderRadius: "5px",
-          backgroundColor: "#0d6efd",
-        }}
-      ></hr>
-      <hr
-        className="hr-scroll-border"
-        style={{
-          margin: "0",
-          height: "15px",
-          borderRadius: "5px",
-          backgroundColor: "#ffdc03",
-        }}
-      ></hr>
+
+      <HorizontalLine height="5px" backgroundColor="#0d6efd" />
+      <HorizontalLine height="15px" backgroundColor="#ffdc03" />
+
       <p
         style={{
           position: "relative",
