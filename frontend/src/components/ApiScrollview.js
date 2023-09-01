@@ -71,7 +71,7 @@ function ApiScrollview() {
           id="api-scrollview-input"
         />
 
-        <div className="api-buttons-list">
+        <div className="attendee-list">
           {filteredApis?.map(api =>
             <Button 
               onClick={invokeZoomAppsSdk(api)}

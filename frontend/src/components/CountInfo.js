@@ -1,6 +1,6 @@
 import Button from "react-bootstrap/Button";
 
-function CountInfo({countDescription, contentLength}) {
+function CountInfo({contentDescription, contentLength}) {
   
   return (
     <p
@@ -11,11 +11,10 @@ function CountInfo({countDescription, contentLength}) {
       paddingLeft: "5px",
     }}
   >
-    {`${countDescription}:`}
+    {`${contentDescription}:`}
     <span
       style={{
         position: "absolute",
-        left: "175px",
         left: "268px",
       }}
     >
