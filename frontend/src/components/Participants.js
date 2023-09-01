@@ -12,7 +12,7 @@ import { getParticipantData } from "../utils/getParticipantData";
 import { sortHandlerScreenName } from "../utils/sort";
 
 import "./ApiScrollview.css";
-import "./styles/spinner.css";
+// import "./styles/spinner.css";
 
 const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));

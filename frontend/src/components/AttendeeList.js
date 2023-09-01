@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./styles/spinner.css";
 
 function AttendeeList({ renderParticipants, participantsMutable, checkHandler, xMarkHandler, deleteParticipantHandler }) {
   return (
