@@ -10,7 +10,7 @@ const handleSimilarityScores =  (attendeeRoster, participants) => {
     count++;
 
     participants.forEach(participant => {
-      const similarity = stringSimilarity.compareTwoStrings(attendee.toLowerCase(), participant.screenName.toLowerCase());
+      const similarity = stringSimilarity.compareTwoStrings(attendee.screenName.toLowerCase(), participant.screenName.toLowerCase());
       if (similarity > maxSimilarity) {
         maxSimilarity = similarity;
         matchName = participant.screenName;

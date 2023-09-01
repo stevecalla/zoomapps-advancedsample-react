@@ -206,44 +206,34 @@ function Attendance() {
 
   //TODO
   // ATTENDEE FUNCTIONS
-  const handleAttendeeInput = (event) => {
-    // console.log('input');
-    // console.log(event.currentTarget.value);
-    const getAttendeeInput = async () => {
+  const handleAttendeeInput = async (event) => {
+    // const getAttendeeInput = async () => {
       const attendees = await event.currentTarget.value
         .split("; ")
-        .map((name) => name);
+        .map((name, index) => {
+          return {
+            participantId: index,
+            screenName: name,
+          };
+        });
 
       console.log(attendees);
-      let sortedAttendees = sortHandlerNames(attendees);
+      let sortedAttendees = sortHandlerScreenName(attendees);
       setAttendeeRoster(sortedAttendees);
+    // };
 
-      // setAttendeeRoster(attendees);
-    };
-
-    getAttendeeInput(); // run it, run it
-
-    // setAttendeeRoster(event.currentTarget.value.split("; ").map(name => name));
-    // getAttendeeRoster();
+    // getAttendeeInput(); // run it, run it
   };
 
   const [filteredParticipants, setFilteredParticipants] = useState(null);
 
   const renderAttendeeRoster = () => {
-    //Filter the participants array based on search input
-    // const filteredParticipants = attendeeRoster?.filter(( attendee ) => {
-    //   if (participantSearchText === "") {
-    //     return attendee;
-    //   } else {
-    //     return attendee.toLowerCase().includes(participantSearchText);
-    //   }
-    // });
     setFilteredParticipants(
       attendeeRoster?.filter((attendee) => {
         if (participantSearchText === "") {
-          return attendee;
+          return attendee?.screenName;
         } else {
-          return attendee.toLowerCase().includes(participantSearchText);
+          return attendee?.screenName?.toLowerCase().includes(participantSearchText);
         }
       })
     );
@@ -382,87 +372,16 @@ function Attendance() {
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
+      //todo END
 
-      <div className="attendee-list" style={{ height: "300px" }}>
-        {renderParticipants ? (
-          filteredParticipants?.map((attendee, index) => (
-            <div
-              key={index}
-              className="attendance-roster"
-              style={{ position: "relative", paddingLeft: "10px" }}
-            >
-              <p
-                style={{
-                  width: "98%",
-                  cursor: "default",
-                  borderRadius: "7px",
-                  textAlign: "left",
-                  margin: 0,
-                  padding: "7px 7px 0px 10px",
-                }}
-              >
-                {`${index + 1}) ${attendee}`}
-              </p>
-              <FontAwesomeIcon
-                title="Verified"
-                icon="fa-solid fa-check"
-                size="lg"
-                className="attendance-check"
-                // data-participantid={`${participantId - 1000}`}
-                data-color={"gray"}
-                onClick={checkHandler}
-                style={{
-                  position: "absolute",
-                  right: "60px",
-                  top: "11px",
-                  color: "gray",
-                }}
-              />
-              <FontAwesomeIcon
-                title="Not verified"
-                icon="fa-solid fa-xmark"
-                size="lg"
-                className="attendance-xmark"
-                // data-participantid={`${participantId + 1000}`}
-                onClick={xMarkHandler}
-                style={{
-                  position: "absolute",
-                  right: "40px",
-                  top: "11px",
-                  color: "gray",
-                }}
-              />
-              <FontAwesomeIcon
-                title="Delete from list"
-                icon="fa-solid fa-trash"
-                // data-participantid={`${participantId}`}
-                data-screenname={`${attendee}`}
-                onClick={deleteParticipantHandler}
-                style={{
-                  position: "absolute",
-                  right: "18px",
-                  top: "13px",
-                  color: "gray",
-                }}
-              />
-            </div>
-          ))
-        ) : (
-          <>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "300px",
-                height: "200px",
-              }}
-            >
-              <div className="lds-hourglass"></div>
-            </div>
-          </>
-        )}
-      </div>
+      <AttendeeList 
+        renderParticipants={renderParticipants}
+        participantsMutable={filteredParticipants}
+        checkHandler={checkHandler}
+        xMarkHandler={xMarkHandler}
+        deleteParticipantHandler={deleteParticipantHandler}
+        listType="attendanceRoster"
+      />
 
       <HorizontalLine backgroundColor="#0d6efd" />
 
@@ -485,7 +404,7 @@ function Attendance() {
         <Suspense fallback={<div>Loading...</div>}>
           <CopyToClipBoard
             allParticipants={participantsNonMutable}
-            filteredParticipants={participantsMutable}
+            participantsMutable={participantsMutable}
           />
         </Suspense>
 

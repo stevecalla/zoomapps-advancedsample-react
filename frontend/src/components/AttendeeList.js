@@ -1,13 +1,14 @@
 import Spinner from "./Spinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function AttendeeList({ renderParticipants, participantsMutable, checkHandler, xMarkHandler, deleteParticipantHandler }) {
+function AttendeeList({ renderParticipants, participantsMutable, checkHandler, xMarkHandler, deleteParticipantHandler, listType }) {
   return (
     <div className="attendee-list" style={{ height: "300px" }}>
       {renderParticipants ? (
         participantsMutable?.map(({ screenName, participantId }, index) => (
           <div
             key={participantId}
+            className={listType === 'attendanceRoster' ? "attendance-roster" : ""}
             style={{ position: "relative", paddingLeft: "10px" }}
           >
             <p
@@ -54,7 +55,6 @@ function AttendeeList({ renderParticipants, participantsMutable, checkHandler, x
               title="Delete from list"
               icon="fa-solid fa-trash"
               data-participantid={`${participantId}`}
-              data-screenname={`${screenName}`}
               onClick={deleteParticipantHandler}
               style={{
                 position: "absolute",

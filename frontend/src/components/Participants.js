@@ -204,6 +204,7 @@ function Participants() {
         checkHandler={checkHandler}
         xMarkHandler={xMarkHandler}
         deleteParticipantHandler={deleteParticipantHandler}
+        listType=""
       />
 
       <HorizontalLine backgroundColor="#0d6efd" />
@@ -227,7 +228,7 @@ function Participants() {
         <Suspense fallback={<div>Loading...</div>}>
           <CopyToClipBoard
             allParticipants={participantsNonMutable}
-            filteredParticipants={participantsMutable}
+            participantsMutable={participantsMutable}
           />
         </Suspense>
 
