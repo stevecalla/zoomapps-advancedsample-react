@@ -12,7 +12,6 @@ import { getParticipantData } from "../utils/getParticipantData";
 import { sortHandlerScreenName } from "../utils/sort";
 
 import "./ApiScrollview.css";
-import "./styles/spinner.css";
 
 const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
@@ -28,10 +27,7 @@ function Participants() {
 
   //Focus the search input on load
   useEffect(() => {
-    // Focus on the input element when the component is mounted
-    // if (inputFocusRef.current) {
       inputFocusRef.current.focus();
-    // }
   }, []);
 
   //INITIAL API CALL
@@ -227,6 +223,7 @@ function Participants() {
           onClickHandler={handleInvokeApi}
           isDisabled={false}
         />
+
         <Suspense fallback={<div>Loading...</div>}>
           <CopyToClipBoard
             allParticipants={participantsNonMutable}
@@ -237,6 +234,7 @@ function Participants() {
         <Suspense fallback={<div>Loading...</div>}>
           <BuyACoffee />
         </Suspense>
+
       </div>
     </div>
   );
