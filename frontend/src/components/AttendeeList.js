@@ -1,5 +1,5 @@
+import Spinner from "./Spinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./styles/spinner.css";
 
 function AttendeeList({ renderParticipants, participantsMutable, checkHandler, xMarkHandler, deleteParticipantHandler }) {
   return (
@@ -66,19 +66,7 @@ function AttendeeList({ renderParticipants, participantsMutable, checkHandler, x
           </div>
         ))
       ) : (
-        <>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "300px",
-              height: "200px",
-            }}
-          >
-            <div className="lds-hourglass"></div>
-          </div>
-        </>
+        <Spinner />
       )}
     </div>
   );

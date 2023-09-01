@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
-import { invokeZoomAppsSdk, mockParticipantData } from "../apis";
+import { mockParticipantData } from "../apis";
 
 import AttendeeList from "./AttendeeList";
 import SearchInput from "./SearchInput";
@@ -485,7 +485,7 @@ function Attendance() {
         <Suspense fallback={<div>Loading...</div>}>
           <CopyToClipBoard
             allParticipants={participantsNonMutable}
-            filteredParticipants={filteredParticipants}
+            filteredParticipants={participantsMutable}
           />
         </Suspense>
 
