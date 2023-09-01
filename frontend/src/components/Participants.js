@@ -14,6 +14,7 @@ import Button from "react-bootstrap/Button";
 import "./ApiScrollview.css";
 import "./styles/spinner.css";
 import SearchInput from "./SearchInput";
+import CountInfo from "./CountInfo";
 
 const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
@@ -183,49 +184,17 @@ function Participants() {
     <div className="api-scrollview">
       <HorizontalLine height="5px" backgroundColor="#0d6efd" />
       <HorizontalLine height="15px" backgroundColor="#ffdc03" />
-      <p
-        style={{
-          position: "relative",
-          margin: "0",
-          width: "200px",
-          paddingLeft: "5px",
-        }}
-      >
-        Total Participants:{" "}
-        <span
-          style={{
-            position: "absolute",
-            left: "175px",
-            left: "268px",
-          }}
-        >
-          {participantsNonMutable?.length === 0
+      <CountInfo 
+        countDescription="Total Participants"
+        contentLength={participantsNonMutable?.length === 0
             ? "..."
             : participantsNonMutable.length}
-        </span>
-      </p>
-      <p
-        style={{
-          position: "relative",
-          margin: "0",
-          width: "200px",
-          paddingLeft: "5px",
-        }}
-      >
-        Filtered Participants:{" "}
-        <span
-          style={{
-            position: "absolute",
-            left: "175px",
-            left: "268px",
-          }}
-        >
-          {participantsMutable?.length ? participantsMutable.length : "..."}
-        </span>
-      </p>
-      
+      />     
+      <CountInfo 
+        countDescription="Filtered Participants"
+        contentLength={participantsMutable?.length ? participantsMutable.length : "..."}
+      />
       <HorizontalLine height="" backgroundColor="#0d6efd" margin="0 0 7px 0" />
-
       <SearchInput
         onChangeHandler={searchHandler}
         onClickHandlerXmark={clearSearchHandler}
