@@ -316,21 +316,7 @@ function Attendance() {
       <HorizontalLine height="15px" backgroundColor="#ffdc03" />
 
       <CountInfo
-        contentDescription="Roster"
-        contentLength={matchResults?.length ? matchResults.length : "..."}
-      />
-      <div>
-        <CountInfo
-          contentDescription="Present"
-          contentLength={presentResults?.length ? presentResults.length : "..."}
-        />
-        <CountInfo
-          contentDescription="Absent"
-          contentLength={absentResults?.length ? absentResults.length : "..."}
-        />
-      </div>
-      {/* <CountInfo
-        contentDescription="Total Participants"
+        contentDescription="Participants"
         contentLength={
           participantsNonMutable?.length === 0
             ? "..."
@@ -338,11 +324,22 @@ function Attendance() {
         }
       />
       <CountInfo
-        contentDescription="Filtered Participants"
-        contentLength={
-          participantsMutable?.length ? participantsMutable.length : "..."
-        }
-      /> */}
+        contentDescription="Roster"
+        contentLength={matchResults?.length ? matchResults.length : "..."}
+        // spanLeft="267px"
+      />
+      <section style={{ display: "flex" }}>
+        <CountInfo
+          contentDescription="Present"
+          contentLength={presentResults?.length ? presentResults.length : "..."}
+          spanLeft="130px"
+        />
+        <CountInfo
+          contentDescription="Absent"
+          contentLength={absentResults?.length ? absentResults.length : "..."}
+          spanLeft="112px"
+        />
+      </section>
 
       <HorizontalLine height="" backgroundColor="#0d6efd" margin="0 0 7px 0" />
 
