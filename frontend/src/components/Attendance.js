@@ -1,8 +1,7 @@
-import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { mockParticipantData } from "../apis";
 
 import AttendeeList from "./AttendeeList";
-import SearchInput from "./SearchInput";
 import CountInfo from "./CountInfo";
 import HorizontalLine from "./HorizontalLine";
 import TimeStamp from "./TimeStamp";

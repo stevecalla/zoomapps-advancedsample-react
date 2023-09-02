@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { mockParticipantData } from "../apis";
 
 import AttendeeList from "./AttendeeList";
