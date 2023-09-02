@@ -172,32 +172,6 @@ function Attendance() {
     setIsDisabled(false);
   };
 
-  // SEARCH HANDLERS
-  const searchHandler = (e) => {
-    //todo change to attendee roster
-    let searchBoxValue = e.target?.value?.toLowerCase();
-
-    const searchResultsParticipants = participantsNonMutable?.filter(
-      ({ screenName }) => {
-        if (searchBoxValue === "") {
-          return screenName;
-        } else {
-          return screenName.toLowerCase().includes(searchBoxValue);
-        }
-      }
-    );
-
-    setParticipantsMutable(searchResultsParticipants);
-    setIsDisabled(true);
-  };
-
-  const clearSearchHandler = () => {
-    //todo is it working
-    let searchInputText = document.getElementById("api-scrollview-input");
-    searchInputText.value = null;
-    setParticipantsMutable(participantsNonMutable);
-  };
-
   //TODO
   // ATTENDEE FUNCTIONS
   const handleAttendeeInput = () => {
