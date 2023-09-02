@@ -209,18 +209,16 @@ function Attendance() {
   //TODO
   // ATTENDEE FUNCTIONS
   const handleAttendeeInput = () => {
-    const textInput = document.querySelector('textarea').value;
+    const textInput = document.querySelector("textarea").value;
     console.log(textInput);
-    
-    const attendees = textInput
-      .split(";")
-      .map((name, index) => {
-        name = name.trim();
-        return {
-          participantId: index,
-          screenName: name,
-        };
-      });
+
+    const attendees = textInput.split(";").map((name, index) => {
+      name = name.trim();
+      return {
+        participantId: index,
+        screenName: name,
+      };
+    });
 
     console.log(attendees);
     let sortedAttendees = sortHandlerScreenName(attendees);
@@ -318,6 +316,20 @@ function Attendance() {
       <HorizontalLine height="15px" backgroundColor="#ffdc03" />
 
       <CountInfo
+        contentDescription="Roster"
+        contentLength={matchResults?.length ? matchResults.length : "..."}
+      />
+      <div>
+        <CountInfo
+          contentDescription="Present"
+          contentLength={presentResults?.length ? presentResults.length : "..."}
+        />
+        <CountInfo
+          contentDescription="Absent"
+          contentLength={absentResults?.length ? absentResults.length : "..."}
+        />
+      </div>
+      {/* <CountInfo
         contentDescription="Total Participants"
         contentLength={
           participantsNonMutable?.length === 0
@@ -330,19 +342,7 @@ function Attendance() {
         contentLength={
           participantsMutable?.length ? participantsMutable.length : "..."
         }
-      />
-      <CountInfo
-        contentDescription="Roster"
-        contentLength={matchResults?.length ? matchResults.length : "..."}
-      />
-      <CountInfo
-        contentDescription="Present"
-        contentLength={presentResults?.length ? presentResults.length : "..."}
-      />
-      <CountInfo
-        contentDescription="Absent"
-        contentLength={absentResults?.length ? absentResults.length : "..."}
-      />
+      /> */}
 
       <HorizontalLine height="" backgroundColor="#0d6efd" margin="0 0 7px 0" />
 
@@ -360,10 +360,31 @@ function Attendance() {
             {/* {copiedAll ? `Copied! ${timeLeft}` : "View All"} */}
             {`Enter Attendee Roster`}
           </Accordion.Header>
+          <FontAwesomeIcon
+            icon="fa-solid fa-rotate-right"
+            title="Submit roster"
+            style={
+              submitIsDisabled
+                ? { display: "none" }
+                : {
+                    zIndex: 4,
+                    position: "absolute",
+                    right: "60px",
+                    top: "11px",
+                    color: "gray",
+                  }
+            }
+            onClick={handleAttendeeInput}
+          />
+          {/* <FontAwesomeIcon icon="fa-solid fa-save" size="sm" /> */}
           <Accordion.Body
-            onChange={(event) => event.target.value.length > 0 ? setSubmitIsDisabled(false) : setSubmitIsDisabled(true)}
+            onChange={(event) =>
+              event.target.value.length > 0
+                ? setSubmitIsDisabled(false)
+                : setSubmitIsDisabled(true)
+            }
             as="textarea"
-            placeholder="Enter roster. Example = J."
+            placeholder={`Enter roster with semi-colon separator (i.e. "John Doe; Doe, Jane"). Click submit button.`}
             style={{
               overflow: "auto",
               height: "150px",
@@ -373,19 +394,6 @@ function Attendance() {
           >
             {/* {allParticipantsString === "[]" ? "No Data Loaded" : allParticipantsString} */}
           </Accordion.Body>
-          <FontAwesomeIcon
-            icon="fa-solid fa-rotate-right"
-            title="Submit roster"
-            style={submitIsDisabled ? {display: "none"} : {
-              zIndex: 4,
-              position: "absolute",
-              right: "60px",
-              top: "11px",
-              color: "gray",
-            }}
-            onClick={handleAttendeeInput}
-          />
-          {/* <FontAwesomeIcon icon="fa-solid fa-save" size="sm" /> */}
         </Accordion.Item>
       </Accordion>
       {/* //todo END */}
