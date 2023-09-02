@@ -11,9 +11,12 @@ import ButtonData from "./ButtonData";
 import { getParticipantData } from "../utils/getParticipantData";
 import { sortHandlerScreenName } from "../utils/sort";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./ApiScrollview.css";
+
 import { handleSimilarityScores } from "../utils/similarityScoring";
 import Accordion from "react-bootstrap/Accordion";
+import { text } from "@fortawesome/fontawesome-svg-core";
 
 const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
@@ -26,6 +29,7 @@ function Attendance() {
   const [participantSearchText, setParticipantSearchText] = useState(""); //todo
   const [isDisabled, setIsDisabled] = useState(true);
   const [retrieveDate, setRetrieveDate] = useState(false);
+  const [submitIsDisabled, setSubmitIsDisabled] = useState(true);
 
   // const [ attendeeRoster, setAttendeeRoster] = useState(["steve calla", "b", "c", "d", "alex jones", "f", ]);
   const [attendeeRoster, setAttendeeRoster] = useState([]);
@@ -56,7 +60,8 @@ function Attendance() {
   }, [attendeeRoster, participantSearchText, matchResults]);
 
   //INITIAL API CALL
-  useEffect(() => { //todo
+  useEffect(() => {
+    //todo
     // timeout allows the api to configure preventing error
     setTimeout(() => {
       handleInvokeApi();
@@ -95,7 +100,8 @@ function Attendance() {
   };
 
   // MARK HANLDERS
-  const checkHandler = (event) => { //todo
+  const checkHandler = (event) => {
+    //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
@@ -124,7 +130,8 @@ function Attendance() {
     );
   };
 
-  const xMarkHandler = (event) => { //todo
+  const xMarkHandler = (event) => {
+    //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
@@ -154,7 +161,8 @@ function Attendance() {
   };
 
   // DELETE HANLDERS
-  const deleteParticipantHandler = (event) => { //todo change to attendee...
+  const deleteParticipantHandler = (event) => {
+    //todo change to attendee...
     let targetId = event.currentTarget.getAttribute("data-participantid");
 
     const updatedParticipantData = participantsMutable.filter(
@@ -166,13 +174,15 @@ function Attendance() {
     setIsDisabled(false);
   };
 
-  const revertDeletedParticipantHandler = () => { //todo change to attendee
+  const revertDeletedParticipantHandler = () => {
+    //todo change to attendee
     setParticipantsMutable(participantsNonMutable);
     setIsDisabled(true);
   };
 
   // SEARCH HANDLERS
-  const searchHandler = (e) => { //todo change to attendee roster
+  const searchHandler = (e) => {
+    //todo change to attendee roster
     let searchBoxValue = e.target?.value?.toLowerCase();
 
     const searchResultsParticipants = participantsNonMutable?.filter(
@@ -189,7 +199,8 @@ function Attendance() {
     setIsDisabled(true);
   };
 
-  const clearSearchHandler = () => { //todo is it working
+  const clearSearchHandler = () => {
+    //todo is it working
     let searchInputText = document.getElementById("api-scrollview-input");
     searchInputText.value = null;
     setParticipantsMutable(participantsNonMutable);
@@ -197,23 +208,23 @@ function Attendance() {
 
   //TODO
   // ATTENDEE FUNCTIONS
-  const handleAttendeeInput = async (event) => {
-    // const getAttendeeInput = async () => {
-      const attendees = await event.currentTarget.value
-        .split("; ")
-        .map((name, index) => {
-          return {
-            participantId: index,
-            screenName: name,
-          };
-        });
+  const handleAttendeeInput = () => {
+    const textInput = document.querySelector('textarea').value;
+    console.log(textInput);
+    
+    const attendees = textInput
+      .split(";")
+      .map((name, index) => {
+        name = name.trim();
+        return {
+          participantId: index,
+          screenName: name,
+        };
+      });
 
-      console.log(attendees);
-      let sortedAttendees = sortHandlerScreenName(attendees);
-      setAttendeeRoster(sortedAttendees);
-    // };
-
-    // getAttendeeInput(); // run it, run it
+    console.log(attendees);
+    let sortedAttendees = sortHandlerScreenName(attendees);
+    setAttendeeRoster(sortedAttendees);
   };
 
   const [filteredParticipants, setFilteredParticipants] = useState(null);
@@ -224,7 +235,9 @@ function Attendance() {
         if (participantSearchText === "") {
           return attendee?.screenName;
         } else {
-          return attendee?.screenName?.toLowerCase().includes(participantSearchText);
+          return attendee?.screenName
+            ?.toLowerCase()
+            .includes(participantSearchText);
         }
       })
     );
@@ -348,23 +361,36 @@ function Attendance() {
             {`Enter Attendee Roster`}
           </Accordion.Header>
           <Accordion.Body
+            onChange={(event) => event.target.value.length > 0 ? setSubmitIsDisabled(false) : setSubmitIsDisabled(true)}
             as="textarea"
-            placeholder="name@example.com"
+            placeholder="Enter roster. Example = J."
             style={{
               overflow: "auto",
               height: "150px",
-              width: "300px",
+              width: "295px",
               border: "none",
             }}
-            onClick={handleAttendeeInput}
           >
             {/* {allParticipantsString === "[]" ? "No Data Loaded" : allParticipantsString} */}
           </Accordion.Body>
+          <FontAwesomeIcon
+            icon="fa-solid fa-rotate-right"
+            title="Submit roster"
+            style={submitIsDisabled ? {display: "none"} : {
+              zIndex: 4,
+              position: "absolute",
+              right: "60px",
+              top: "11px",
+              color: "gray",
+            }}
+            onClick={handleAttendeeInput}
+          />
+          {/* <FontAwesomeIcon icon="fa-solid fa-save" size="sm" /> */}
         </Accordion.Item>
       </Accordion>
       {/* //todo END */}
 
-      <AttendeeList 
+      <AttendeeList
         renderParticipants={renderParticipants}
         participantsMutable={filteredParticipants}
         checkHandler={checkHandler}
