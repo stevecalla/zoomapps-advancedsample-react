@@ -22,16 +22,16 @@ function Participants() {
   const [renderParticipants, setRenderParticipants] = useState(false);
 
   const [isDisabled, setIsDisabled] = useState(true);
-  const inputFocusRef = useRef(null);
+  const inputFocusRef = useRef(null); //todo
   const [retrieveDate, setRetrieveDate] = useState(false);
 
   //Focus the search input on load
-  useEffect(() => {
+  useEffect(() => { //todo
       inputFocusRef.current.focus();
   }, []);
 
   //INITIAL API CALL
-  useEffect(() => {
+  useEffect(() => { //todo
     // timeout allows the api to configure preventing error
     setTimeout(() => {
       handleInvokeApi();
@@ -70,7 +70,7 @@ function Participants() {
   };
 
   // MARK HANLDERS
-  const checkHandler = (event) => {
+  const checkHandler = (event) => { //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
@@ -99,7 +99,7 @@ function Participants() {
     );
   };
 
-  const xMarkHandler = (event) => {
+  const xMarkHandler = (event) => { //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
@@ -164,7 +164,7 @@ function Participants() {
     setIsDisabled(true);
   };
 
-  const clearSearchHandler = () => {
+  const clearSearchHandler = () => { //todo is it working
     let searchInputText = document.getElementById("api-scrollview-input");
     searchInputText.value = null;
     setParticipantsMutable(participantsNonMutable);

@@ -9,12 +9,11 @@ import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 
 import { getParticipantData } from "../utils/getParticipantData";
-import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
-import { handleSimilarityScores } from "../utils/similarityScoring";
+import { sortHandlerScreenName } from "../utils/sort";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Accordion from "react-bootstrap/Accordion";
 import "./ApiScrollview.css";
+import { handleSimilarityScores } from "../utils/similarityScoring";
+import Accordion from "react-bootstrap/Accordion";
 
 const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
@@ -24,9 +23,9 @@ function Attendance() {
   const [participantsMutable, setParticipantsMutable] = useState(); //mutable copy of original
   const [renderParticipants, setRenderParticipants] = useState(false);
 
-  const [participantSearchText, setParticipantSearchText] = useState("");
+  const [participantSearchText, setParticipantSearchText] = useState(""); //todo
   const [isDisabled, setIsDisabled] = useState(true);
-  const inputFocusRef = useRef(null);
+  const inputFocusRef = useRef(null); //todo
   const [retrieveDate, setRetrieveDate] = useState(false);
 
   // const [ attendeeRoster, setAttendeeRoster] = useState(["steve calla", "b", "c", "d", "alex jones", "f", ]);
@@ -58,12 +57,12 @@ function Attendance() {
   }, [attendeeRoster, participantSearchText, matchResults]);
 
   //Focus the search input on load
-  useEffect(() => {
+  useEffect(() => { //todo
     inputFocusRef.current.focus();
   }, []);
 
   //INITIAL API CALL
-  useEffect(() => {
+  useEffect(() => { //todo
     // timeout allows the api to configure preventing error
     setTimeout(() => {
       handleInvokeApi();
@@ -102,7 +101,7 @@ function Attendance() {
   };
 
   // MARK HANLDERS
-  const checkHandler = (event) => {
+  const checkHandler = (event) => { //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
@@ -131,7 +130,7 @@ function Attendance() {
     );
   };
 
-  const xMarkHandler = (event) => {
+  const xMarkHandler = (event) => { //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
@@ -161,7 +160,7 @@ function Attendance() {
   };
 
   // DELETE HANLDERS
-  const deleteParticipantHandler = (event) => {
+  const deleteParticipantHandler = (event) => { //todo change to attendee...
     let targetId = event.currentTarget.getAttribute("data-participantid");
 
     const updatedParticipantData = participantsMutable.filter(
@@ -173,15 +172,13 @@ function Attendance() {
     setIsDisabled(false);
   };
 
-  const revertDeletedParticipantHandler = () => {
-    let sortedParticipants = sortHandlerScreenName(participantsNonMutable);
-    setParticipantsMutable(sortedParticipants);
+  const revertDeletedParticipantHandler = () => { //todo change to attendee
+    setParticipantsMutable(participantsNonMutable);
     setIsDisabled(true);
-    // setRenderFilteredLength(false);
   };
 
   // SEARCH HANDLERS
-  const searchHandler = (e) => {
+  const searchHandler = (e) => { //todo change to attendee roster
     let searchBoxValue = e.target?.value?.toLowerCase();
 
     const searchResultsParticipants = participantsNonMutable?.filter(
@@ -198,7 +195,7 @@ function Attendance() {
     setIsDisabled(true);
   };
 
-  const clearSearchHandler = () => {
+  const clearSearchHandler = () => { //todo is it working
     let searchInputText = document.getElementById("api-scrollview-input");
     searchInputText.value = null;
     setParticipantsMutable(participantsNonMutable);
@@ -348,7 +345,7 @@ function Attendance() {
         ref={inputFocusRef}
       />
 
-      {/* todo form */}
+      //todo start
       <Accordion
         style={{ position: "relative", width: "300px", marginBottom: "5px" }}
       >
