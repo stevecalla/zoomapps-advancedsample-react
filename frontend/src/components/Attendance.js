@@ -377,7 +377,8 @@ function Attendance() {
         checkHandler={checkHandler}
         xMarkHandler={xMarkHandler}
         deleteParticipantHandler={deleteParticipantHandler}
-        listType="attendanceRoster"
+        listType="attendance-roster"
+        // listType="attendanceRoster"
       />
 
       <HorizontalLine backgroundColor="#0d6efd" />
