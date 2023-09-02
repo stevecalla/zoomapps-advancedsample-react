@@ -56,11 +56,10 @@ function Participants() {
 
       setParticipantsOriginal(sortedParticipants);
       setParticipantsMutable(sortedParticipants);
+      setRetrieveDate(!retrieveDate); //get timestamp info
     } catch (error) {
       console.error("Error:", error);
     }
-
-    setRetrieveDate(!retrieveDate);
   };
 
   // MARK HANLDERS

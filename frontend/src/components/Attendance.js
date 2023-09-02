@@ -92,11 +92,10 @@ function Attendance() {
 
       setParticipantsOriginal(sortedParticipants);
       setParticipantsMutable(sortedParticipants);
+      setRetrieveDate(!retrieveDate); //get timestamp info
     } catch (error) {
       console.error("Error:", error);
     }
-
-    setRetrieveDate(!retrieveDate);
   };
 
   // MARK HANLDERS
@@ -266,11 +265,14 @@ function Attendance() {
     setTimeout(() => {
       attendanceRosterDivs.forEach((attendanceRosterDiv, i) => {
         const svgElements = attendanceRosterDiv.querySelectorAll("svg");
-        if (svgElements.length >= 2) {
+
+        console.log(svgElements);
+
+        if (svgElements.length >= 1) {
           const firstSVGElement = svgElements[0];
           const secondSvgElement = svgElements[1];
 
-          if (scores.length > 1 && parseFloat(scores[i].maxSimilarity) > 0.5) {
+          if (scores.length >= 1 && parseFloat(scores[i].maxSimilarity) > 0.5) {
             console.log("yes");
 
             firstSVGElement.setAttribute("data-color", "green");
@@ -285,7 +287,7 @@ function Attendance() {
               "style",
               "color: gray; position: absolute; right: 40px; top: 11px; "
             );
-          } else if (scores.length > 1) {
+          } else if (scores.length >= 1) {
             console.log("no");
 
             secondSvgElement.setAttribute("data-color", "red");
@@ -302,7 +304,6 @@ function Attendance() {
             );
           } else {
             console.log(scores[i]);
-            console.log("what what");
           }
         }
       });
