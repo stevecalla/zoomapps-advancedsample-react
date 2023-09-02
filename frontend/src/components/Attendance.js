@@ -25,7 +25,6 @@ function Attendance() {
   const [renderParticipants, setRenderParticipants] = useState(false);
 
   const [participantSearchText, setParticipantSearchText] = useState(""); //todo
-  const [isDisabled, setIsDisabled] = useState(true);
   const [retrieveDate, setRetrieveDate] = useState(false);
   const [submitIsDisabled, setSubmitIsDisabled] = useState(true);
 
@@ -64,7 +63,6 @@ function Attendance() {
     setTimeout(() => {
       handleInvokeApi();
       setRenderParticipants(true);
-      setIsDisabled(true);
     }, 1000);
     /* eslint-disable */
   }, []);
