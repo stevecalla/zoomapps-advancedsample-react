@@ -17,7 +17,9 @@ const handleSimilarityScores =  (attendeeRoster, participants) => {
       }
     });
 
-    maxSimilarityScores.push({ index: count, attendee: attendee, matchName: matchName, maxSimilarity });
+    maxSimilarityScores.push({ index: count, attendeeName: attendee.screenName, participantId: attendee.participantId, matchName: matchName, maxSimilarity });
+
+    
   });
 
   return maxSimilarityScores;

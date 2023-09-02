@@ -1,7 +1,15 @@
 import Spinner from "./Spinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function AttendeeList({ renderParticipants, participantsMutable, checkHandler, xMarkHandler, deleteParticipantHandler, listType }) {
+function AttendeeList({
+  renderParticipants,
+  participantsMutable,
+  checkHandler,
+  xMarkHandler,
+  deleteParticipantHandler,
+  listType,
+  isDeletable = true,
+}) {
   return (
     <div className="attendee-list" style={{ height: "300px" }}>
       {renderParticipants ? (
@@ -33,7 +41,7 @@ function AttendeeList({ renderParticipants, participantsMutable, checkHandler, x
               onClick={checkHandler}
               style={{
                 position: "absolute",
-                right: "60px",
+                right: isDeletable ? "60px" : "40px",
                 top: "11px",
                 color: "gray",
               }}
@@ -46,23 +54,25 @@ function AttendeeList({ renderParticipants, participantsMutable, checkHandler, x
               onClick={xMarkHandler}
               style={{
                 position: "absolute",
-                right: "40px",
+                right: isDeletable ? "40px" : "18px",
                 top: "11px",
                 color: "gray",
               }}
             />
-            <FontAwesomeIcon
-              title="Delete from list"
-              icon="fa-solid fa-trash"
-              data-participantid={`${participantId}`}
-              onClick={deleteParticipantHandler}
-              style={{
-                position: "absolute",
-                right: "18px",
-                top: "13px",
-                color: "gray",
-              }}
-            />
+            {isDeletable && (
+              <FontAwesomeIcon
+                title="Delete from list"
+                icon="fa-solid fa-trash"
+                data-participantid={`${participantId}`}
+                onClick={deleteParticipantHandler}
+                style={{
+                  position: "absolute",
+                  right: "18px",
+                  top: "13px",
+                  color: "gray",
+                }}
+              />
+            )}
           </div>
         ))
       ) : (

@@ -16,7 +16,6 @@ import "./ApiScrollview.css";
 
 import { handleSimilarityScores } from "../utils/similarityScoring";
 import Accordion from "react-bootstrap/Accordion";
-import { text } from "@fortawesome/fontawesome-svg-core";
 
 const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
@@ -173,12 +172,6 @@ function Attendance() {
     setIsDisabled(false);
   };
 
-  const revertDeletedParticipantHandler = () => {
-    //todo change to attendee
-    setParticipantsMutable(participantsNonMutable);
-    setIsDisabled(true);
-  };
-
   // SEARCH HANDLERS
   const searchHandler = (e) => {
     //todo change to attendee roster
@@ -218,14 +211,42 @@ function Attendance() {
         screenName: name,
       };
     });
-
-    console.log(attendees);
     let sortedAttendees = sortHandlerScreenName(attendees);
     setAttendeeRoster(sortedAttendees);
+    console.log(attendees);
+
+    clearIconColor();
   };
 
-  const [filteredParticipants, setFilteredParticipants] = useState(null);
+  const clearIconColor = () => {
+    let attendanceRosterDivs = document.querySelectorAll(".attendance-roster");
 
+    attendanceRosterDivs.forEach((attendanceRosterDiv, i) => {
+      const svgElements = attendanceRosterDiv.querySelectorAll("svg");
+
+      if (svgElements.length >= 1) {
+        const firstSVGElement = svgElements[0];
+        const secondSvgElement = svgElements[1];
+
+        firstSVGElement.setAttribute("data-color", "gray");
+        secondSvgElement.setAttribute("data-color", "gray");
+
+        firstSVGElement.setAttribute(
+          "style",
+          "color: gray; position: absolute; right: 40px; top: 11px; "
+        );
+
+        secondSvgElement.setAttribute(
+          "style",
+          "color: gray; position: absolute; right: 18px; top: 11px; "
+        );
+      }
+    });
+  };
+
+  //todo
+  const [filteredParticipants, setFilteredParticipants] = useState(null);
+  //todo
   const renderAttendeeRoster = () => {
     setFilteredParticipants(
       attendeeRoster?.filter((attendee) => {
@@ -241,73 +262,155 @@ function Attendance() {
   };
 
   // MARK ATTENDANCE
-  const markAttendance = () => {
+  const markAttendance = async () => {
+    //todo refactor
+    let scores = [];
+    setTimeout(() => {
+      scores = getMatchScores();
+    }, 1000);
+
+    // let scores = [];
+    // setTimeout(() => {
+    //   scores = handleSimilarityScores(attendeeRoster, participantsNonMutable);
+    //   setMatchResults(
+    //     scores.map((match) => {
+    //       console.log(match);
+    //       return {
+    //         matchResults,
+    //         index: match.index,
+    //         attendeeName: match.attendeeName,
+    //         participantId: match.participantId,
+    //         matchName: match.matchName,
+    //         maxSimilarity: match.maxSimilarity,
+    //       };
+    //     })
+    //   );
+    // }, 1000);
+
+    setTimeout(() => {
+      setIconStyle(scores);
+    }, 3000);
+
+    // setTimeout(() => {
+    //   let attendanceRosterDivs =
+    //     document.querySelectorAll(".attendance-roster");
+    //   console.log(attendanceRosterDivs);
+    //   attendanceRosterDivs.forEach((attendanceRosterDiv, i) => {
+    //     const svgElements = attendanceRosterDiv.querySelectorAll("svg");
+
+    //     console.log(svgElements);
+
+    //     if (svgElements.length >= 1) {
+    //       const firstSVGElement = svgElements[0];
+    //       const secondSvgElement = svgElements[1];
+
+    //       if (scores.length >= 1 && parseFloat(scores[i].maxSimilarity) > 0.5) {
+    //         console.log("yes");
+
+    //         firstSVGElement.setAttribute("data-color", "green");
+    //         secondSvgElement.setAttribute("data-color", "gray");
+
+    //         firstSVGElement.setAttribute(
+    //           "style",
+    //           "color: green; position: absolute; right: 60px; top: 11px; transform: scale(1.3); "
+    //         );
+
+    //         secondSvgElement.setAttribute(
+    //           "style",
+    //           "color: gray; position: absolute; right: 40px; top: 11px; "
+    //         );
+    //       } else if (scores.length >= 1) {
+    //         console.log("no");
+
+    //         secondSvgElement.setAttribute("data-color", "red");
+    //         firstSVGElement.setAttribute("data-color", "gray");
+
+    //         secondSvgElement.setAttribute(
+    //           "style",
+    //           "color: red; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
+    //         );
+
+    //         firstSVGElement.setAttribute(
+    //           "style",
+    //           "color: gray; position: absolute; right: 60px; top: 11px; "
+    //         );
+    //       } else {
+    //         console.log(scores[i]);
+    //       }
+    //     }
+    //   });
+    // }, 3000);
+  };
+
+  const getMatchScores = () => {
+    let scores = [];
+    scores = handleSimilarityScores(attendeeRoster, participantsNonMutable);
+
+    setMatchResults(
+      scores.map((match) => {
+        console.log(match);
+        return {
+          matchResults,
+          index: match.index,
+          attendeeName: match.attendeeName,
+          participantId: match.participantId,
+          matchName: match.matchName,
+          maxSimilarity: match.maxSimilarity,
+        };
+      })
+    );
+
+    return scores;
+  };
+
+  const setIconStyle = (scores) => {
     let attendanceRosterDivs = document.querySelectorAll(".attendance-roster");
     console.log(attendanceRosterDivs);
 
-    let scores = [];
-    setTimeout(() => {
-      scores = handleSimilarityScores(attendeeRoster, participantsNonMutable);
-      setMatchResults(
-        scores.map((match) => {
-          console.log(match);
-          return {
-            matchResults,
-            index: match.index,
-            attendee: match.attendee,
-            matchName: match.matchName,
-            maxSimilarity: match.maxSimilarity,
-          };
-        })
-      );
-    }, 1000);
+    attendanceRosterDivs.forEach((attendanceRosterDiv, i) => {
+      const svgElements = attendanceRosterDiv.querySelectorAll("svg");
 
-    setTimeout(() => {
-      attendanceRosterDivs.forEach((attendanceRosterDiv, i) => {
-        const svgElements = attendanceRosterDiv.querySelectorAll("svg");
+      console.log(svgElements);
 
-        console.log(svgElements);
+      if (svgElements.length >= 1) {
+        const firstSVGElement = svgElements[0];
+        const secondSvgElement = svgElements[1];
 
-        if (svgElements.length >= 1) {
-          const firstSVGElement = svgElements[0];
-          const secondSvgElement = svgElements[1];
+        if (scores?.length >= 1 && parseFloat(scores[i]?.maxSimilarity) > 0.5) {
+          console.log("yes");
 
-          if (scores.length >= 1 && parseFloat(scores[i].maxSimilarity) > 0.5) {
-            console.log("yes");
+          firstSVGElement.setAttribute("data-color", "green");
+          secondSvgElement.setAttribute("data-color", "gray");
 
-            firstSVGElement.setAttribute("data-color", "green");
-            secondSvgElement.setAttribute("data-color", "gray");
+          firstSVGElement.setAttribute(
+            "style",
+            "color: green; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
+          );
 
-            firstSVGElement.setAttribute(
-              "style",
-              "color: green; position: absolute; right: 60px; top: 11px; transform: scale(1.3); "
-            );
+          secondSvgElement.setAttribute(
+            "style",
+            "color: gray; position: absolute; right: 18px; top: 11px; "
+          );
+        } else if (scores.length >= 1) {
+          console.log("no");
 
-            secondSvgElement.setAttribute(
-              "style",
-              "color: gray; position: absolute; right: 40px; top: 11px; "
-            );
-          } else if (scores.length >= 1) {
-            console.log("no");
+          secondSvgElement.setAttribute("data-color", "red");
+          firstSVGElement.setAttribute("data-color", "gray");
 
-            secondSvgElement.setAttribute("data-color", "red");
-            firstSVGElement.setAttribute("data-color", "gray");
+          secondSvgElement.setAttribute(
+            "style",
+            "color: red; position: absolute; right: 18px; top: 11px; transform: scale(1.3); "
+          );
 
-            secondSvgElement.setAttribute(
-              "style",
-              "color: red; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
-            );
-
-            firstSVGElement.setAttribute(
-              "style",
-              "color: gray; position: absolute; right: 60px; top: 11px; "
-            );
-          } else {
-            console.log(scores[i]);
-          }
+          firstSVGElement.setAttribute(
+            "style",
+            "color: gray; position: absolute; right: 40px; top: 11px; "
+          );
+        } else {
+          console.log(scores[i]);
         }
-      });
-    }, 5000);
+      }
+    });
   };
   //TODO END
 
@@ -343,11 +446,6 @@ function Attendance() {
       </section>
 
       <HorizontalLine height="" backgroundColor="#0d6efd" margin="0 0 7px 0" />
-
-      <SearchInput
-        onChangeHandler={searchHandler}
-        onClickHandlerXmark={clearSearchHandler}
-      />
 
       {/* //todo start */}
       <Accordion
@@ -401,8 +499,8 @@ function Attendance() {
         participantsMutable={filteredParticipants}
         checkHandler={checkHandler}
         xMarkHandler={xMarkHandler}
-        deleteParticipantHandler={deleteParticipantHandler}
         listType="attendance-roster"
+        isDeletable={false}
       />
 
       <HorizontalLine backgroundColor="#0d6efd" />
@@ -413,12 +511,7 @@ function Attendance() {
 
       <div style={{ display: "flex", flexDirection: "column" }}>
         <ButtonData
-          content="Undo Deleted Participants"
-          onClickHandler={revertDeletedParticipantHandler}
-          isDisabled={isDisabled}
-        />
-        <ButtonData
-          content="Get Current Participants"
+          content="Refresh Participants"
           onClickHandler={handleInvokeApi}
           isDisabled={false}
         />
