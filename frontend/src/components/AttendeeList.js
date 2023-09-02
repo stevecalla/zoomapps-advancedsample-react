@@ -2,8 +2,8 @@ import Spinner from "./Spinner";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 function AttendeeList({
-  renderParticipants,
-  participantsMutable,
+  isRenderable,
+  renderList,
   checkHandler,
   xMarkHandler,
   deleteParticipantHandler,
@@ -12,8 +12,8 @@ function AttendeeList({
 }) {
   return (
     <div className="attendee-list" style={{ height: "300px" }}>
-      {renderParticipants ? (
-        participantsMutable?.map(({ screenName, participantId }, index) => (
+      {isRenderable ? (
+        renderList?.map(({ screenName, participantId }, index) => (
           <div
             className={listType}
             key={participantId}

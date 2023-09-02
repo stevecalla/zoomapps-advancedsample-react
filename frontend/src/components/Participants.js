@@ -19,7 +19,7 @@ const BuyACoffee = lazy(() => import("./BuyACoffee"));
 function Participants() {
   const [participantsNonMutable, setParticipantsOriginal] = useState([]); //original array
   const [participantsMutable, setParticipantsMutable] = useState(); //mutable copy of original
-  const [renderParticipants, setRenderParticipants] = useState(false);
+  const [isRenderable, setIsRenderable] = useState(false);
 
   const [isDisabled, setIsDisabled] = useState(true);
   const [retrieveDate, setRetrieveDate] = useState(false);
@@ -29,8 +29,8 @@ function Participants() {
     // timeout allows the api to configure preventing error
     setTimeout(() => {
       handleInvokeApi();
-      setRenderParticipants(true);
-      setIsDisabled(true);
+      setIsRenderable(true); //used to update date/time
+      setIsDisabled(true); //enable the restore deleted button
     }, 2000);
     /* eslint-disable */
   }, []);
@@ -191,8 +191,8 @@ function Participants() {
       />
 
       <AttendeeList 
-        renderParticipants={renderParticipants}
-        participantsMutable={participantsMutable}
+        isRenderable={isRenderable}
+        renderList={participantsMutable}
         checkHandler={checkHandler}
         xMarkHandler={xMarkHandler}
         deleteParticipantHandler={deleteParticipantHandler}

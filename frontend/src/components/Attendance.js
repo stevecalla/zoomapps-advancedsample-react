@@ -22,9 +22,8 @@ const BuyACoffee = lazy(() => import("./BuyACoffee"));
 function Attendance() {
   const [participantsNonMutable, setParticipantsOriginal] = useState([]); //original array
   const [participantsMutable, setParticipantsMutable] = useState(); //mutable copy of original
-  const [renderParticipants, setRenderParticipants] = useState(false);
+  const [isRenderable, SetIsRenderable] = useState(false);
 
-  const [participantSearchText, setParticipantSearchText] = useState(""); //todo
   const [retrieveDate, setRetrieveDate] = useState(false);
   const [submitIsDisabled, setSubmitIsDisabled] = useState(true);
 
@@ -36,16 +35,12 @@ function Attendance() {
 
   //SIMILARITY SCORING
   useEffect(() => {
-    setTimeout(() => {
-      console.log(attendeeRoster);
-      console.log(matchResults);
-      markAttendance();
-    }, 5000);
+    markAttendance();
+    /* eslint-disable */
   }, [attendeeRoster]);
 
-  // Rerender attendeeRoster;
+  // set presentResults and absentResults;
   useEffect(() => {
-    renderAttendeeRoster();
     if (matchResults.length) {
       setPresentResults(
         matchResults.filter(({ maxSimilarity }) => maxSimilarity > 0.5)
@@ -54,7 +49,7 @@ function Attendance() {
         matchResults.filter(({ maxSimilarity }) => maxSimilarity <= 0.5)
       );
     }
-  }, [attendeeRoster, participantSearchText, matchResults]);
+  }, [attendeeRoster, matchResults]);
 
   //INITIAL API CALL
   useEffect(() => {
@@ -62,7 +57,7 @@ function Attendance() {
     // timeout allows the api to configure preventing error
     setTimeout(() => {
       handleInvokeApi();
-      setRenderParticipants(true);
+      SetIsRenderable(true); //used to update date/time
     }, 1000);
     /* eslint-disable */
   }, []);
@@ -199,24 +194,6 @@ function Attendance() {
         );
       }
     });
-  };
-
-  //todo
-  const [filteredParticipants, setFilteredParticipants] = useState(null);
-  //todo
-  const renderAttendeeRoster = () => {
-    setFilteredParticipants(
-    // setAttendeeRoster(
-      attendeeRoster?.filter((attendee) => {
-        if (participantSearchText === "") {
-          return attendee?.screenName;
-        } else {
-          return attendee?.screenName
-            ?.toLowerCase()
-            .includes(participantSearchText);
-        }
-      })
-    );
   };
 
   // MARK ATTENDANCE
@@ -453,9 +430,8 @@ function Attendance() {
       {/* //todo END */}
 
       <AttendeeList
-        renderParticipants={renderParticipants}
-        participantsMutable={filteredParticipants}
-        // participantsMutable={attendeeRoster}
+        isRenderable={isRenderable}
+        renderList={attendeeRoster}
         checkHandler={checkHandler}
         xMarkHandler={xMarkHandler}
         listType="attendance-roster"
