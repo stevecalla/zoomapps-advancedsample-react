@@ -8,7 +8,6 @@ function AttendeeList({ renderParticipants, participantsMutable, checkHandler, x
         participantsMutable?.map(({ screenName, participantId }, index) => (
           <div
             className={listType}
-            // className={listType === 'attendanceRoster' ? "attendance-roster" : ""}
             key={participantId}
             style={{ position: "relative", paddingLeft: "10px" }}
           >

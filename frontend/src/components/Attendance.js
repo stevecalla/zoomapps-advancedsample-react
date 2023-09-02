@@ -25,7 +25,6 @@ function Attendance() {
 
   const [participantSearchText, setParticipantSearchText] = useState(""); //todo
   const [isDisabled, setIsDisabled] = useState(true);
-  const inputFocusRef = useRef(null); //todo
   const [retrieveDate, setRetrieveDate] = useState(false);
 
   // const [ attendeeRoster, setAttendeeRoster] = useState(["steve calla", "b", "c", "d", "alex jones", "f", ]);
@@ -55,11 +54,6 @@ function Attendance() {
       );
     }
   }, [attendeeRoster, participantSearchText, matchResults]);
-
-  //Focus the search input on load
-  useEffect(() => { //todo
-    inputFocusRef.current.focus();
-  }, []);
 
   //INITIAL API CALL
   useEffect(() => { //todo
@@ -342,10 +336,9 @@ function Attendance() {
       <SearchInput
         onChangeHandler={searchHandler}
         onClickHandlerXmark={clearSearchHandler}
-        ref={inputFocusRef}
       />
 
-      //todo start
+      {/* //todo start */}
       <Accordion
         style={{ position: "relative", width: "300px", marginBottom: "5px" }}
       >
@@ -369,7 +362,7 @@ function Attendance() {
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
-      //todo END
+      {/* //todo END */}
 
       <AttendeeList 
         renderParticipants={renderParticipants}
@@ -378,7 +371,6 @@ function Attendance() {
         xMarkHandler={xMarkHandler}
         deleteParticipantHandler={deleteParticipantHandler}
         listType="attendance-roster"
-        // listType="attendanceRoster"
       />
 
       <HorizontalLine backgroundColor="#0d6efd" />

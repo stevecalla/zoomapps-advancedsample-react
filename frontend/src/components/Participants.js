@@ -22,13 +22,7 @@ function Participants() {
   const [renderParticipants, setRenderParticipants] = useState(false);
 
   const [isDisabled, setIsDisabled] = useState(true);
-  const inputFocusRef = useRef(null); //todo
   const [retrieveDate, setRetrieveDate] = useState(false);
-
-  //Focus the search input on load
-  useEffect(() => { //todo
-      inputFocusRef.current.focus();
-  }, []);
 
   //INITIAL API CALL
   useEffect(() => { //todo
@@ -195,7 +189,6 @@ function Participants() {
       <SearchInput
         onChangeHandler={searchHandler}
         onClickHandlerXmark={clearSearchHandler}
-        ref={inputFocusRef}
       />
 
       <AttendeeList 
