@@ -87,7 +87,7 @@ function Attendance() {
       );
 
       setParticipantsOriginal(sortedParticipants);
-      setParticipantsMutable(sortedParticipants);
+      setParticipantsMutable(sortedParticipants); //todo remove
       setRetrieveDate(!retrieveDate); //get timestamp info
     } catch (error) {
       console.error("Error:", error);
@@ -206,6 +206,7 @@ function Attendance() {
   //todo
   const renderAttendeeRoster = () => {
     setFilteredParticipants(
+    // setAttendeeRoster(
       attendeeRoster?.filter((attendee) => {
         if (participantSearchText === "") {
           return attendee?.screenName;
@@ -454,6 +455,7 @@ function Attendance() {
       <AttendeeList
         renderParticipants={renderParticipants}
         participantsMutable={filteredParticipants}
+        // participantsMutable={attendeeRoster}
         checkHandler={checkHandler}
         xMarkHandler={xMarkHandler}
         listType="attendance-roster"
