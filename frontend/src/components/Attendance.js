@@ -158,20 +158,6 @@ function Attendance() {
     );
   };
 
-  // DELETE HANLDERS
-  const deleteParticipantHandler = (event) => {
-    //todo change to attendee...
-    let targetId = event.currentTarget.getAttribute("data-participantid");
-
-    const updatedParticipantData = participantsMutable.filter(
-      ({ participantId }) => {
-        return targetId !== participantId;
-      }
-    );
-    setParticipantsMutable(updatedParticipantData);
-    setIsDisabled(false);
-  };
-
   //TODO
   // ATTENDEE FUNCTIONS
   const handleAttendeeInput = () => {
