@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Accordion from "react-bootstrap/Accordion";
 import "./ApiScrollview.css";
 
-const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
+const ViewCopyLists = lazy(() => import("./ViewCopyLists"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
 
 function Attendance() {
@@ -51,7 +51,8 @@ function Attendance() {
   }, [attendeeRoster, matchResults]);
 
   //INITIAL API CALL
-  useEffect(() => {//todo
+  useEffect(() => {
+    //todo
     // timeout allows the api to configure preventing error
     setTimeout(() => {
       handleInvokeApi();
@@ -97,15 +98,15 @@ function Attendance() {
       `[data-participantid="${targetId}"]`
     );
 
-    targetColor === "gray"
-      && targetElement.setAttribute(
-          "style",
-          "color: green; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
-        )
-      // : targetElement.setAttribute(
-      //     "style",
-      //     "color: gray; position: absolute; right: 40px; top: 11px; "
-      //   );
+    targetColor === "gray" &&
+      targetElement.setAttribute(
+        "style",
+        "color: green; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
+      );
+    // : targetElement.setAttribute(
+    //     "style",
+    //     "color: gray; position: absolute; right: 40px; top: 11px; "
+    //   );
 
     targetColor === "gray"
       ? targetElement.setAttribute("data-color", "green")
@@ -126,7 +127,7 @@ function Attendance() {
         return {
           ...result,
           maxSimilarity: newValue,
-        }
+        };
       } else {
         return result;
       }
@@ -143,15 +144,15 @@ function Attendance() {
       `[data-participantid="${targetId}"]`
     );
 
-    targetColor === "gray"
-      && targetElement.setAttribute(
-          "style",
-          "color: red; position: absolute; right: 18px; top: 11px; transform: scale(1.3); "
-        )
-      // : targetElement.setAttribute(
-      //     "style",
-      //     "color: gray; position: absolute; right: 18px; top: 11px; "
-      //   );
+    targetColor === "gray" &&
+      targetElement.setAttribute(
+        "style",
+        "color: red; position: absolute; right: 18px; top: 11px; transform: scale(1.3); "
+      );
+    // : targetElement.setAttribute(
+    //     "style",
+    //     "color: gray; position: absolute; right: 18px; top: 11px; "
+    //   );
 
     targetColor === "gray"
       ? targetElement.setAttribute("data-color", "red")
@@ -173,7 +174,7 @@ function Attendance() {
           ...result,
           maxSimilarity: newValue,
           test: "test",
-        }
+        };
       } else {
         return result;
       }
@@ -187,7 +188,7 @@ function Attendance() {
   const handleAttendeeInput = () => {
     const textInput = document.querySelector("textarea").value;
     console.log(textInput);
-    
+
     const attendeeInput = textInput.split(";"); //spit to array
     let sortedAttendees = sortHandlerNames(attendeeInput); //sort
     const attendees = sortedAttendees.map((name, index) => {
@@ -415,7 +416,7 @@ function Attendance() {
         />
 
         <Suspense fallback={<div>Loading...</div>}>
-          <CopyToClipBoard
+          <ViewCopyLists
             allParticipants={participantsNonMutable}
             participantsMutable={participantsMutable}
           />

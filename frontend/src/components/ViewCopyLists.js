@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Accordion from "react-bootstrap/Accordion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboard } from "@fortawesome/free-regular-svg-icons";
+
 import ViewItem from "./ViewItem";
+
+import Accordion from "react-bootstrap/Accordion";
 
 function ViewCopyLists(props) {
   const { allParticipants = [], participantsMutable = [] } = props;
@@ -28,7 +28,6 @@ function ViewCopyLists(props) {
     // console.log("isClickable= " + isClickable);
     // console.log("timeRemaining=" + timeRemaining);
     // console.log("---------------");
-
     // setTimeout(() => {
     //   // addTrashIcon();
     // }, 5000);
@@ -53,10 +52,6 @@ function ViewCopyLists(props) {
         }
       });
     }, 1000);
-  };
-
-  const stopPropagation = (event) => {
-    event.stopPropagation(); //prevents accordion from opening when clipboard is clicked
   };
 
   const copyToClipboard = (string, buttonClicked) => {
@@ -126,79 +121,30 @@ function ViewCopyLists(props) {
   };
 
   return (
-    <>
-      <Accordion
-        style={{ position: "relative", width: "300px", marginBottom: "5px" }}
-      >
-        <ViewItem 
-          eventKeyProp={0}
-          copyToClipboard={copyToClipboard}
-          allParticipantsString={allParticipantsString}
-          isClickable={isClickable}
-          copiedAll={copiedAll}
-          timeRemaining={timeRemaining}
-
-        />
-
-        <Accordion.Item eventKey="0">
-          <Accordion.Header style={{ width: "300px" }}>
-            <FontAwesomeIcon
-              title="Copy to clipboard"
-              icon={faClipboard}
-              // size="lg"
-              className="clipboardIcon"
-              onClick={(event) => {
-                stopPropagation(event); //prevents accordion from opening when clipboard is clicked
-                isClickable && copyToClipboard(allParticipantsString, "allData");
-              }}
-              style={{
-                position: "absolute",
-                left: "235px",
-                color: "gray",
-                backgroundColor: "white",
-                zIndex: "5",
-                transform: "scale(1.2)",
-                cursor: "pointer",
-              }}
-            />
-            {copiedAll ? `Copied! ${timeRemaining}` : "View All"}
-          </Accordion.Header>
-          <Accordion.Body style={{ overflow: "auto", height: "150px" }}>
-            {allParticipantsString === "[]" ? "No Data Loaded" : allParticipantsString}
-          </Accordion.Body>
-        </Accordion.Item>
-
-        <Accordion.Item eventKey="1">
-          <Accordion.Header style={{ width: "300px" }}>
-            <FontAwesomeIcon
-              title="Copy to clipboard"
-              icon={faClipboard}
-              // size="lg"
-              className="clipboardIcon"
-              onClick={(event) => {
-                stopPropagation(event); //prevents accordion from opening when clipboard is clicked
-                isClickable &&
-                copyToClipboard(filteredParticipantsString, "filteredData")
-              }
-              }
-              style={{
-                position: "absolute",
-                left: "235px",
-                color: "gray",
-                backgroundColor: "white",
-                zIndex: "5",
-                transform: "scale(1.2)",
-                cursor: "pointer",
-              }}
-            />
-            {copiedFiltered ? `Copied! ${timeRemaining}` : "View Filtered"}
-          </Accordion.Header>
-          <Accordion.Body style={{ overflow: "auto", height: "150px" }}>
-            {filteredParticipantsString === "[]" ? "No Data Loaded" : filteredParticipantsString}
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
-    </>
+    <Accordion
+      style={{ position: "relative", width: "300px", marginBottom: "5px" }}
+    >
+      <ViewItem
+        eventKeyProp={0}
+        copyToClipboard={copyToClipboard}
+        copyString={allParticipantsString}
+        isClickable={isClickable}
+        copiedAll={copiedAll}
+        timeRemaining={timeRemaining}
+        buttonContent="View All"
+        buttonClicked="allData"
+      />
+      <ViewItem
+        eventKeyProp={1}
+        copyToClipboard={copyToClipboard}
+        copyString={filteredParticipantsString}
+        isClickable={isClickable}
+        copiedAll={copiedFiltered}
+        timeRemaining={timeRemaining}
+        buttonContent="View Filtered"
+        buttonClicked="filteredData"
+      />
+    </Accordion>
   );
 }
 

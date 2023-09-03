@@ -3,7 +3,7 @@ import Accordion from "react-bootstrap/Accordion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-regular-svg-icons";
 
-function ViewItem({eventKeyProp, copyToClipboard, allParticipantsString, isClickable, copiedAll, timeRemaining }) {
+function ViewItem({eventKeyProp, copyToClipboard, copyString, isClickable, copiedAll, timeRemaining, buttonContent, buttonClicked }) {
 
   const stopPropagation = (event) => {
     event.stopPropagation(); //prevents accordion from opening when clipboard is clicked
@@ -15,11 +15,10 @@ function ViewItem({eventKeyProp, copyToClipboard, allParticipantsString, isClick
         <FontAwesomeIcon
           title="Copy to clipboard"
           icon={faClipboard}
-          // size="lg"
           className="clipboardIcon"
           onClick={(event) => {
             stopPropagation(event); //prevents accordion from opening when clipboard is clicked
-            isClickable && copyToClipboard(allParticipantsString, "allData");
+            isClickable && copyToClipboard(copyString, buttonClicked);
           }}
           style={{
             position: "absolute",
@@ -31,12 +30,12 @@ function ViewItem({eventKeyProp, copyToClipboard, allParticipantsString, isClick
             cursor: "pointer",
           }}
         />
-        {copiedAll ? `Copied! ${timeRemaining}` : "View All"}
+        {copiedAll ? `Copied! ${timeRemaining}` : buttonContent}
       </Accordion.Header>
       <Accordion.Body style={{ overflow: "auto", height: "150px" }}>
-        {allParticipantsString === "[]"
+        {copyString === "[]"
           ? "No Data Loaded"
-          : allParticipantsString}
+          : copyString}
       </Accordion.Body>
     </Accordion.Item>
   );
