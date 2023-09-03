@@ -25,7 +25,7 @@ function ViewCopyItem({
       <Accordion.Header 
         style={{ 
           width: "300px",
-          color: "blue",
+          color: copiedAll && "blue",
         }}
       >
         {copiedAll ? `Copied! ${timeRemaining}` : buttonContent}
@@ -45,7 +45,7 @@ function ViewCopyItem({
               color: isHovering && isClickable ? "green" : "gray",
               backgroundColor: "white",
               zIndex: "5",
-              transform: isHovering && isClickable && "scale(1.5)",
+              transform: isHovering && isClickable ? "scale(1.7)" : "scale(1.2)",
               cursor: "pointer",
             }}
           />
