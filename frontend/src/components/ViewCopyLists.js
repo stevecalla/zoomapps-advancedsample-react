@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-regular-svg-icons";
+import ViewItem from "./ViewItem";
 
-function CopyToClipBoard(props) {
+function ViewCopyLists(props) {
   const { allParticipants = [], participantsMutable = [] } = props;
 
   const [copiedAll, setCopiedAll] = useState(false);
   const [copiedFiltered, setCopiedFiltered] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(5); // Set initial time in seconds
+  const [timeRemaining, setTimeRemaining] = useState(5); // Set initial time in seconds
   const [isClickable, setIsClickable] = useState(true);
 
   const allParticipantNames = allParticipants?.map(
@@ -25,24 +26,24 @@ function CopyToClipBoard(props) {
   // fix delete at some point
   useEffect(() => {
     // console.log("isClickable= " + isClickable);
-    // console.log("timeleft=" + timeLeft);
+    // console.log("timeRemaining=" + timeRemaining);
     // console.log("---------------");
 
     // setTimeout(() => {
     //   // addTrashIcon();
     // }, 5000);
-  }, [isClickable, timeLeft]);
+  }, [isClickable, timeRemaining]);
 
   const countDown = (buttonClicked) => {
     disableClipboard(); //prevents multiple rapid clicks
 
     const interval = setInterval(() => {
-      setTimeLeft((prevTime) => {
+      setTimeRemaining((prevTime) => {
         if (prevTime > 1) {
           return prevTime - 1;
         } else {
           clearInterval(interval);
-          setTimeLeft(5);
+          setTimeRemaining(5);
           enableClipboard();
           buttonClicked === "filteredData"
             ? setCopiedFiltered(false)
@@ -129,6 +130,16 @@ function CopyToClipBoard(props) {
       <Accordion
         style={{ position: "relative", width: "300px", marginBottom: "5px" }}
       >
+        <ViewItem 
+          eventKeyProp={0}
+          copyToClipboard={copyToClipboard}
+          allParticipantsString={allParticipantsString}
+          isClickable={isClickable}
+          copiedAll={copiedAll}
+          timeRemaining={timeRemaining}
+
+        />
+
         <Accordion.Item eventKey="0">
           <Accordion.Header style={{ width: "300px" }}>
             <FontAwesomeIcon
@@ -150,12 +161,13 @@ function CopyToClipBoard(props) {
                 cursor: "pointer",
               }}
             />
-            {copiedAll ? `Copied! ${timeLeft}` : "View All"}
+            {copiedAll ? `Copied! ${timeRemaining}` : "View All"}
           </Accordion.Header>
           <Accordion.Body style={{ overflow: "auto", height: "150px" }}>
             {allParticipantsString === "[]" ? "No Data Loaded" : allParticipantsString}
           </Accordion.Body>
         </Accordion.Item>
+
         <Accordion.Item eventKey="1">
           <Accordion.Header style={{ width: "300px" }}>
             <FontAwesomeIcon
@@ -179,7 +191,7 @@ function CopyToClipBoard(props) {
                 cursor: "pointer",
               }}
             />
-            {copiedFiltered ? `Copied! ${timeLeft}` : "View Filtered"}
+            {copiedFiltered ? `Copied! ${timeRemaining}` : "View Filtered"}
           </Accordion.Header>
           <Accordion.Body style={{ overflow: "auto", height: "150px" }}>
             {filteredParticipantsString === "[]" ? "No Data Loaded" : filteredParticipantsString}
@@ -190,4 +202,4 @@ function CopyToClipBoard(props) {
   );
 }
 
-export default CopyToClipBoard;
+export default ViewCopyLists;

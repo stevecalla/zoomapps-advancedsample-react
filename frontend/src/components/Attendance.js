@@ -8,13 +8,12 @@ import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 
 import { getParticipantData } from "../utils/getParticipantData";
+import { handleSimilarityScores } from "../utils/similarityScoring";
 import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./ApiScrollview.css";
-
-import { handleSimilarityScores } from "../utils/similarityScoring";
 import Accordion from "react-bootstrap/Accordion";
+import "./ApiScrollview.css";
 
 const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
@@ -41,9 +40,6 @@ function Attendance() {
 
   // set presentResults and absentResults;
   useEffect(() => {
-
-    console.log(matchResults);
-
     if (matchResults.length) {
       setPresentResults(
         matchResults.filter(({ maxSimilarity }) => maxSimilarity > 0.5)
@@ -55,8 +51,7 @@ function Attendance() {
   }, [attendeeRoster, matchResults]);
 
   //INITIAL API CALL
-  useEffect(() => {
-    //todo
+  useEffect(() => {//todo
     // timeout allows the api to configure preventing error
     setTimeout(() => {
       handleInvokeApi();
