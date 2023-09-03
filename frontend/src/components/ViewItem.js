@@ -19,15 +19,6 @@ function ViewItem({
     event.stopPropagation(); //prevents accordion from opening when clipboard is clicked
   };
 
-  //HOVER STYLE
-  const handleMouseEnter = () => {
-    setIsHovering(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovering(false);
-  };
-
   return (
     <Accordion.Item eventKey={eventKeyProp}>
       <Accordion.Header style={{ width: "300px" }}>

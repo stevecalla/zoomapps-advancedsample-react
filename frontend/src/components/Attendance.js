@@ -6,13 +6,12 @@ import CountInfo from "./CountInfo";
 import HorizontalLine from "./HorizontalLine";
 import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
+import AttendeeInput from "./AttendeeInput";
 
 import { getParticipantData } from "../utils/getParticipantData";
 import { handleSimilarityScores } from "../utils/similarityScoring";
 import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Accordion from "react-bootstrap/Accordion";
 import "./ApiScrollview.css";
 
 const ViewCopyLists = lazy(() => import("./ViewCopyLists"));
@@ -189,8 +188,8 @@ function Attendance() {
     const textInput = document.querySelector("textarea").value;
     console.log(textInput);
 
-    const attendeeInput = textInput.split(";"); //spit to array
-    let sortedAttendees = sortHandlerNames(attendeeInput); //sort
+    const attendeeTextInput = textInput.split(";"); //spit to array
+    let sortedAttendees = sortHandlerNames(attendeeTextInput); //sort
     const attendees = sortedAttendees.map((name, index) => {
       name = name.trim();
       return {
@@ -347,50 +346,12 @@ function Attendance() {
       <HorizontalLine height="" backgroundColor="#0d6efd" margin="0 0 7px 0" />
 
       {/* //todo start */}
-      <Accordion
-        style={{ position: "relative", width: "300px", marginBottom: "5px" }}
-      >
-        <Accordion.Item eventKey="0">
-          <Accordion.Header style={{ width: "300px" }}>
-            {/* {copiedAll ? `Copied! ${timeLeft}` : "View All"} */}
-            {`Enter Attendee Roster`}
-          </Accordion.Header>
-          <FontAwesomeIcon
-            icon="fa-solid fa-rotate-right"
-            title="Submit roster"
-            style={
-              submitIsDisabled
-                ? { display: "none" }
-                : {
-                    zIndex: 4,
-                    position: "absolute",
-                    right: "60px",
-                    top: "11px",
-                    color: "gray",
-                  }
-            }
-            onClick={handleAttendeeInput}
-          />
-          {/* <FontAwesomeIcon icon="fa-solid fa-save" size="sm" /> */}
-          <Accordion.Body
-            onChange={(event) =>
-              event.target.value.length > 0
-                ? setSubmitIsDisabled(false)
-                : setSubmitIsDisabled(true)
-            }
-            as="textarea"
-            placeholder={`Enter roster with semi-colon separator (i.e. "John Doe; Doe, Jane"). Click submit button.`}
-            style={{
-              overflow: "auto",
-              height: "150px",
-              width: "295px",
-              border: "none",
-            }}
-          >
-            {/* {allParticipantsString === "[]" ? "No Data Loaded" : allParticipantsString} */}
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
+
+      <AttendeeInput 
+        handleAttendeeInput={handleAttendeeInput}
+        submitIsDisabled={submitIsDisabled}
+        setSubmitIsDisabled={setSubmitIsDisabled}
+      />
       {/* //todo END */}
 
       <AttendeeList
