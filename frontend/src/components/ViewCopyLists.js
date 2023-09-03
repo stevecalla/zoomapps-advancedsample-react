@@ -92,7 +92,7 @@ function ViewCopyLists(props) {
     setAccordionStyle();
   }, []);
 
-  const setAccordionStyle = () => {
+  const setAccordionStyle = () => { //todo... adjust as it applies to all accordian
     let buttons = document.querySelectorAll(".accordion-header button");
 
     buttons.forEach((button) => {
