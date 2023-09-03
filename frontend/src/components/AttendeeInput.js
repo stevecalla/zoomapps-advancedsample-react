@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Accordion from "react-bootstrap/Accordion";
-import AccordionBody from 'react-bootstrap/AccordionBody'
 
 function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisabled }) {
   const [isHovering, setIsHovering] = useState(false);
