@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import ViewItem from "./ViewItem";
+import ViewCopyItem from "./ViewCopyItem";
 
 import Accordion from "react-bootstrap/Accordion";
 
@@ -124,7 +124,7 @@ function ViewCopyLists(props) {
     <Accordion
       style={{ position: "relative", width: "300px", marginBottom: "5px" }}
     >
-      <ViewItem
+      <ViewCopyItem
         eventKeyProp={0}
         copyToClipboard={copyToClipboard}
         copyString={allParticipantsString}
@@ -134,7 +134,7 @@ function ViewCopyLists(props) {
         buttonContent="View All"
         buttonClicked="allData"
       />
-      <ViewItem
+      <ViewCopyItem
         eventKeyProp={1}
         copyToClipboard={copyToClipboard}
         copyString={filteredParticipantsString}

@@ -3,7 +3,7 @@ import Accordion from "react-bootstrap/Accordion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-regular-svg-icons";
 
-function ViewItem({
+function ViewCopyItem({
   eventKeyProp,
   copyToClipboard,
   copyString,
@@ -51,4 +51,4 @@ function ViewItem({
   );
 }
 
-export default ViewItem;
+export default ViewCopyItem;
