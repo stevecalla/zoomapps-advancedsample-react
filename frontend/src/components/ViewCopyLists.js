@@ -72,34 +72,6 @@ function ViewCopyLists(props) {
     document.body.removeChild(dataTextarea);
   };
 
-  // PREFERRED WAY TO COPY THE CLIPBOARD; HAD TO USE THE document.execCommand ALTERNATIVE
-  // DUE TO ZOOM RESTRICTIONS
-  // const copyToClipboard = () => {
-  //   if (navigator.clipboard) {
-  //     try {
-  //       navigator.clipboard.writeText(dataToCopy);
-  //       setCopied(true);
-  //     } catch (error) {
-  //       console.error('Failed to copy:', error);
-  //     }
-  //   } else {
-  //     console.warn("Clipboard API is not available. Using fallback.");
-  //     copyToClipboardFallback();
-  //   }
-  // };
-
-  useEffect(() => {
-    setAccordionStyle();
-  }, []);
-
-  const setAccordionStyle = () => { //todo... adjust as it applies to all accordian
-    let buttons = document.querySelectorAll(".accordion-header button");
-
-    buttons.forEach((button) => {
-      button.setAttribute("style", "width: 298px; height: 38px;");
-    });
-  };
-
   const enableClipboard = () => {
     setIsClickable(true);
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-regular-svg-icons";
@@ -14,10 +14,23 @@ function ViewCopyItem({
   buttonClicked,
 }) {
   const [isHovering, setIsHovering] = useState(false);
+  // const [] = useState();
 
   //prevents accordion from open when clipboard clicked
   const stopPropagation = (event) => {
     event.stopPropagation();
+  };
+
+  useEffect(() => {
+    setAccordionStyle();
+  }, []);
+
+  const setAccordionStyle = () => { //todo... adjust as it applies to all accordian
+    let buttons = document.querySelectorAll(".accordion-header button");
+
+    buttons.forEach(button => {
+      button.setAttribute("style", "width: 298px; height: 38px;");
+    });
   };
 
   return (
@@ -28,7 +41,10 @@ function ViewCopyItem({
           color: copiedAll && "blue",
         }}
       >
-        {copiedAll ? `Copied! ${timeRemaining}` : buttonContent}
+        <div style={copiedAll ? { color: "Green" } : { color: "black" }}>
+          {/* {copiedAll ? `Copied! ${timeRemaining}` : buttonContent} */}
+          {copiedAll ? `Copied! ✅` : buttonContent}
+        </div>
           <FontAwesomeIcon
             title="Copy to clipboard"
             icon={faClipboard}
