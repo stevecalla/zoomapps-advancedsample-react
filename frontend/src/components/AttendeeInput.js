@@ -1,18 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Accordion from "react-bootstrap/Accordion";
+import AccordionBody from 'react-bootstrap/AccordionBody'
 
 function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisabled }) {
-
-  const attendeeInputRef = useRef(null); //todo
-
-  // Focus the search input on load
-  useEffect(() => {
-    //todo
-    attendeeInputRef.current.focus();
-  }, []);
-
   const [isHovering, setIsHovering] = useState(false);
+  const attendeeInputRef = useRef(null);
 
   return (
     <Accordion
@@ -43,14 +36,17 @@ function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisab
         />
         {/* <FontAwesomeIcon icon="fa-solid fa-save" size="sm" /> */}
         <Accordion.Body
+          as="textarea"
+          ref={attendeeInputRef}
+          onEntering={() => {
+            attendeeInputRef.current.focus();
+          }}
           onChange={(event) =>
             event.target.value.length > 0
               ? setSubmitIsDisabled(false)
               : setSubmitIsDisabled(true)
           }
-          as="textarea"
-          ref={attendeeInputRef}
-          placeholder={`Enter roster with semi-colon separator (i.e. "John Doe; Doe, Jane"). Click submit button.`}
+          placeholder={`Enter roster with semi-colon separator (i.e. "John Doe; Doe, Jane"). Click green submit arrow.`}
           style={{
             overflow: "auto",
             height: "150px",
