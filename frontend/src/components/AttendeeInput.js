@@ -4,14 +4,30 @@ import Accordion from "react-bootstrap/Accordion";
 
 function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisabled }) {
   const [isHovering, setIsHovering] = useState(false);
-  const attendeeInputRef = useRef(null);
+  const attendeeInputRef = useRef(null); //Sets focus on textarea
+
+  useEffect(() => {
+    setAccordionStyle();
+  }, []);
+
+  //SETS ACCORDION BUTTON STYLE; NOT AVAILABLE IN BOOTSTRAP STRUCTURE
+  const setAccordionStyle = () => {
+    let buttons = document.querySelectorAll(".attendeeInput-header button");
+
+    buttons.forEach((button) => {
+      button.setAttribute("style", "width: 298px; height: 38px;");
+    });
+  };
 
   return (
     <Accordion
       style={{ position: "relative", width: "300px", marginBottom: "5px" }}
     >
       <Accordion.Item eventKey="0">
-        <Accordion.Header style={{ width: "300px" }}>
+        <Accordion.Header
+          className="attendeeInput-header"
+          style={{ width: "300px" 
+        }}>
           {`Enter Attendee Roster`}
         </Accordion.Header>
         <FontAwesomeIcon
