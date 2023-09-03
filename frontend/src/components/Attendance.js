@@ -1,8 +1,7 @@
-import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
-import { invokeZoomAppsSdk, mockParticipantData } from "../apis";
+import React, { useState, useEffect, Suspense, lazy } from "react";
+import { mockParticipantData } from "../apis";
 
 import AttendeeList from "./AttendeeList";
-import SearchInput from "./SearchInput";
 import CountInfo from "./CountInfo";
 import HorizontalLine from "./HorizontalLine";
 import TimeStamp from "./TimeStamp";
@@ -10,11 +9,12 @@ import ButtonData from "./ButtonData";
 
 import { getParticipantData } from "../utils/getParticipantData";
 import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
-import { handleSimilarityScores } from "../utils/similarityScoring";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Accordion from "react-bootstrap/Accordion";
 import "./ApiScrollview.css";
+
+import { handleSimilarityScores } from "../utils/similarityScoring";
+import Accordion from "react-bootstrap/Accordion";
 
 const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
@@ -22,12 +22,10 @@ const BuyACoffee = lazy(() => import("./BuyACoffee"));
 function Attendance() {
   const [participantsNonMutable, setParticipantsOriginal] = useState([]); //original array
   const [participantsMutable, setParticipantsMutable] = useState(); //mutable copy of original
-  const [renderParticipants, setRenderParticipants] = useState(false);
+  const [isRenderable, SetIsRenderable] = useState(false);
 
-  const [participantSearchText, setParticipantSearchText] = useState("");
-  const [isDisabled, setIsDisabled] = useState(true);
-  const inputFocusRef = useRef(null);
   const [retrieveDate, setRetrieveDate] = useState(false);
+  const [submitIsDisabled, setSubmitIsDisabled] = useState(true);
 
   // const [ attendeeRoster, setAttendeeRoster] = useState(["steve calla", "b", "c", "d", "alex jones", "f", ]);
   const [attendeeRoster, setAttendeeRoster] = useState([]);
@@ -37,16 +35,15 @@ function Attendance() {
 
   //SIMILARITY SCORING
   useEffect(() => {
-    setTimeout(() => {
-      console.log(attendeeRoster);
-      console.log(matchResults);
-      markAttendance();
-    }, 5000);
+    markAttendance();
+    /* eslint-disable */
   }, [attendeeRoster]);
 
-  // Rerender attendeeRoster;
+  // set presentResults and absentResults;
   useEffect(() => {
-    renderAttendeeRoster();
+
+    console.log(matchResults);
+
     if (matchResults.length) {
       setPresentResults(
         matchResults.filter(({ maxSimilarity }) => maxSimilarity > 0.5)
@@ -55,20 +52,15 @@ function Attendance() {
         matchResults.filter(({ maxSimilarity }) => maxSimilarity <= 0.5)
       );
     }
-  }, [attendeeRoster, participantSearchText, matchResults]);
-
-  //Focus the search input on load
-  useEffect(() => {
-    inputFocusRef.current.focus();
-  }, []);
+  }, [attendeeRoster, matchResults]);
 
   //INITIAL API CALL
   useEffect(() => {
+    //todo
     // timeout allows the api to configure preventing error
     setTimeout(() => {
       handleInvokeApi();
-      setRenderParticipants(true);
-      setIsDisabled(true);
+      SetIsRenderable(true); //used to update date/time
     }, 1000);
     /* eslint-disable */
   }, []);
@@ -93,31 +85,32 @@ function Attendance() {
       );
 
       setParticipantsOriginal(sortedParticipants);
-      setParticipantsMutable(sortedParticipants);
+      setParticipantsMutable(sortedParticipants); //todo remove
+      setRetrieveDate(!retrieveDate); //get timestamp info
     } catch (error) {
       console.error("Error:", error);
     }
-
-    setRetrieveDate(!retrieveDate);
   };
 
   // MARK HANLDERS
   const checkHandler = (event) => {
+    //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
+
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
       `[data-participantid="${targetId}"]`
     );
 
     targetColor === "gray"
-      ? targetElement.setAttribute(
+      && targetElement.setAttribute(
           "style",
-          "color: green; position: absolute; right: 60px; top: 11px; transform: scale(1.3); "
+          "color: green; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
         )
-      : targetElement.setAttribute(
-          "style",
-          "color: gray; position: absolute; right: 60px; top: 11px; "
-        );
+      // : targetElement.setAttribute(
+      //     "style",
+      //     "color: gray; position: absolute; right: 40px; top: 11px; "
+      //   );
 
     targetColor === "gray"
       ? targetElement.setAttribute("data-color", "green")
@@ -127,11 +120,28 @@ function Attendance() {
     prevElement.setAttribute("data-color", "gray");
     prevElement.setAttribute(
       "style",
-      "color: gray; position: absolute; right: 40px; top: 11px; "
+      "color: gray; position: absolute; right: 18px; top: 11px; "
     );
+
+    let targetIndex = 1000 + parseInt(targetId);
+    const updatedMatchResults = matchResults.map((result, index) => {
+      let newValue = 1;
+
+      if (index === targetIndex) {
+        return {
+          ...result,
+          maxSimilarity: newValue,
+        }
+      } else {
+        return result;
+      }
+    });
+
+    setMatchResults(updatedMatchResults);
   };
 
   const xMarkHandler = (event) => {
+    //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
@@ -139,14 +149,14 @@ function Attendance() {
     );
 
     targetColor === "gray"
-      ? targetElement.setAttribute(
+      && targetElement.setAttribute(
           "style",
-          "color: red; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
+          "color: red; position: absolute; right: 18px; top: 11px; transform: scale(1.3); "
         )
-      : targetElement.setAttribute(
-          "style",
-          "color: gray; position: absolute; right: 40px; top: 11px; "
-        );
+      // : targetElement.setAttribute(
+      //     "style",
+      //     "color: gray; position: absolute; right: 18px; top: 11px; "
+      //   );
 
     targetColor === "gray"
       ? targetElement.setAttribute("data-color", "red")
@@ -156,165 +166,154 @@ function Attendance() {
     prevElement.setAttribute("data-color", "gray");
     prevElement.setAttribute(
       "style",
-      "color: gray; position: absolute; right: 60px; top: 11px; "
+      "color: gray; position: absolute; right: 40px; top: 11px; "
     );
-  };
 
-  // DELETE HANLDERS
-  const deleteParticipantHandler = (event) => {
-    let targetId = event.currentTarget.getAttribute("data-participantid");
+    let targetIndex = parseInt(targetId) - 1000;
+    const updatedMatchResults = matchResults.map((result, index) => {
+      let newValue = 0;
 
-    const updatedParticipantData = participantsMutable.filter(
-      ({ participantId }) => {
-        return targetId !== participantId;
-      }
-    );
-    setParticipantsMutable(updatedParticipantData);
-    setIsDisabled(false);
-  };
-
-  const revertDeletedParticipantHandler = () => {
-    let sortedParticipants = sortHandlerScreenName(participantsNonMutable);
-    setParticipantsMutable(sortedParticipants);
-    setIsDisabled(true);
-    // setRenderFilteredLength(false);
-  };
-
-  // SEARCH HANDLERS
-  const searchHandler = (e) => {
-    let searchBoxValue = e.target?.value?.toLowerCase();
-
-    const searchResultsParticipants = participantsNonMutable?.filter(
-      ({ screenName }) => {
-        if (searchBoxValue === "") {
-          return screenName;
-        } else {
-          return screenName.toLowerCase().includes(searchBoxValue);
+      if (index === targetIndex) {
+        return {
+          ...result,
+          maxSimilarity: newValue,
+          test: "test",
         }
+      } else {
+        return result;
       }
-    );
+    });
 
-    setParticipantsMutable(searchResultsParticipants);
-    setIsDisabled(true);
-  };
-
-  const clearSearchHandler = () => {
-    let searchInputText = document.getElementById("api-scrollview-input");
-    searchInputText.value = null;
-    setParticipantsMutable(participantsNonMutable);
+    setMatchResults(updatedMatchResults);
   };
 
   //TODO
   // ATTENDEE FUNCTIONS
-  const handleAttendeeInput = (event) => {
-    // console.log('input');
-    // console.log(event.currentTarget.value);
-    const getAttendeeInput = async () => {
-      const attendees = await event.currentTarget.value
-        .split("; ")
-        .map((name) => name);
-
-      console.log(attendees);
-      let sortedAttendees = sortHandlerNames(attendees);
-      setAttendeeRoster(sortedAttendees);
-
-      // setAttendeeRoster(attendees);
-    };
-
-    getAttendeeInput(); // run it, run it
-
-    // setAttendeeRoster(event.currentTarget.value.split("; ").map(name => name));
-    // getAttendeeRoster();
+  const handleAttendeeInput = () => {
+    const textInput = document.querySelector("textarea").value;
+    console.log(textInput);
+    
+    const attendeeInput = textInput.split(";"); //spit to array
+    let sortedAttendees = sortHandlerNames(attendeeInput); //sort
+    const attendees = sortedAttendees.map((name, index) => {
+      name = name.trim();
+      return {
+        participantId: index,
+        screenName: name,
+      };
+    });
+    setAttendeeRoster(attendees);
+    clearIconColor();
   };
 
-  const [filteredParticipants, setFilteredParticipants] = useState(null);
+  const clearIconColor = () => {
+    let attendanceRosterDivs = document.querySelectorAll(".attendance-roster");
 
-  const renderAttendeeRoster = () => {
-    //Filter the participants array based on search input
-    // const filteredParticipants = attendeeRoster?.filter(( attendee ) => {
-    //   if (participantSearchText === "") {
-    //     return attendee;
-    //   } else {
-    //     return attendee.toLowerCase().includes(participantSearchText);
-    //   }
-    // });
-    setFilteredParticipants(
-      attendeeRoster?.filter((attendee) => {
-        if (participantSearchText === "") {
-          return attendee;
-        } else {
-          return attendee.toLowerCase().includes(participantSearchText);
-        }
-      })
-    );
+    attendanceRosterDivs.forEach((attendanceRosterDiv, i) => {
+      const svgElements = attendanceRosterDiv.querySelectorAll("svg");
+
+      if (svgElements.length >= 1) {
+        const firstSVGElement = svgElements[0];
+        const secondSvgElement = svgElements[1];
+
+        firstSVGElement.setAttribute("data-color", "gray");
+        secondSvgElement.setAttribute("data-color", "gray");
+
+        firstSVGElement.setAttribute(
+          "style",
+          "color: gray; position: absolute; right: 40px; top: 11px; "
+        );
+
+        secondSvgElement.setAttribute(
+          "style",
+          "color: gray; position: absolute; right: 18px; top: 11px; "
+        );
+      }
+    });
   };
 
   // MARK ATTENDANCE
-  const markAttendance = () => {
-    let attendanceRosterDivs = document.querySelectorAll(".attendance-roster");
-    console.log(attendanceRosterDivs);
-
+  const markAttendance = async () => {
+    //todo refactor
     let scores = [];
     setTimeout(() => {
-      scores = handleSimilarityScores(attendeeRoster, participantsNonMutable);
-      setMatchResults(
-        scores.map((match) => {
-          console.log(match);
-          return {
-            matchResults,
-            index: match.index,
-            attendee: match.attendee,
-            matchName: match.matchName,
-            maxSimilarity: match.maxSimilarity,
-          };
-        })
-      );
+      scores = getMatchScores();
     }, 1000);
 
     setTimeout(() => {
-      attendanceRosterDivs.forEach((attendanceRosterDiv, i) => {
-        const svgElements = attendanceRosterDiv.querySelectorAll("svg");
-        if (svgElements.length >= 2) {
-          const firstSVGElement = svgElements[0];
-          const secondSvgElement = svgElements[1];
+      setIconStyle(scores);
+    }, 3000);
+  };
 
-          if (scores.length > 1 && parseFloat(scores[i].maxSimilarity) > 0.5) {
-            console.log("yes");
+  const getMatchScores = () => {
+    let scores = [];
+    scores = handleSimilarityScores(attendeeRoster, participantsNonMutable);
 
-            firstSVGElement.setAttribute("data-color", "green");
-            secondSvgElement.setAttribute("data-color", "gray");
+    setMatchResults(
+      scores.map((match) => {
+        console.log(match);
+        return {
+          matchResults,
+          index: match.index,
+          attendeeName: match.attendeeName,
+          participantId: match.participantId,
+          matchName: match.matchName,
+          maxSimilarity: match.maxSimilarity,
+        };
+      })
+    );
 
-            firstSVGElement.setAttribute(
-              "style",
-              "color: green; position: absolute; right: 60px; top: 11px; transform: scale(1.3); "
-            );
+    return scores;
+  };
 
-            secondSvgElement.setAttribute(
-              "style",
-              "color: gray; position: absolute; right: 40px; top: 11px; "
-            );
-          } else if (scores.length > 1) {
-            console.log("no");
+  const setIconStyle = (scores) => {
+    let attendanceRosterDivs = document.querySelectorAll(".attendance-roster");
+    console.log(attendanceRosterDivs);
 
-            secondSvgElement.setAttribute("data-color", "red");
-            firstSVGElement.setAttribute("data-color", "gray");
+    attendanceRosterDivs.forEach((attendanceRosterDiv, i) => {
+      const svgElements = attendanceRosterDiv.querySelectorAll("svg");
 
-            secondSvgElement.setAttribute(
-              "style",
-              "color: red; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
-            );
+      console.log(svgElements);
 
-            firstSVGElement.setAttribute(
-              "style",
-              "color: gray; position: absolute; right: 60px; top: 11px; "
-            );
-          } else {
-            console.log(scores[i]);
-            console.log("what what");
-          }
+      if (svgElements.length >= 1) {
+        const firstSVGElement = svgElements[0];
+        const secondSvgElement = svgElements[1];
+
+        if (scores?.length >= 1 && parseFloat(scores[i]?.maxSimilarity) > 0.5) {
+          console.log("yes");
+
+          firstSVGElement.setAttribute("data-color", "green");
+          secondSvgElement.setAttribute("data-color", "gray");
+
+          firstSVGElement.setAttribute(
+            "style",
+            "color: green; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
+          );
+
+          secondSvgElement.setAttribute(
+            "style",
+            "color: gray; position: absolute; right: 18px; top: 11px; "
+          );
+        } else if (scores.length >= 1) {
+          console.log("no");
+
+          secondSvgElement.setAttribute("data-color", "red");
+          firstSVGElement.setAttribute("data-color", "gray");
+
+          secondSvgElement.setAttribute(
+            "style",
+            "color: red; position: absolute; right: 18px; top: 11px; transform: scale(1.3); "
+          );
+
+          firstSVGElement.setAttribute(
+            "style",
+            "color: gray; position: absolute; right: 40px; top: 11px; "
+          );
+        } else {
+          console.log(scores[i]);
         }
-      });
-    }, 5000);
+      }
+    });
   };
   //TODO END
 
@@ -324,7 +323,7 @@ function Attendance() {
       <HorizontalLine height="15px" backgroundColor="#ffdc03" />
 
       <CountInfo
-        contentDescription="Total Participants"
+        contentDescription="Participants"
         contentLength={
           participantsNonMutable?.length === 0
             ? "..."
@@ -332,33 +331,26 @@ function Attendance() {
         }
       />
       <CountInfo
-        contentDescription="Filtered Participants"
-        contentLength={
-          participantsMutable?.length ? participantsMutable.length : "..."
-        }
-      />
-      <CountInfo
         contentDescription="Roster"
         contentLength={matchResults?.length ? matchResults.length : "..."}
+        // spanLeft="267px"
       />
-      <CountInfo
-        contentDescription="Present"
-        contentLength={presentResults?.length ? presentResults.length : "..."}
-      />
-      <CountInfo
-        contentDescription="Absent"
-        contentLength={absentResults?.length ? absentResults.length : "..."}
-      />
+      <section style={{ display: "flex" }}>
+        <CountInfo
+          contentDescription="Present"
+          contentLength={presentResults?.length ? presentResults.length : "..."}
+          spanLeft="130px"
+        />
+        <CountInfo
+          contentDescription="Absent"
+          contentLength={absentResults?.length ? absentResults.length : "..."}
+          spanLeft="112px"
+        />
+      </section>
 
       <HorizontalLine height="" backgroundColor="#0d6efd" margin="0 0 7px 0" />
 
-      <SearchInput
-        onChangeHandler={searchHandler}
-        onClickHandlerXmark={clearSearchHandler}
-        ref={inputFocusRef}
-      />
-
-      {/* todo form */}
+      {/* //todo start */}
       <Accordion
         style={{ position: "relative", width: "300px", marginBottom: "5px" }}
       >
@@ -367,102 +359,52 @@ function Attendance() {
             {/* {copiedAll ? `Copied! ${timeLeft}` : "View All"} */}
             {`Enter Attendee Roster`}
           </Accordion.Header>
+          <FontAwesomeIcon
+            icon="fa-solid fa-rotate-right"
+            title="Submit roster"
+            style={
+              submitIsDisabled
+                ? { display: "none" }
+                : {
+                    zIndex: 4,
+                    position: "absolute",
+                    right: "60px",
+                    top: "11px",
+                    color: "gray",
+                  }
+            }
+            onClick={handleAttendeeInput}
+          />
+          {/* <FontAwesomeIcon icon="fa-solid fa-save" size="sm" /> */}
           <Accordion.Body
+            onChange={(event) =>
+              event.target.value.length > 0
+                ? setSubmitIsDisabled(false)
+                : setSubmitIsDisabled(true)
+            }
             as="textarea"
-            placeholder="name@example.com"
+            placeholder={`Enter roster with semi-colon separator (i.e. "John Doe; Doe, Jane"). Click submit button.`}
             style={{
               overflow: "auto",
               height: "150px",
-              width: "300px",
+              width: "295px",
               border: "none",
             }}
-            onClick={handleAttendeeInput}
           >
             {/* {allParticipantsString === "[]" ? "No Data Loaded" : allParticipantsString} */}
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>
+      {/* //todo END */}
 
-      <div className="attendee-list" style={{ height: "300px" }}>
-        {renderParticipants ? (
-          filteredParticipants?.map((attendee, index) => (
-            <div
-              key={index}
-              className="attendance-roster"
-              style={{ position: "relative", paddingLeft: "10px" }}
-            >
-              <p
-                style={{
-                  width: "98%",
-                  cursor: "default",
-                  borderRadius: "7px",
-                  textAlign: "left",
-                  margin: 0,
-                  padding: "7px 7px 0px 10px",
-                }}
-              >
-                {`${index + 1}) ${attendee}`}
-              </p>
-              <FontAwesomeIcon
-                title="Verified"
-                icon="fa-solid fa-check"
-                size="lg"
-                className="attendance-check"
-                // data-participantid={`${participantId - 1000}`}
-                data-color={"gray"}
-                onClick={checkHandler}
-                style={{
-                  position: "absolute",
-                  right: "60px",
-                  top: "11px",
-                  color: "gray",
-                }}
-              />
-              <FontAwesomeIcon
-                title="Not verified"
-                icon="fa-solid fa-xmark"
-                size="lg"
-                className="attendance-xmark"
-                // data-participantid={`${participantId + 1000}`}
-                onClick={xMarkHandler}
-                style={{
-                  position: "absolute",
-                  right: "40px",
-                  top: "11px",
-                  color: "gray",
-                }}
-              />
-              <FontAwesomeIcon
-                title="Delete from list"
-                icon="fa-solid fa-trash"
-                // data-participantid={`${participantId}`}
-                data-screenname={`${attendee}`}
-                onClick={deleteParticipantHandler}
-                style={{
-                  position: "absolute",
-                  right: "18px",
-                  top: "13px",
-                  color: "gray",
-                }}
-              />
-            </div>
-          ))
-        ) : (
-          <>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                width: "300px",
-                height: "200px",
-              }}
-            >
-              <div className="lds-hourglass"></div>
-            </div>
-          </>
-        )}
-      </div>
+      <AttendeeList
+        isRenderable={isRenderable}
+        renderList={attendeeRoster}
+        checkHandler={checkHandler}
+        xMarkHandler={xMarkHandler}
+        listType="attendance-roster"
+        isDeletable={false}
+      />
 
       <HorizontalLine backgroundColor="#0d6efd" />
 
@@ -472,12 +414,7 @@ function Attendance() {
 
       <div style={{ display: "flex", flexDirection: "column" }}>
         <ButtonData
-          content="Undo Deleted Participants"
-          onClickHandler={revertDeletedParticipantHandler}
-          isDisabled={isDisabled}
-        />
-        <ButtonData
-          content="Get Current Participants"
+          content="Refresh Participants"
           onClickHandler={handleInvokeApi}
           isDisabled={false}
         />
@@ -485,7 +422,7 @@ function Attendance() {
         <Suspense fallback={<div>Loading...</div>}>
           <CopyToClipBoard
             allParticipants={participantsNonMutable}
-            filteredParticipants={filteredParticipants}
+            participantsMutable={participantsMutable}
           />
         </Suspense>
 

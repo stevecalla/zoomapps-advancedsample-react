@@ -1,11 +1,19 @@
+import { useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { forwardRef } from 'react';
 
-const SearchInput = forwardRef(function SearchInput({event, onChangeHandler, onClickHandlerXmark}, ref) {
+function SearchInput({onChangeHandler, onClickHandlerXmark}) {
+
+  const inputFocusRef = useRef(null); //todo
+
+  //Focus the search input on load
+  useEffect(() => { //todo
+    inputFocusRef.current.focus();
+  }, []);
+
   return (
     <div style={{ position: "relative" }}>
       <input
-        ref={ref}
+        ref={inputFocusRef}
         placeholder="Search for participants"
         onChange={(event) => onChangeHandler(event)}
         label="Search"
@@ -45,6 +53,6 @@ const SearchInput = forwardRef(function SearchInput({event, onChangeHandler, onC
       />
     </div>
   );
-})
+}
 
 export default SearchInput;

@@ -10,14 +10,16 @@ const handleSimilarityScores =  (attendeeRoster, participants) => {
     count++;
 
     participants.forEach(participant => {
-      const similarity = stringSimilarity.compareTwoStrings(attendee.toLowerCase(), participant.screenName.toLowerCase());
+      const similarity = stringSimilarity.compareTwoStrings(attendee.screenName.toLowerCase(), participant.screenName.toLowerCase());
       if (similarity > maxSimilarity) {
         maxSimilarity = similarity;
         matchName = participant.screenName;
       }
     });
 
-    maxSimilarityScores.push({ index: count, attendee: attendee, matchName: matchName, maxSimilarity });
+    maxSimilarityScores.push({ index: count, attendeeName: attendee.screenName, participantId: attendee.participantId, matchName: matchName, maxSimilarity });
+
+    
   });
 
   return maxSimilarityScores;

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-regular-svg-icons";
 
 function CopyToClipBoard(props) {
-  const { allParticipants = [], filteredParticipants = [] } = props;
+  const { allParticipants = [], participantsMutable = [] } = props;
 
   const [copiedAll, setCopiedAll] = useState(false);
   const [copiedFiltered, setCopiedFiltered] = useState(false);
@@ -16,7 +16,7 @@ function CopyToClipBoard(props) {
   ); //data is presorted
   const allParticipantsString = JSON.stringify(allParticipantNames);
 
-  const filteredParticipantNames = filteredParticipants?.map(
+  const filteredParticipantNames = participantsMutable?.map(
     ({ screenName }) => screenName
   ); //data is presorted
   const filteredParticipantsString = JSON.stringify(filteredParticipantNames);

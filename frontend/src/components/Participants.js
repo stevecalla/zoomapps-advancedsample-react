@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { mockParticipantData } from "../apis";
 
 import AttendeeList from "./AttendeeList";
@@ -19,24 +19,18 @@ const BuyACoffee = lazy(() => import("./BuyACoffee"));
 function Participants() {
   const [participantsNonMutable, setParticipantsOriginal] = useState([]); //original array
   const [participantsMutable, setParticipantsMutable] = useState(); //mutable copy of original
-  const [renderParticipants, setRenderParticipants] = useState(false);
+  const [isRenderable, setIsRenderable] = useState(false);
 
   const [isDisabled, setIsDisabled] = useState(true);
-  const inputFocusRef = useRef(null);
   const [retrieveDate, setRetrieveDate] = useState(false);
 
-  //Focus the search input on load
-  useEffect(() => {
-      inputFocusRef.current.focus();
-  }, []);
-
   //INITIAL API CALL
-  useEffect(() => {
+  useEffect(() => { //todo
     // timeout allows the api to configure preventing error
     setTimeout(() => {
       handleInvokeApi();
-      setRenderParticipants(true);
-      setIsDisabled(true);
+      setIsRenderable(true); //used to update date/time
+      setIsDisabled(true); //enable the restore deleted button
     }, 2000);
     /* eslint-disable */
   }, []);
@@ -62,15 +56,14 @@ function Participants() {
 
       setParticipantsOriginal(sortedParticipants);
       setParticipantsMutable(sortedParticipants);
+      setRetrieveDate(!retrieveDate); //get timestamp info
     } catch (error) {
       console.error("Error:", error);
     }
-
-    setRetrieveDate(!retrieveDate);
   };
 
   // MARK HANLDERS
-  const checkHandler = (event) => {
+  const checkHandler = (event) => { //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
@@ -99,7 +92,7 @@ function Participants() {
     );
   };
 
-  const xMarkHandler = (event) => {
+  const xMarkHandler = (event) => { //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
@@ -164,7 +157,7 @@ function Participants() {
     setIsDisabled(true);
   };
 
-  const clearSearchHandler = () => {
+  const clearSearchHandler = () => { //todo is it working
     let searchInputText = document.getElementById("api-scrollview-input");
     searchInputText.value = null;
     setParticipantsMutable(participantsNonMutable);
@@ -195,15 +188,15 @@ function Participants() {
       <SearchInput
         onChangeHandler={searchHandler}
         onClickHandlerXmark={clearSearchHandler}
-        ref={inputFocusRef}
       />
 
       <AttendeeList 
-        renderParticipants={renderParticipants}
-        participantsMutable={participantsMutable}
+        isRenderable={isRenderable}
+        renderList={participantsMutable}
         checkHandler={checkHandler}
         xMarkHandler={xMarkHandler}
         deleteParticipantHandler={deleteParticipantHandler}
+        listType=""
       />
 
       <HorizontalLine backgroundColor="#0d6efd" />
@@ -227,7 +220,7 @@ function Participants() {
         <Suspense fallback={<div>Loading...</div>}>
           <CopyToClipBoard
             allParticipants={participantsNonMutable}
-            filteredParticipants={participantsMutable}
+            participantsMutable={participantsMutable}
           />
         </Suspense>
 

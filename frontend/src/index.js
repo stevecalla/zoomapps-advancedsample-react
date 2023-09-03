@@ -15,6 +15,8 @@ import {
   faXmark,
   faCopy,
   faClipboard,
+  faRotateRight,
+  faSave,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -25,6 +27,8 @@ library.add(
   faXmark,
   faCopy,
   faClipboard,
+  faRotateRight,
+  faSave,
 );
 
 const history = createHashHistory();
