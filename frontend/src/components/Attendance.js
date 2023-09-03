@@ -8,7 +8,7 @@ import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 
 import { getParticipantData } from "../utils/getParticipantData";
-import { sortHandlerScreenName } from "../utils/sort";
+import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./ApiScrollview.css";
@@ -41,6 +41,9 @@ function Attendance() {
 
   // set presentResults and absentResults;
   useEffect(() => {
+
+    console.log(matchResults);
+
     if (matchResults.length) {
       setPresentResults(
         matchResults.filter(({ maxSimilarity }) => maxSimilarity > 0.5)
@@ -93,20 +96,21 @@ function Attendance() {
   const checkHandler = (event) => {
     //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
+
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
       `[data-participantid="${targetId}"]`
     );
 
     targetColor === "gray"
-      ? targetElement.setAttribute(
+      && targetElement.setAttribute(
           "style",
-          "color: green; position: absolute; right: 60px; top: 11px; transform: scale(1.3); "
+          "color: green; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
         )
-      : targetElement.setAttribute(
-          "style",
-          "color: gray; position: absolute; right: 60px; top: 11px; "
-        );
+      // : targetElement.setAttribute(
+      //     "style",
+      //     "color: gray; position: absolute; right: 40px; top: 11px; "
+      //   );
 
     targetColor === "gray"
       ? targetElement.setAttribute("data-color", "green")
@@ -116,8 +120,24 @@ function Attendance() {
     prevElement.setAttribute("data-color", "gray");
     prevElement.setAttribute(
       "style",
-      "color: gray; position: absolute; right: 40px; top: 11px; "
+      "color: gray; position: absolute; right: 18px; top: 11px; "
     );
+
+    let targetIndex = 1000 + parseInt(targetId);
+    const updatedMatchResults = matchResults.map((result, index) => {
+      let newValue = 1;
+
+      if (index === targetIndex) {
+        return {
+          ...result,
+          maxSimilarity: newValue,
+        }
+      } else {
+        return result;
+      }
+    });
+
+    setMatchResults(updatedMatchResults);
   };
 
   const xMarkHandler = (event) => {
@@ -129,14 +149,14 @@ function Attendance() {
     );
 
     targetColor === "gray"
-      ? targetElement.setAttribute(
+      && targetElement.setAttribute(
           "style",
-          "color: red; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
+          "color: red; position: absolute; right: 18px; top: 11px; transform: scale(1.3); "
         )
-      : targetElement.setAttribute(
-          "style",
-          "color: gray; position: absolute; right: 40px; top: 11px; "
-        );
+      // : targetElement.setAttribute(
+      //     "style",
+      //     "color: gray; position: absolute; right: 18px; top: 11px; "
+      //   );
 
     targetColor === "gray"
       ? targetElement.setAttribute("data-color", "red")
@@ -146,8 +166,25 @@ function Attendance() {
     prevElement.setAttribute("data-color", "gray");
     prevElement.setAttribute(
       "style",
-      "color: gray; position: absolute; right: 60px; top: 11px; "
+      "color: gray; position: absolute; right: 40px; top: 11px; "
     );
+
+    let targetIndex = parseInt(targetId) - 1000;
+    const updatedMatchResults = matchResults.map((result, index) => {
+      let newValue = 0;
+
+      if (index === targetIndex) {
+        return {
+          ...result,
+          maxSimilarity: newValue,
+          test: "test",
+        }
+      } else {
+        return result;
+      }
+    });
+
+    setMatchResults(updatedMatchResults);
   };
 
   //TODO
@@ -155,18 +192,17 @@ function Attendance() {
   const handleAttendeeInput = () => {
     const textInput = document.querySelector("textarea").value;
     console.log(textInput);
-
-    const attendees = textInput.split(";").map((name, index) => {
+    
+    const attendeeInput = textInput.split(";"); //spit to array
+    let sortedAttendees = sortHandlerNames(attendeeInput); //sort
+    const attendees = sortedAttendees.map((name, index) => {
       name = name.trim();
       return {
         participantId: index,
         screenName: name,
       };
     });
-    let sortedAttendees = sortHandlerScreenName(attendees);
-    setAttendeeRoster(sortedAttendees);
-    console.log(attendees);
-
+    setAttendeeRoster(attendees);
     clearIconColor();
   };
 
