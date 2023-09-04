@@ -44,7 +44,7 @@ function ViewCopyItem({
 
       disableClipboardCopy();
 
-      countDown(buttonClicked);
+      // countDown();
     } catch (error) {
       console.error("Failed to copy:", error);
     }
