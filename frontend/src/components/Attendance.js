@@ -380,6 +380,8 @@ function Attendance() {
           <ViewCopyLists
             allParticipants={participantsNonMutable}
             participantsMutable={participantsMutable}
+            matchResults={matchResults}
+            tabView="attendance"
           />
         </Suspense>
 

@@ -11,18 +11,17 @@ function ViewCopyItem({
   buttonContent,
   buttonClicked,
 }) {
-  const [timeRemaining, setTimeRemaining] = useState(5); //seconds
   const [isHovering, setIsHovering] = useState(false);
   const [isClipboardEnabled, setIsClipboardEnabled] = useState(true);
-
+  
   //CONVERT DATA TO STRING; DATA IS PRESORTED
   let copyString = JSON.stringify(
-    copyData?.map(({ screenName }) => screenName)
-  );
-
-  //SETS ACCORDION BUTTON STYLE; NOT AVAILABLE IN BOOTSTRAP STRUCTURE
-  useEffect(() => {
-    setAccordionStyle();
+    copyData?.map(list => list.screenName ? list.screenName : list)
+    );
+    
+    //SETS ACCORDION BUTTON STYLE; NOT AVAILABLE IN BOOTSTRAP STRUCTURE
+    useEffect(() => {
+      setAccordionStyle();
   }, []);
 
   const setAccordionStyle = () => {
@@ -78,23 +77,24 @@ function ViewCopyItem({
         svg.style.transform = "scale(1.2)";
       });
 
-    }, 3000);
+    }, 2000);
   };
 
   //SIGNAL COPIED. DISABLE/ENABLE
-  const countDown = () => {
-    const interval = setInterval(() => {
-      setTimeRemaining(prevTime => {
-        if (prevTime > 1) {
-          return prevTime - 1;
-        } else {
-          clearInterval(interval);
-          setTimeRemaining(5);
-          return 0;
-        }
-      });
-    }, 1000);
-  };
+  // const [timeRemaining, setTimeRemaining] = useState(5); //seconds
+  // const countDown = () => {
+  //   const interval = setInterval(() => {
+  //     setTimeRemaining(prevTime => {
+  //       if (prevTime > 1) {
+  //         return prevTime - 1;
+  //       } else {
+  //         clearInterval(interval);
+  //         setTimeRemaining(5);
+  //         return 0;
+  //       }
+  //     });
+  //   }, 1000);
+  // };
 
   return (
     <Accordion.Item eventKey={eventKeyProp}>
