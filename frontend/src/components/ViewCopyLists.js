@@ -32,7 +32,7 @@ function ViewCopyLists({
         <ViewCopyItem
           eventKeyProp={2}
           copyData={matchResults}
-          buttonContent="View Match Scores"
+          buttonContent="View Match Score(s)"
         />
       )}
     </Accordion>

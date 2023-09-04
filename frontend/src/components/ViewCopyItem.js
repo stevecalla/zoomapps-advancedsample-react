@@ -1,27 +1,24 @@
 import React, { useState, useEffect } from "react";
-import Accordion from "react-bootstrap/Accordion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClipboard } from "@fortawesome/free-regular-svg-icons";
 
 import { copyUtility } from "../utils/copyUtility";
 
-function ViewCopyItem({
-  eventKeyProp,
-  copyData,
-  buttonContent,
-  buttonClicked,
-}) {
+import { faClipboard } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Accordion from "react-bootstrap/Accordion";
+import Table from "react-bootstrap/Table";
+
+function ViewCopyItem({ eventKeyProp, copyData, buttonContent }) {
   const [isHovering, setIsHovering] = useState(false);
   const [isClipboardEnabled, setIsClipboardEnabled] = useState(true);
-  
+
   //CONVERT DATA TO STRING; DATA IS PRESORTED
   let copyString = JSON.stringify(
-    copyData?.map(list => list.screenName ? list.screenName : list)
-    );
-    
-    //SETS ACCORDION BUTTON STYLE; NOT AVAILABLE IN BOOTSTRAP STRUCTURE
-    useEffect(() => {
-      setAccordionStyle();
+    copyData?.map((list) => (list.screenName ? list.screenName : list))
+  );
+
+  //SETS ACCORDION BUTTON STYLE; NOT AVAILABLE IN BOOTSTRAP STRUCTURE
+  useEffect(() => {
+    setAccordionStyle();
   }, []);
 
   const setAccordionStyle = () => {
@@ -57,7 +54,7 @@ function ViewCopyItem({
     );
 
     // PREVENTS OVERLAPPING COPY & CLICKS
-    clipboardSvg.forEach(svg => {
+    clipboardSvg.forEach((svg) => {
       svg.setAttribute("style", "display: none");
     });
 
@@ -76,7 +73,6 @@ function ViewCopyItem({
         svg.style.color = "gray";
         svg.style.transform = "scale(1.2)";
       });
-
     }, 2000);
   };
 
@@ -133,7 +129,35 @@ function ViewCopyItem({
         />
       </Accordion.Header>
       <Accordion.Body style={{ overflow: "auto", height: "150px" }}>
-        {copyString === "[]" ? "No Data Loaded" : copyString}
+        {copyString === "[]" ? (
+          "No Data Loaded"
+        ) : buttonContent === "View Match Score(s)" ? (
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Score</th>
+                <th>MatchName</th>
+              </tr>
+            </thead>
+            <tbody>
+              {copyData?.map((list, index) => {
+                console.log(list);
+                return (
+                  <tr key={list.participantId}>
+                    <td>{index + 1}</td>
+                    <td>{list.attendeeName}</td>
+                    <td>{`${Math.floor(list.maxSimilarity * 100)}%`}</td>
+                    <td>{list.matchName}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        ) : (
+          copyString
+        )}
       </Accordion.Body>
     </Accordion.Item>
   );
