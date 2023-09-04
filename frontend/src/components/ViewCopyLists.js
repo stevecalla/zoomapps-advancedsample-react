@@ -33,6 +33,7 @@ function ViewCopyLists({
           eventKeyProp={2}
           copyData={matchResults}
           buttonContent="View Match Score(s)"
+          buttonType="scores"
         />
       )}
     </Accordion>

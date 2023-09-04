@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Accordion from "react-bootstrap/Accordion";
 import Table from "react-bootstrap/Table";
 
-function ViewCopyItem({ eventKeyProp, copyData, buttonContent }) {
+function ViewCopyItem({ eventKeyProp, copyData, buttonContent, buttonType }) {
   const [isHovering, setIsHovering] = useState(false);
   const [isClipboardEnabled, setIsClipboardEnabled] = useState(true);
 
@@ -131,7 +131,7 @@ function ViewCopyItem({ eventKeyProp, copyData, buttonContent }) {
       <Accordion.Body style={{ overflow: "auto", height: "150px", padding: "5px", }}>
         {copyString === "[]" ? (
           "No Data Loaded"
-        ) : buttonContent === "View Match Score(s)" ? (
+        ) : buttonType === "scores" ? (
           <Table striped bordered hover size="sm">
             <thead>
               <tr>
