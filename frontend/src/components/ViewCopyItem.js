@@ -128,17 +128,17 @@ function ViewCopyItem({ eventKeyProp, copyData, buttonContent }) {
           }}
         />
       </Accordion.Header>
-      <Accordion.Body style={{ overflow: "auto", height: "150px" }}>
+      <Accordion.Body style={{ overflow: "auto", height: "150px", padding: "5px", }}>
         {copyString === "[]" ? (
           "No Data Loaded"
         ) : buttonContent === "View Match Score(s)" ? (
-          <Table striped bordered hover>
+          <Table striped bordered hover size="sm">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Score</th>
-                <th>MatchName</th>
+                <th style={{ textAlign: "center "}}>#</th>
+                <th style={{ textAlign: "center "}}>Name</th>
+                <th style={{ textAlign: "center "}}>Score</th>
+                <th style={{ textAlign: "center "}}>MatchName</th>
               </tr>
             </thead>
             <tbody>
@@ -148,7 +148,7 @@ function ViewCopyItem({ eventKeyProp, copyData, buttonContent }) {
                   <tr key={list.participantId}>
                     <td>{index + 1}</td>
                     <td>{list.attendeeName}</td>
-                    <td>{`${Math.floor(list.maxSimilarity * 100)}%`}</td>
+                    <td style={{ textAlign: "center "}}>{`${Math.floor(list.maxSimilarity * 100)}%`}</td>
                     <td>{list.matchName}</td>
                   </tr>
                 );
