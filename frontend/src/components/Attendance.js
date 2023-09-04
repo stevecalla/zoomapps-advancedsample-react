@@ -6,17 +6,15 @@ import CountInfo from "./CountInfo";
 import HorizontalLine from "./HorizontalLine";
 import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
+import AttendeeInput from "./AttendeeInput";
 
 import { getParticipantData } from "../utils/getParticipantData";
+import { handleSimilarityScores } from "../utils/similarityScoring";
 import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./ApiScrollview.css";
 
-import { handleSimilarityScores } from "../utils/similarityScoring";
-import Accordion from "react-bootstrap/Accordion";
-
-const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
+const ViewCopyLists = lazy(() => import("./ViewCopyLists"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
 
 function Attendance() {
@@ -41,9 +39,6 @@ function Attendance() {
 
   // set presentResults and absentResults;
   useEffect(() => {
-
-    console.log(matchResults);
-
     if (matchResults.length) {
       setPresentResults(
         matchResults.filter(({ maxSimilarity }) => maxSimilarity > 0.5)
@@ -102,15 +97,15 @@ function Attendance() {
       `[data-participantid="${targetId}"]`
     );
 
-    targetColor === "gray"
-      && targetElement.setAttribute(
-          "style",
-          "color: green; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
-        )
-      // : targetElement.setAttribute(
-      //     "style",
-      //     "color: gray; position: absolute; right: 40px; top: 11px; "
-      //   );
+    targetColor === "gray" &&
+      targetElement.setAttribute(
+        "style",
+        "color: green; position: absolute; right: 40px; top: 11px; transform: scale(1.3); "
+      );
+    // : targetElement.setAttribute(
+    //     "style",
+    //     "color: gray; position: absolute; right: 40px; top: 11px; "
+    //   );
 
     targetColor === "gray"
       ? targetElement.setAttribute("data-color", "green")
@@ -131,7 +126,7 @@ function Attendance() {
         return {
           ...result,
           maxSimilarity: newValue,
-        }
+        };
       } else {
         return result;
       }
@@ -148,15 +143,15 @@ function Attendance() {
       `[data-participantid="${targetId}"]`
     );
 
-    targetColor === "gray"
-      && targetElement.setAttribute(
-          "style",
-          "color: red; position: absolute; right: 18px; top: 11px; transform: scale(1.3); "
-        )
-      // : targetElement.setAttribute(
-      //     "style",
-      //     "color: gray; position: absolute; right: 18px; top: 11px; "
-      //   );
+    targetColor === "gray" &&
+      targetElement.setAttribute(
+        "style",
+        "color: red; position: absolute; right: 18px; top: 11px; transform: scale(1.3); "
+      );
+    // : targetElement.setAttribute(
+    //     "style",
+    //     "color: gray; position: absolute; right: 18px; top: 11px; "
+    //   );
 
     targetColor === "gray"
       ? targetElement.setAttribute("data-color", "red")
@@ -178,7 +173,7 @@ function Attendance() {
           ...result,
           maxSimilarity: newValue,
           test: "test",
-        }
+        };
       } else {
         return result;
       }
@@ -192,9 +187,9 @@ function Attendance() {
   const handleAttendeeInput = () => {
     const textInput = document.querySelector("textarea").value;
     console.log(textInput);
-    
-    const attendeeInput = textInput.split(";"); //spit to array
-    let sortedAttendees = sortHandlerNames(attendeeInput); //sort
+
+    const attendeeTextInput = textInput.split(";"); //spit to array
+    let sortedAttendees = sortHandlerNames(attendeeTextInput); //sort
     const attendees = sortedAttendees.map((name, index) => {
       name = name.trim();
       return {
@@ -351,50 +346,12 @@ function Attendance() {
       <HorizontalLine height="" backgroundColor="#0d6efd" margin="0 0 7px 0" />
 
       {/* //todo start */}
-      <Accordion
-        style={{ position: "relative", width: "300px", marginBottom: "5px" }}
-      >
-        <Accordion.Item eventKey="0">
-          <Accordion.Header style={{ width: "300px" }}>
-            {/* {copiedAll ? `Copied! ${timeLeft}` : "View All"} */}
-            {`Enter Attendee Roster`}
-          </Accordion.Header>
-          <FontAwesomeIcon
-            icon="fa-solid fa-rotate-right"
-            title="Submit roster"
-            style={
-              submitIsDisabled
-                ? { display: "none" }
-                : {
-                    zIndex: 4,
-                    position: "absolute",
-                    right: "60px",
-                    top: "11px",
-                    color: "gray",
-                  }
-            }
-            onClick={handleAttendeeInput}
-          />
-          {/* <FontAwesomeIcon icon="fa-solid fa-save" size="sm" /> */}
-          <Accordion.Body
-            onChange={(event) =>
-              event.target.value.length > 0
-                ? setSubmitIsDisabled(false)
-                : setSubmitIsDisabled(true)
-            }
-            as="textarea"
-            placeholder={`Enter roster with semi-colon separator (i.e. "John Doe; Doe, Jane"). Click submit button.`}
-            style={{
-              overflow: "auto",
-              height: "150px",
-              width: "295px",
-              border: "none",
-            }}
-          >
-            {/* {allParticipantsString === "[]" ? "No Data Loaded" : allParticipantsString} */}
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
+
+      <AttendeeInput 
+        handleAttendeeInput={handleAttendeeInput}
+        submitIsDisabled={submitIsDisabled}
+        setSubmitIsDisabled={setSubmitIsDisabled}
+      />
       {/* //todo END */}
 
       <AttendeeList
@@ -420,9 +377,11 @@ function Attendance() {
         />
 
         <Suspense fallback={<div>Loading...</div>}>
-          <CopyToClipBoard
+          <ViewCopyLists
             allParticipants={participantsNonMutable}
             participantsMutable={participantsMutable}
+            matchResults={matchResults}
+            tabView="attendance"
           />
         </Suspense>
 

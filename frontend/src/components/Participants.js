@@ -13,7 +13,8 @@ import { sortHandlerScreenName } from "../utils/sort";
 
 import "./ApiScrollview.css";
 
-const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
+const ViewCopyLists = lazy(() => import("./ViewCopyLists"));
+// const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
 
 function Participants() {
@@ -25,7 +26,8 @@ function Participants() {
   const [retrieveDate, setRetrieveDate] = useState(false);
 
   //INITIAL API CALL
-  useEffect(() => { //todo
+  useEffect(() => {
+    //todo
     // timeout allows the api to configure preventing error
     setTimeout(() => {
       handleInvokeApi();
@@ -63,7 +65,8 @@ function Participants() {
   };
 
   // MARK HANLDERS
-  const checkHandler = (event) => { //todo
+  const checkHandler = (event) => {
+    //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
@@ -92,7 +95,8 @@ function Participants() {
     );
   };
 
-  const xMarkHandler = (event) => { //todo
+  const xMarkHandler = (event) => {
+    //todo
     let targetId = event.currentTarget.getAttribute("data-participantid");
     let targetColor = event.currentTarget.getAttribute("data-color");
     const targetElement = document.querySelector(
@@ -157,7 +161,8 @@ function Participants() {
     setIsDisabled(true);
   };
 
-  const clearSearchHandler = () => { //todo is it working
+  const clearSearchHandler = () => {
+    //todo is it working
     let searchInputText = document.getElementById("api-scrollview-input");
     searchInputText.value = null;
     setParticipantsMutable(participantsNonMutable);
@@ -190,7 +195,7 @@ function Participants() {
         onClickHandlerXmark={clearSearchHandler}
       />
 
-      <AttendeeList 
+      <AttendeeList
         isRenderable={isRenderable}
         renderList={participantsMutable}
         checkHandler={checkHandler}
@@ -217,8 +222,15 @@ function Participants() {
           isDisabled={false}
         />
 
-        <Suspense fallback={<div>Loading...</div>}>
+        {/* <Suspense fallback={<div>Loading...</div>}>
           <CopyToClipBoard
+            allParticipants={participantsNonMutable}
+            participantsMutable={participantsMutable}
+          />
+        </Suspense> */}
+
+        <Suspense fallback={<div>Loading...</div>}>
+          <ViewCopyLists
             allParticipants={participantsNonMutable}
             participantsMutable={participantsMutable}
           />
@@ -227,7 +239,6 @@ function Participants() {
         <Suspense fallback={<div>Loading...</div>}>
           <BuyACoffee />
         </Suspense>
-
       </div>
     </div>
   );
