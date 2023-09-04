@@ -1,4 +1,3 @@
-
 const sortHandlerScreenName = (items) => {
   return [...items].sort((a, b) => a.screenName.localeCompare(b.screenName));
 };

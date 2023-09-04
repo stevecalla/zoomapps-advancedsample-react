@@ -3,34 +3,97 @@ import Accordion from "react-bootstrap/Accordion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-regular-svg-icons";
 
+import { copyUtility } from "../utils/copyUtility";
+
 function ViewCopyItem({
   eventKeyProp,
-  copyToClipboard,
-  copyString,
-  isClickable,
-  copiedAll,
+  copyData,
   buttonContent,
   buttonClicked,
-  timeRemaining,
 }) {
+  const [timeRemaining, setTimeRemaining] = useState(5); //seconds
   const [isHovering, setIsHovering] = useState(false);
+  const [isClipboardEnabled, setIsClipboardEnabled] = useState(true);
 
+  //CONVERT DATA TO STRING; DATA IS PRESORTED
+  let copyString = JSON.stringify(
+    copyData?.map(({ screenName }) => screenName)
+  );
+
+  //SETS ACCORDION BUTTON STYLE; NOT AVAILABLE IN BOOTSTRAP STRUCTURE
   useEffect(() => {
     setAccordionStyle();
   }, []);
 
-  //SETS ACCORDION BUTTON STYLE; NOT AVAILABLE IN BOOTSTRAP STRUCTURE
   const setAccordionStyle = () => {
     let buttons = document.querySelectorAll(".viewCopy-header button");
-    
+
     buttons.forEach((button) => {
       button.setAttribute("style", "width: 298px; height: 38px;");
     });
   };
-  
+
   // PREVENTS ACCORDION FROM OPENING WHEN CLIPBOARD CLICKED
   const stopPropagation = (event) => {
     event.stopPropagation();
+  };
+
+  // COPY UTILITY
+  const copyToClipboard = () => {
+    try {
+      copyUtility(copyString);
+
+      disableClipboardCopy();
+
+      countDown(buttonClicked);
+    } catch (error) {
+      console.error("Failed to copy:", error);
+    }
+  };
+
+  const disableClipboardCopy = () => {
+    //SELECTS ALL CLIPBOARD SVG ICONS ACROSS SIBLING COMPONENTS
+    let clipboardSvg = document.querySelectorAll(
+      ".viewCopy-header .clipboardIcon"
+    );
+
+    // PREVENTS OVERLAPPING COPY & CLICKS
+    clipboardSvg.forEach(svg => {
+      svg.setAttribute("style", "display: none");
+    });
+
+    setIsClipboardEnabled(false); //sets disabled styles
+
+    setTimeout(() => {
+      setIsClipboardEnabled(true); //sets disabled styles
+
+      clipboardSvg.forEach((svg) => {
+        svg.style.display = "block";
+        svg.style.position = "absolute";
+        svg.style.left = "235px";
+        svg.style.zIndex = 5;
+        svg.style.cursor = "pointer";
+        svg.style.backgroundColor = "white";
+        svg.style.color = "gray";
+        svg.style.transform = "scale(1.2)";
+      });
+
+    }, 3000);
+  };
+
+  //SIGNAL COPIED. DISABLE/ENABLE
+  const countDown = () => {
+    const interval = setInterval(() => {
+      setTimeRemaining(prevTime => {
+        if (prevTime > 1) {
+          return prevTime - 1;
+        } else {
+          clearInterval(interval);
+          setTimeRemaining(5);
+          return 0;
+        }
+      });
+    }, 1000);
   };
 
   return (
@@ -41,9 +104,11 @@ function ViewCopyItem({
           width: "300px",
         }}
       >
-        <div style={copiedAll ? { color: "Green" } : { color: "black" }}>
-          {/* {copiedAll ? `Copied! ${timeRemaining}` : buttonContent} */}
-          {copiedAll ? `Copied! ✅` : buttonContent}
+        <div
+          style={isClipboardEnabled ? { color: "black" } : { color: "Green" }}
+        >
+          {/* {isClipboardEnabled ? buttonContent : `Copied! ${timeRemaining}`} */}
+          {isClipboardEnabled ? buttonContent : `Copied! ✅`}
         </div>
         <FontAwesomeIcon
           title="Copy to clipboard"
@@ -51,17 +116,18 @@ function ViewCopyItem({
           className="clipboardIcon"
           onClick={(event) => {
             stopPropagation(event);
-            isClickable && copyToClipboard(copyString, buttonClicked);
+            isClipboardEnabled ? copyToClipboard() : console.log("heck");
           }}
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
           style={{
             position: "absolute",
             left: "235px",
-            color: isHovering && isClickable ? "green" : "gray",
+            color: isHovering && isClipboardEnabled ? "green" : "gray",
             backgroundColor: "white",
             zIndex: "5",
-            transform: isHovering && isClickable ? "scale(1.7)" : "scale(1.2)",
+            transform:
+              isHovering && isClipboardEnabled ? "scale(1.7)" : "scale(1.2)",
             cursor: "pointer",
           }}
         />
