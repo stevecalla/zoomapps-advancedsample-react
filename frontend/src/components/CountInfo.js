@@ -17,8 +17,6 @@ function CountInfo({ contentDescription, contentLength, spanLeft = "267px" }) {
           width: "50px",
           textAlign: "right",
           left: spanLeft,
-          // border: "1px solid red",
-          
         }}
       >
         {contentLength}

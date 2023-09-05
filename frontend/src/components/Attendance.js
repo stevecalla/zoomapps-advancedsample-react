@@ -379,7 +379,7 @@ function Attendance() {
         />
         <CountInfo
           contentDescription="Roster"
-          contentLength={matchResults?.length.toLocaleString() ? matchResults.length : "..."}
+          contentLength={matchResults?.length ? matchResults.length.toLocaleString() : "..."}
           spanLeft="93px"
         />
       </section>
