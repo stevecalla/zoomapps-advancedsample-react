@@ -17,6 +17,7 @@ import {
   faClipboard,
   faRotateRight,
   faSave,
+  faCloud,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -29,6 +30,8 @@ library.add(
   faClipboard,
   faRotateRight,
   faSave,
+  faCloud,
+  
 );
 
 const history = createHashHistory();

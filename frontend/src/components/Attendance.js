@@ -11,7 +11,7 @@ import AttendeeInput from "./AttendeeInput";
 import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
 import { handleSimilarityScores } from "../utils/similarityScoring";
 import { getParticipantData } from "../utils/getParticipantData";
-import { setStorage, getStorage } from "../utils/storage";
+import { setStorage, retrieveStorage } from "../utils/storage";
 
 import "./ApiScrollview.css";
 
@@ -24,7 +24,8 @@ function Attendance() {
   const [isRenderable, SetIsRenderable] = useState(false);
 
   const [retrieveDate, setRetrieveDate] = useState(false);
-  const [submitIsDisabled, setSubmitIsDisabled] = useState(true);
+  const [isSubmitIconDisplayable, setIsSubmitIconDisplayable] = useState(false);
+  const [isRetrieveIconDiplayable, setIsRetrieveIconDisplayable] = useState(false);
 
   // const [ attendeeRoster, setAttendeeRoster] = useState(["steve calla", "b", "c", "d", "alex jones", "f", ]);
   const [attendeeRoster, setAttendeeRoster] = useState([]);
@@ -38,7 +39,7 @@ function Attendance() {
     /* eslint-disable */
   }, [attendeeRoster]);
 
-  // set presentResults and absentResults;
+  // set presentResults & absentResults;
   useEffect(() => {
     if (matchResults.length) {
       setPresentResults(
@@ -66,6 +67,11 @@ function Attendance() {
     setParticipantsMutable(participantsNonMutable);
     /* eslint-disable */
   }, [participantsNonMutable]);
+
+  // DISPLAY RETRIEVE ICON
+  useEffect(() => {
+    displayRetrieveIcon();
+  }, []);
 
   // GET PARTICIPANT DATA FROM API
   const handleInvokeApi = async () => {
@@ -189,8 +195,6 @@ function Attendance() {
     const textInput = document.querySelector("textarea").value;
     console.log(textInput);
 
-    handleSaveStorage(textInput);
-
     const attendeeTextInput = textInput.split(";"); //spit to array
     let sortedAttendees = sortHandlerNames(attendeeTextInput); //sort
     const attendees = sortedAttendees.map((name, index) => {
@@ -203,18 +207,6 @@ function Attendance() {
     setAttendeeRoster(attendees);
     clearIconColor();
   };
-
-  // STORAGE - SAVE & GET
-  const handleSaveStorage = (textInput) => {
-    //convert list to encrypted data
-    textInput = "calla;adz;b;t;v;steve";
-    setStorage(textInput);
-  }
-
-  const handleGetStorage = () => {
-    const storedAttendeeList = localStorage.getItem("attendeeList");
-    console.log(storedAttendeeList);
-  }
 
   const clearIconColor = () => {
     let attendanceRosterDivs = document.querySelectorAll(".attendance-roster");
@@ -240,6 +232,39 @@ function Attendance() {
         );
       }
     });
+  };
+
+  // STORAGE - SAVE & GET
+  const handleSaveStorage = () => {
+    //convert list to encrypted data
+    const textInput = document.querySelector("textarea").value;
+    setStorage(textInput);
+    setIsRetrieveIconDisplayable(true);
+  }
+
+  const handleRetrieveStorage = () => {
+    const storedAttendeeList = retrieveStorage(); // get data from storage
+
+    let input = document.querySelector("textarea");  // target textarea
+    input.value = ""; // clear textarea to prevent duplicates / old values
+    input.setRangeText(storedAttendeeList); // populate input with storedAttendeeList
+
+    // trigger onChangeEvent to display save & submit icons
+    let triggerOnChangeEvent = new Event('change', { bubbles: true });
+    input.dispatchEvent(triggerOnChangeEvent);
+
+    //https://github.com/facebook/react/issues/11488
+  }
+
+  const displayRetrieveIcon = () => {
+    let isLocalStoragePopulated = retrieveStorage();
+    console.log(isLocalStoragePopulated);
+
+    if (isLocalStoragePopulated) {
+      setIsRetrieveIconDisplayable(true);
+    } else {
+      setIsRetrieveIconDisplayable(false);
+    }
   };
 
   // MARK ATTENDANCE
@@ -364,10 +389,12 @@ function Attendance() {
 
       <AttendeeInput 
         handleAttendeeInput={handleAttendeeInput}
-        submitIsDisabled={submitIsDisabled}
-        setSubmitIsDisabled={setSubmitIsDisabled}
+        isSubmitIconDisplayable={isSubmitIconDisplayable}
+        setIsSubmitIconDisplayable={setIsSubmitIconDisplayable}
         handleSaveStorage={handleSaveStorage}
-        handleGetStorage={handleGetStorage}
+        handleRetrieveStorage={handleRetrieveStorage}
+        isRetrieveIconDiplayable={isRetrieveIconDiplayable}
+        setIsRetrieveIconDisplayable={setIsRetrieveIconDisplayable}
       />
       {/* //todo END */}
 

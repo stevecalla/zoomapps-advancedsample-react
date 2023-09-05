@@ -1,10 +1,20 @@
 import { useState, useEffect, useRef } from "react";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Accordion from "react-bootstrap/Accordion";
 
-function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisabled, handleSaveStorage, hangleGetStorage }) {
+function AttendeeInput({
+  handleAttendeeInput,
+  isSubmitIconDisplayable,
+  setIsSubmitIconDisplayable,
+  handleSaveStorage,
+  handleRetrieveStorage,
+  isRetrieveIconDiplayable,
+  setIsRetrieveIconDisplayable,
+}) {
   const [isSubmitHovering, setIsSubmitHovering] = useState(false);
   const [isSaveHovering, setIsSaveHovering] = useState(false);
+  const [isRetrieveHovering, setIsRetrieveHovering] = useState(false);
   const attendeeInputRef = useRef(null); //Sets focus on textarea
 
   useEffect(() => {
@@ -27,8 +37,8 @@ function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisab
       <Accordion.Item eventKey="0">
         <Accordion.Header
           className="attendeeInput-header"
-          style={{ width: "300px" 
-        }}>
+          style={{ width: "300px" }}
+        >
           {`Enter Attendee Roster`}
         </Accordion.Header>
         <FontAwesomeIcon
@@ -38,9 +48,8 @@ function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisab
           onMouseEnter={() => setIsSubmitHovering(true)}
           onMouseLeave={() => setIsSubmitHovering(false)}
           style={
-            submitIsDisabled
-              ? { display: "none" }
-              : {
+            isSubmitIconDisplayable
+              ? {
                   zIndex: 4,
                   position: "absolute",
                   right: "45px",
@@ -48,26 +57,45 @@ function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisab
                   color: isSubmitHovering ? "green" : "gray",
                   transform: isSubmitHovering ? "scale(1.2)" : "scale(1.0)",
                 }
+              : { display: "none" }
           }
         />
-        <FontAwesomeIcon 
-          icon="fa-solid fa-save" 
+        <FontAwesomeIcon
+          icon="fa-solid fa-save"
           title="Save roster"
           onClick={handleSaveStorage}
           onMouseEnter={() => setIsSaveHovering(true)}
           onMouseLeave={() => setIsSaveHovering(false)}
           style={
-            submitIsDisabled
-              ? { display: "none" }
-              : {
+            isSubmitIconDisplayable
+              ? {
                   zIndex: 4,
                   position: "absolute",
                   right: "67px",
                   top: "12px",
-                  // color: "green",
                   color: isSaveHovering ? "blue" : "gray",
                   transform: isSaveHovering ? "scale(1.2)" : "scale(1.0)",
                 }
+              : { display: "none" }
+          }
+        />
+        <FontAwesomeIcon
+          icon="fa-solid fa-cloud"
+          title="Upload roster"
+          onClick={handleRetrieveStorage}
+          onMouseEnter={() => setIsRetrieveHovering(true)}
+          onMouseLeave={() => setIsRetrieveHovering(false)}
+          style={
+            isRetrieveIconDiplayable
+              ? {
+                  zIndex: 4,
+                  position: "absolute",
+                  right: "87px",
+                  top: "12px",
+                  color: isRetrieveHovering ? "blue" : "gray",
+                  transform: isRetrieveHovering ? "scale(1.2)" : "scale(1.0)",
+                }
+              : { display: "none" }
           }
         />
         <Accordion.Body
@@ -77,9 +105,22 @@ function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisab
             attendeeInputRef.current.focus();
           }}
           onChange={(event) =>
+          //   {
+          //   document.querySelector("textarea").value > 0
+          //   if (event.target.value.length > 0) {
+          //     setIsSubmitIconDisplayable(true);
+          //     // setIsRetrieveIconDisplayable(false);
+          //   } else {
+          //     setIsSubmitIconDisplayable(false);
+          //     // setIsRetrieveIconDisplayable(false);
+          //   }
+          // }
             event.target.value.length > 0
-              ? setSubmitIsDisabled(false)
-              : setSubmitIsDisabled(true)
+              ? (
+                  setIsSubmitIconDisplayable(true)
+                  // , setIsRetrieveIconDisplayable(false)
+                )
+              : setIsSubmitIconDisplayable(false)
           }
           placeholder={`Enter roster with semi-colon separator (i.e. "John Doe; Doe, Jane"). Click green submit arrow.`}
           style={{
@@ -88,8 +129,7 @@ function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisab
             width: "295px",
             border: "none",
           }}
-        >
-        </Accordion.Body>
+        ></Accordion.Body>
       </Accordion.Item>
     </Accordion>
   );

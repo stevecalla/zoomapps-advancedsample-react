@@ -1,8 +1,8 @@
-const setStorage = (text) => {
-  localStorage.setItem("attendeeList", text);
+const setStorage = (textInput) => {
+  localStorage.setItem("attendeeList", textInput);
 };
 
-const getStorage = () => {
+const retrieveStorage = () => {
   const storedData = localStorage.getItem("attendeeList");
   console.log(storedData);
   return storedData;
@@ -14,6 +14,6 @@ const removeStorage = () => {
 
 module.exports = {
   setStorage,
-  getStorage,
+  retrieveStorage,
   removeStorage,
 };
