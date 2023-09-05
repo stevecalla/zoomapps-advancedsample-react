@@ -105,16 +105,6 @@ function AttendeeInput({
             attendeeInputRef.current.focus();
           }}
           onChange={(event) =>
-          //   {
-          //   document.querySelector("textarea").value > 0
-          //   if (event.target.value.length > 0) {
-          //     setIsSubmitIconDisplayable(true);
-          //     // setIsRetrieveIconDisplayable(false);
-          //   } else {
-          //     setIsSubmitIconDisplayable(false);
-          //     // setIsRetrieveIconDisplayable(false);
-          //   }
-          // }
             event.target.value.length > 0
               ? (
                   setIsSubmitIconDisplayable(true)

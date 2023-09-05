@@ -8,7 +8,7 @@ import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 import AttendeeInput from "./AttendeeInput";
 
-import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
+import { sortHandlerScreenName, sortHandlerNames, sortHandlerNamesNumbers } from "../utils/sort";
 import { handleSimilarityScores } from "../utils/similarityScoring";
 import { getParticipantData } from "../utils/getParticipantData";
 import { setStorage, retrieveStorage } from "../utils/storage";
@@ -196,9 +196,11 @@ function Attendance() {
     console.log(textInput);
 
     const attendeeTextInput = textInput.split(";"); //spit to array
-    let sortedAttendees = sortHandlerNames(attendeeTextInput); //sort
+    let sortedAttendees = sortHandlerNamesNumbers(attendeeTextInput); //sort array
     const attendees = sortedAttendees.map((name, index) => {
-      name = name.trim();
+      // console.log(name);
+      // isNaN(name) ? name = name.trim() : name;
+      name = String(name).trim();
       return {
         participantId: index,
         screenName: name,
@@ -254,6 +256,7 @@ function Attendance() {
     input.dispatchEvent(triggerOnChangeEvent);
 
     //https://github.com/facebook/react/issues/11488
+    //https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setRangeText
   }
 
   const displayRetrieveIcon = () => {
