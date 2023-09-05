@@ -173,20 +173,26 @@ function Participants() {
       <HorizontalLine height="5px" backgroundColor="#0d6efd" />
       <HorizontalLine height="15px" backgroundColor="#ffdc03" />
 
-      <CountInfo
-        contentDescription="Total Participants"
-        contentLength={
-          participantsNonMutable?.length === 0
-            ? "..."
-            : participantsNonMutable.length
-        }
-      />
-      <CountInfo
-        contentDescription="Filtered Participants"
-        contentLength={
-          participantsMutable?.length ? participantsMutable.length : "..."
-        }
-      />
+      <section style={{ display: "flex", width: "300px" }}>
+        <CountInfo
+          contentDescription="Participants"
+          contentLength={
+            participantsNonMutable?.length === 0
+              ? "..."
+              : participantsNonMutable.length.toLocaleString()
+          }
+          spanLeft="98px"
+        />
+        <CountInfo
+          contentDescription="Filtered"
+          contentLength={
+            participantsMutable?.length
+              ? participantsMutable.length.toLocaleString()
+              : "..."
+          }
+          spanLeft="93px"
+        />
+      </section>
 
       <HorizontalLine height="" backgroundColor="#0d6efd" margin="0 0 7px 0" />
 
@@ -221,13 +227,6 @@ function Participants() {
           onClickHandler={handleInvokeApi}
           isDisabled={false}
         />
-
-        {/* <Suspense fallback={<div>Loading...</div>}>
-          <CopyToClipBoard
-            allParticipants={participantsNonMutable}
-            participantsMutable={participantsMutable}
-          />
-        </Suspense> */}
 
         <Suspense fallback={<div>Loading...</div>}>
           <ViewCopyLists
