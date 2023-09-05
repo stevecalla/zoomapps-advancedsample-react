@@ -8,10 +8,11 @@ import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 import AttendeeInput from "./AttendeeInput";
 
-import { sortHandlerScreenName, sortHandlerNames, sortHandlerNamesNumbers } from "../utils/sort";
+import { sortHandlerScreenName, sortHandlerNamesNumbers } from "../utils/sort";
 import { handleSimilarityScores } from "../utils/similarityScoring";
 import { getParticipantData } from "../utils/getParticipantData";
 import { setStorage, retrieveStorage } from "../utils/storage";
+import { encryptedString, decryptedString } from "../utils/encrypt";
 
 import "./ApiScrollview.css";
 
@@ -238,9 +239,11 @@ function Attendance() {
 
   // STORAGE - SAVE & GET
   const handleSaveStorage = () => {
-    //convert list to encrypted data
     const textInput = document.querySelector("textarea").value;
-    setStorage(textInput);
+
+    // encryptedString(textInput);
+
+    setStorage(encryptedString(textInput));
     setIsRetrieveIconDisplayable(true);
   }
 
@@ -250,6 +253,7 @@ function Attendance() {
     let input = document.querySelector("textarea");  // target textarea
     input.value = ""; // clear textarea to prevent duplicates / old values
     input.setRangeText(storedAttendeeList); // populate input with storedAttendeeList
+    // input.setRangeText(decryptedString(storedAttendeeList)); // populate input with storedAttendeeList
 
     // trigger onChangeEvent to display save & submit icons
     let triggerOnChangeEvent = new Event('change', { bubbles: true });
