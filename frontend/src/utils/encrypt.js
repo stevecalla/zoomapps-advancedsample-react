@@ -1,20 +1,22 @@
-import Cryptr from 'cryptr';
+var CryptoJS = require("crypto-js");
 
-const cryptr = new Cryptr('myTotallySecretKey');
-
-const encryptedString = (textInput) => cryptr.encrypt(textInput);
-const decryptedString = cryptr.decrypt(encryptedString);
-
-// const encryptedString = cryptr.encrypt('bacon');
-// const decryptedString = cryptr.decrypt(encryptedString);
-
-console.log(encryptedString); // 2a3260f5ac4754b8ee3021ad413ddbc11f04138d01fe0c5889a0dd7b4a97e342a4f43bb43f3c83033626a76f7ace2479705ec7579e4c151f2e2196455be09b29bfc9055f82cdc92a1fe735825af1f75cfb9c94ad765c06a8abe9668fca5c42d45a7ec233f0
-
-console.log(decryptedString); // bacon
-
-module.exports = {
-  encryptedString,
-  decryptedString,
+// Encrypt
+const cipherText = (textInput) => {
+  let encryptedString = CryptoJS.AES.encrypt(textInput, 'secret key 123').toString();
+  return encryptedString;
 };
 
-//https://github.com/MauriceButler/cryptr
+// Decrypt
+const decryptText = (storedData) => {
+  let decryptedBytes = CryptoJS.AES.decrypt(storedData, 'secret key 123');
+  let decryptedString = decryptedBytes.toString(CryptoJS.enc.Utf8);
+  return decryptedString;
+};
+
+module.exports = {
+  cipherText,
+  decryptText,
+};
+
+
+
