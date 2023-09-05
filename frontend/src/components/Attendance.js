@@ -8,9 +8,10 @@ import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 import AttendeeInput from "./AttendeeInput";
 
-import { getParticipantData } from "../utils/getParticipantData";
+import { sortHandlerScreenName, sortHandlerNames, sortHandlerNamesNumbers } from "../utils/sort";
 import { handleSimilarityScores } from "../utils/similarityScoring";
-import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
+import { getParticipantData } from "../utils/getParticipantData";
+import { setStorage, retrieveStorage } from "../utils/storage";
 
 import "./ApiScrollview.css";
 
@@ -23,7 +24,8 @@ function Attendance() {
   const [isRenderable, SetIsRenderable] = useState(false);
 
   const [retrieveDate, setRetrieveDate] = useState(false);
-  const [submitIsDisabled, setSubmitIsDisabled] = useState(true);
+  const [isSubmitIconDisplayable, setIsSubmitIconDisplayable] = useState(false);
+  const [isRetrieveIconDiplayable, setIsRetrieveIconDisplayable] = useState(false);
 
   // const [ attendeeRoster, setAttendeeRoster] = useState(["steve calla", "b", "c", "d", "alex jones", "f", ]);
   const [attendeeRoster, setAttendeeRoster] = useState([]);
@@ -37,7 +39,7 @@ function Attendance() {
     /* eslint-disable */
   }, [attendeeRoster]);
 
-  // set presentResults and absentResults;
+  // set presentResults & absentResults;
   useEffect(() => {
     if (matchResults.length) {
       setPresentResults(
@@ -65,6 +67,11 @@ function Attendance() {
     setParticipantsMutable(participantsNonMutable);
     /* eslint-disable */
   }, [participantsNonMutable]);
+
+  // DISPLAY RETRIEVE ICON
+  useEffect(() => {
+    displayRetrieveIcon();
+  }, []);
 
   // GET PARTICIPANT DATA FROM API
   const handleInvokeApi = async () => {
@@ -189,9 +196,11 @@ function Attendance() {
     console.log(textInput);
 
     const attendeeTextInput = textInput.split(";"); //spit to array
-    let sortedAttendees = sortHandlerNames(attendeeTextInput); //sort
+    let sortedAttendees = sortHandlerNamesNumbers(attendeeTextInput); //sort array
     const attendees = sortedAttendees.map((name, index) => {
-      name = name.trim();
+      // console.log(name);
+      // isNaN(name) ? name = name.trim() : name;
+      name = String(name).trim();
       return {
         participantId: index,
         screenName: name,
@@ -225,6 +234,40 @@ function Attendance() {
         );
       }
     });
+  };
+
+  // STORAGE - SAVE & GET
+  const handleSaveStorage = () => {
+    //convert list to encrypted data
+    const textInput = document.querySelector("textarea").value;
+    setStorage(textInput);
+    setIsRetrieveIconDisplayable(true);
+  }
+
+  const handleRetrieveStorage = () => {
+    const storedAttendeeList = retrieveStorage(); // get data from storage
+
+    let input = document.querySelector("textarea");  // target textarea
+    input.value = ""; // clear textarea to prevent duplicates / old values
+    input.setRangeText(storedAttendeeList); // populate input with storedAttendeeList
+
+    // trigger onChangeEvent to display save & submit icons
+    let triggerOnChangeEvent = new Event('change', { bubbles: true });
+    input.dispatchEvent(triggerOnChangeEvent);
+
+    //https://github.com/facebook/react/issues/11488
+    //https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setRangeText
+  }
+
+  const displayRetrieveIcon = () => {
+    let isLocalStoragePopulated = retrieveStorage();
+    console.log(isLocalStoragePopulated);
+
+    if (isLocalStoragePopulated) {
+      setIsRetrieveIconDisplayable(true);
+    } else {
+      setIsRetrieveIconDisplayable(false);
+    }
   };
 
   // MARK ATTENDANCE
@@ -349,8 +392,12 @@ function Attendance() {
 
       <AttendeeInput 
         handleAttendeeInput={handleAttendeeInput}
-        submitIsDisabled={submitIsDisabled}
-        setSubmitIsDisabled={setSubmitIsDisabled}
+        isSubmitIconDisplayable={isSubmitIconDisplayable}
+        setIsSubmitIconDisplayable={setIsSubmitIconDisplayable}
+        handleSaveStorage={handleSaveStorage}
+        handleRetrieveStorage={handleRetrieveStorage}
+        isRetrieveIconDiplayable={isRetrieveIconDiplayable}
+        setIsRetrieveIconDisplayable={setIsRetrieveIconDisplayable}
       />
       {/* //todo END */}
 
