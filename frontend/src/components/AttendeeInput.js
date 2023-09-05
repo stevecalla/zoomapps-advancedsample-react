@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Accordion from "react-bootstrap/Accordion";
 
-function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisabled }) {
-  const [isHovering, setIsHovering] = useState(false);
+function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisabled, handleSaveStorage, hangleGetStorage }) {
+  const [isSubmitHovering, setIsSubmitHovering] = useState(false);
+  const [isSaveHovering, setIsSaveHovering] = useState(false);
   const attendeeInputRef = useRef(null); //Sets focus on textarea
 
   useEffect(() => {
@@ -34,22 +35,41 @@ function AttendeeInput({ handleAttendeeInput, submitIsDisabled, setSubmitIsDisab
           icon="fa-solid fa-rotate-right"
           title="Submit roster"
           onClick={handleAttendeeInput}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
+          onMouseEnter={() => setIsSubmitHovering(true)}
+          onMouseLeave={() => setIsSubmitHovering(false)}
           style={
             submitIsDisabled
               ? { display: "none" }
               : {
                   zIndex: 4,
                   position: "absolute",
-                  right: "60px",
-                  top: "11px",
-                  color: "green",
-                  transform: isHovering ? "scale(1.7)" : "scale(1.2)",
+                  right: "45px",
+                  top: "12px",
+                  color: isSubmitHovering ? "green" : "gray",
+                  transform: isSubmitHovering ? "scale(1.2)" : "scale(1.0)",
                 }
           }
         />
-        {/* <FontAwesomeIcon icon="fa-solid fa-save" size="sm" /> */}
+        <FontAwesomeIcon 
+          icon="fa-solid fa-save" 
+          title="Save roster"
+          onClick={handleSaveStorage}
+          onMouseEnter={() => setIsSaveHovering(true)}
+          onMouseLeave={() => setIsSaveHovering(false)}
+          style={
+            submitIsDisabled
+              ? { display: "none" }
+              : {
+                  zIndex: 4,
+                  position: "absolute",
+                  right: "67px",
+                  top: "12px",
+                  // color: "green",
+                  color: isSaveHovering ? "blue" : "gray",
+                  transform: isSaveHovering ? "scale(1.2)" : "scale(1.0)",
+                }
+          }
+        />
         <Accordion.Body
           as="textarea"
           ref={attendeeInputRef}

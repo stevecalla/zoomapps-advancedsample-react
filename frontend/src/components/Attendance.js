@@ -8,9 +8,10 @@ import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 import AttendeeInput from "./AttendeeInput";
 
-import { getParticipantData } from "../utils/getParticipantData";
-import { handleSimilarityScores } from "../utils/similarityScoring";
 import { sortHandlerScreenName, sortHandlerNames } from "../utils/sort";
+import { handleSimilarityScores } from "../utils/similarityScoring";
+import { getParticipantData } from "../utils/getParticipantData";
+import { setStorage, getStorage } from "../utils/storage";
 
 import "./ApiScrollview.css";
 
@@ -188,6 +189,8 @@ function Attendance() {
     const textInput = document.querySelector("textarea").value;
     console.log(textInput);
 
+    handleSaveStorage(textInput);
+
     const attendeeTextInput = textInput.split(";"); //spit to array
     let sortedAttendees = sortHandlerNames(attendeeTextInput); //sort
     const attendees = sortedAttendees.map((name, index) => {
@@ -200,6 +203,18 @@ function Attendance() {
     setAttendeeRoster(attendees);
     clearIconColor();
   };
+
+  // STORAGE - SAVE & GET
+  const handleSaveStorage = (textInput) => {
+    //convert list to encrypted data
+    textInput = "calla;adz;b;t;v;steve";
+    setStorage(textInput);
+  }
+
+  const handleGetStorage = () => {
+    const storedAttendeeList = localStorage.getItem("attendeeList");
+    console.log(storedAttendeeList);
+  }
 
   const clearIconColor = () => {
     let attendanceRosterDivs = document.querySelectorAll(".attendance-roster");
@@ -351,6 +366,8 @@ function Attendance() {
         handleAttendeeInput={handleAttendeeInput}
         submitIsDisabled={submitIsDisabled}
         setSubmitIsDisabled={setSubmitIsDisabled}
+        handleSaveStorage={handleSaveStorage}
+        handleGetStorage={handleGetStorage}
       />
       {/* //todo END */}
 
