@@ -26,7 +26,8 @@ function Attendance() {
 
   const [retrieveDate, setRetrieveDate] = useState(false);
   const [isSubmitIconDisplayable, setIsSubmitIconDisplayable] = useState(false);
-  const [isRetrieveIconDiplayable, setIsRetrieveIconDisplayable] = useState(false);
+  const [isRetrieveIconDiplayable, setIsRetrieveIconDisplayable] =
+    useState(false);
 
   // const [ attendeeRoster, setAttendeeRoster] = useState(["steve calla", "b", "c", "d", "alex jones", "f", ]);
   const [attendeeRoster, setAttendeeRoster] = useState([]);
@@ -193,7 +194,7 @@ function Attendance() {
   //TODO
   // ATTENDEE FUNCTIONS
   const handleAttendeeInput = () => {
-    const textInput = document.getElementById('attendeeInput').value;
+    const textInput = document.getElementById("attendeeInput").value;
     console.log(textInput);
 
     const attendeeTextInput = textInput.split(";"); //spit to array
@@ -239,31 +240,31 @@ function Attendance() {
 
   // STORAGE - SAVE & GET
   const handleSaveStorage = () => {
-    const attendeeInput = document.getElementById('attendeeInput').value;
+    const attendeeInput = document.getElementById("attendeeInput").value;
 
     const attendeeCipher = cipherText(attendeeInput);
 
     setStorage(attendeeCipher);
 
     setIsRetrieveIconDisplayable(true);
-  }
+  };
 
   const handleRetrieveStorage = () => {
     const storedAttendeeList = retrieveStorage(); // get data from storage
 
-    let input = document.getElementById('attendeeInput');  // target textarea
+    let input = document.getElementById("attendeeInput"); // target textarea
     input.value = ""; // clear textarea to prevent duplicates / old values
 
     // input.setRangeText(storedAttendeeList); // populate input with storedAttendeeList
     input.setRangeText(decryptText(storedAttendeeList)); // decrypt
 
     // trigger onChangeEvent to display save & submit icons
-    let triggerOnChangeEvent = new Event('change', { bubbles: true });
+    let triggerOnChangeEvent = new Event("change", { bubbles: true });
     input.dispatchEvent(triggerOnChangeEvent);
 
     //https://github.com/facebook/react/issues/11488
     //https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setRangeText
-  }
+  };
 
   const displayRetrieveIcon = () => {
     let isLocalStoragePopulated = retrieveStorage();
@@ -366,29 +367,32 @@ function Attendance() {
       <HorizontalLine height="5px" backgroundColor="#0d6efd" />
       <HorizontalLine height="15px" backgroundColor="#ffdc03" />
 
-      <CountInfo
-        contentDescription="Participants"
-        contentLength={
-          participantsNonMutable?.length === 0
-            ? "..."
-            : participantsNonMutable.length
-        }
-      />
-      <CountInfo
-        contentDescription="Roster"
-        contentLength={matchResults?.length ? matchResults.length : "..."}
-        // spanLeft="267px"
-      />
-      <section style={{ display: "flex" }}>
+      <section style={{ display: "flex", width: "300px" }}>
+        <CountInfo
+          contentDescription="Participants"
+          contentLength={
+            participantsNonMutable?.length === 0
+              ? "..."
+              : participantsNonMutable.length.toLocaleString()
+          }
+          spanLeft="98px"
+        />
+        <CountInfo
+          contentDescription="Roster"
+          contentLength={matchResults?.length.toLocaleString() ? matchResults.length : "..."}
+          spanLeft="93px"
+        />
+      </section>
+      <section style={{ display: "flex", width: "300px" }}>
         <CountInfo
           contentDescription="Present"
-          contentLength={presentResults?.length ? presentResults.length : "..."}
-          spanLeft="130px"
+          contentLength={presentResults?.length ? presentResults.length.toLocaleString() : "..."}
+          spanLeft="98px"
         />
         <CountInfo
           contentDescription="Absent"
-          contentLength={absentResults?.length ? absentResults.length : "..."}
-          spanLeft="112px"
+          contentLength={absentResults?.length ? absentResults.length.toLocaleString() : "..."}
+          spanLeft="93px"
         />
       </section>
 
@@ -396,7 +400,7 @@ function Attendance() {
 
       {/* //todo start */}
 
-      <AttendeeInput 
+      <AttendeeInput
         handleAttendeeInput={handleAttendeeInput}
         isSubmitIconDisplayable={isSubmitIconDisplayable}
         setIsSubmitIconDisplayable={setIsSubmitIconDisplayable}
