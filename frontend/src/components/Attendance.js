@@ -8,10 +8,11 @@ import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 import AttendeeInput from "./AttendeeInput";
 
-import { sortHandlerScreenName, sortHandlerNames, sortHandlerNamesNumbers } from "../utils/sort";
+import { sortHandlerScreenName, sortHandlerNamesNumbers } from "../utils/sort";
 import { handleSimilarityScores } from "../utils/similarityScoring";
 import { getParticipantData } from "../utils/getParticipantData";
 import { setStorage, retrieveStorage } from "../utils/storage";
+import { cipherText, decryptText } from "../utils/encrypt";
 
 import "./ApiScrollview.css";
 
@@ -192,7 +193,7 @@ function Attendance() {
   //TODO
   // ATTENDEE FUNCTIONS
   const handleAttendeeInput = () => {
-    const textInput = document.querySelector("textarea").value;
+    const textInput = document.getElementById('attendeeInput').value;
     console.log(textInput);
 
     const attendeeTextInput = textInput.split(";"); //spit to array
@@ -238,18 +239,23 @@ function Attendance() {
 
   // STORAGE - SAVE & GET
   const handleSaveStorage = () => {
-    //convert list to encrypted data
-    const textInput = document.querySelector("textarea").value;
-    setStorage(textInput);
+    const attendeeInput = document.getElementById('attendeeInput').value;
+
+    const attendeeCipher = cipherText(attendeeInput);
+
+    setStorage(attendeeCipher);
+
     setIsRetrieveIconDisplayable(true);
   }
 
   const handleRetrieveStorage = () => {
     const storedAttendeeList = retrieveStorage(); // get data from storage
 
-    let input = document.querySelector("textarea");  // target textarea
+    let input = document.getElementById('attendeeInput');  // target textarea
     input.value = ""; // clear textarea to prevent duplicates / old values
-    input.setRangeText(storedAttendeeList); // populate input with storedAttendeeList
+
+    // input.setRangeText(storedAttendeeList); // populate input with storedAttendeeList
+    input.setRangeText(decryptText(storedAttendeeList)); // decrypt
 
     // trigger onChangeEvent to display save & submit icons
     let triggerOnChangeEvent = new Event('change', { bubbles: true });

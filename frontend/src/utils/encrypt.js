@@ -1,7 +1,22 @@
-// import { encryptString, decryptString } from 'string-cipher';
+var CryptoJS = require("crypto-js");
 
-// const cipherText = async (plainText) => {
-//   await encryptString(plainText, fetchedPassword)
-// };
+// Encrypt
+const cipherText = (textInput) => {
+  let encryptedString = CryptoJS.AES.encrypt(textInput, 'secret key 123').toString();
+  return encryptedString;
+};
 
-// const retrivedText = await decryptString(cipherText, fetchedPassword);
+// Decrypt
+const decryptText = (storedData) => {
+  let decryptedBytes = CryptoJS.AES.decrypt(storedData, 'secret key 123');
+  let decryptedString = decryptedBytes.toString(CryptoJS.enc.Utf8);
+  return decryptedString;
+};
+
+module.exports = {
+  cipherText,
+  decryptText,
+};
+
+
+

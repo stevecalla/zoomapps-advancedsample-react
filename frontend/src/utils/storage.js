@@ -1,9 +1,11 @@
+const storageKey = "list";
+
 const setStorage = (textInput) => {
-  localStorage.setItem("attendeeList", textInput);
+  localStorage.setItem(storageKey, textInput);
 };
 
 const retrieveStorage = () => {
-  const storedData = localStorage.getItem("attendeeList");
+  const storedData = localStorage.getItem(storageKey);
   console.log(storedData);
   return storedData;
 };

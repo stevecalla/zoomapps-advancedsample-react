@@ -100,6 +100,7 @@ function AttendeeInput({
         />
         <Accordion.Body
           as="textarea"
+          id="attendeeInput"
           ref={attendeeInputRef}
           onEntering={() => {
             attendeeInputRef.current.focus();
