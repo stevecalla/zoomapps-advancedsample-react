@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
-import { mockParticipantData } from "../apis";
 
 import AttendeeList from "./AttendeeList";
 import SearchInput from "./SearchInput";
@@ -8,13 +7,13 @@ import HorizontalLine from "./HorizontalLine";
 import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 
+import { mockParticipantData } from "../apis";
 import { getParticipantData } from "../utils/getParticipantData";
 import { sortHandlerScreenName } from "../utils/sort";
 
 import "./ApiScrollview.css";
 
 const ViewCopyLists = lazy(() => import("./ViewCopyLists"));
-// const CopyToClipBoard = lazy(() => import("./CopyToClipBoard"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
 
 function Participants() {
