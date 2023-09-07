@@ -54,8 +54,8 @@ export const MainPortal = () => {
 
   return (
     <Tabs
-      defaultActiveKey="attendance"
-      // defaultActiveKey="participants"
+      // defaultActiveKey="attendance"
+      defaultActiveKey="participants"
       id="justify-tab-example"
       className="mb-3 flex-nowrap"
       fill
@@ -84,7 +84,6 @@ export const MainPortal = () => {
           setIsUndoDeleteButtonDisabled={setIsUndoDeleteButtonDisabled}
           retrieveDate={retrieveDate}
         />
-        {/* {console.log(document.URL)} */}
       </Tab>
     </Tabs>
   );

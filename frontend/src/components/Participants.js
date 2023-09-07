@@ -180,7 +180,7 @@ function Participants({
           isUndoDeleteButtonDisabled={isUndoDeleteButtonDisabled}
         />
         <ButtonData
-          content="Get Current Participants"
+          content="Refresh Participants"
           onClickHandler={handleInvokeApi}
           isUndoDeleteButtonDisabled={false}
         />
