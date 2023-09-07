@@ -53,12 +53,6 @@ function Attendance({
     }
   }, [attendeeRoster, matchResults]);
 
-  // CREATE participantsNonMutable ARRAY & SORT
-  // useEffect(() => { //fix
-  //   setParticipantsMutable(participantsNonMutable);
-  //   /* eslint-disable */
-  // }, [participantsNonMutable]);
-
   // DISPLAY RETRIEVE ICON
   useEffect(() => {
     displayRetrieveIcon();
