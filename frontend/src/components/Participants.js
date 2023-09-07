@@ -7,62 +7,26 @@ import HorizontalLine from "./HorizontalLine";
 import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 
-import { mockParticipantData } from "../apis";
-import { getParticipantData } from "../utils/getParticipantData";
-import { sortHandlerScreenName } from "../utils/sort";
+// import { mockParticipantData } from "../apis";
+// import { getParticipantData } from "../utils/getParticipantData";
+// import { sortHandlerScreenName } from "../utils/sort";
 
 import "./ApiScrollview.css";
 
 const ViewCopyLists = lazy(() => import("./ViewCopyLists"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
 
-function Participants() {
-  const [participantsNonMutable, setParticipantsOriginal] = useState([]); //original array
-  const [participantsMutable, setParticipantsMutable] = useState(); //mutable copy of original
-  const [isRenderable, setIsRenderable] = useState(false);
+function Participants({
+  handleInvokeApi,
+  participantsMutable,
+  participantsNonMutable = [],
+  setParticipantsMutable,
+  isRenderable,
+  isUndoDeleteButtonDisabled,
+  setIsUndoDeleteButtonDisabled,
+  retrieveDate,
 
-  const [isDisabled, setIsDisabled] = useState(true);
-  const [retrieveDate, setRetrieveDate] = useState(false);
-
-  //INITIAL API CALL
-  useEffect(() => {
-    //todo
-    // timeout allows the api to configure preventing error
-    setTimeout(() => {
-      handleInvokeApi();
-      setIsRenderable(true); //used to update date/time
-      setIsDisabled(true); //enable the restore deleted button
-    }, 2000);
-    /* eslint-disable */
-  }, []);
-
-  // CREATE participantsNonMutable ARRAY & SORT
-  useEffect(() => {
-    setParticipantsMutable(participantsNonMutable);
-    /* eslint-disable */
-  }, [participantsNonMutable]);
-
-  // GET PARTICIPANT DATA FROM API
-  const handleInvokeApi = async () => {
-    try {
-      let clientResponse = await getParticipantData("getMeetingParticipants");
-
-      //todo //prod = clientResponse.participants; dev = mockParticipationData
-      // const mode = "dev";
-      const mode = "prod";
-
-      let sortedParticipants = sortHandlerScreenName(
-        mode === "dev" ? mockParticipantData : clientResponse.participants
-      );
-
-      setParticipantsOriginal(sortedParticipants);
-      setParticipantsMutable(sortedParticipants);
-      setRetrieveDate(!retrieveDate); //get timestamp info
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
+}) {
   // MARK HANLDERS
   const checkHandler = (event) => {
     //todo
@@ -134,12 +98,12 @@ function Participants() {
       }
     );
     setParticipantsMutable(updatedParticipantData);
-    setIsDisabled(false);
+    setIsUndoDeleteButtonDisabled(false);
   };
 
   const revertDeletedParticipantHandler = () => {
     setParticipantsMutable(participantsNonMutable);
-    setIsDisabled(true);
+    setIsUndoDeleteButtonDisabled(true);
   };
 
   // SEARCH HANDLERS
@@ -157,11 +121,10 @@ function Participants() {
     );
 
     setParticipantsMutable(searchResultsParticipants);
-    setIsDisabled(true);
+    setIsUndoDeleteButtonDisabled(true);
   };
 
-  const clearSearchHandler = () => {
-    //todo is it working
+  const clearSearchHandler = () => {//todo is it working
     let searchInputText = document.getElementById("api-scrollview-input");
     searchInputText.value = null;
     setParticipantsMutable(participantsNonMutable);
@@ -178,7 +141,7 @@ function Participants() {
           contentLength={
             participantsNonMutable?.length === 0
               ? "..."
-              : participantsNonMutable.length.toLocaleString()
+              : participantsNonMutable?.length?.toLocaleString()
           }
           spanLeft="98px"
         />
@@ -219,12 +182,12 @@ function Participants() {
         <ButtonData
           content="Undo Deleted Participants"
           onClickHandler={revertDeletedParticipantHandler}
-          isDisabled={isDisabled}
+          isUndoDeleteButtonDisabled={isUndoDeleteButtonDisabled}
         />
         <ButtonData
           content="Get Current Participants"
-          onClickHandler={handleInvokeApi}
-          isDisabled={false}
+          onClickHandler={handleInvokeApi} //fix
+          isUndoDeleteButtonDisabled={false}
         />
 
         <Suspense fallback={<div>Loading...</div>}>
