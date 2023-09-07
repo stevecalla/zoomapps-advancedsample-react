@@ -1,5 +1,5 @@
-import React, { useState, useEffect, Suspense, lazy } from "react";
-import { mockParticipantData } from "../apis";
+import React, { useState, useEffect, Suspense, lazy, useContext } from "react";
+import { ParticipantContext } from "./MainPortal";
 
 import AttendeeList from "./AttendeeList";
 import CountInfo from "./CountInfo";
@@ -8,9 +8,8 @@ import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 import AttendeeInput from "./AttendeeInput";
 
-import { sortHandlerScreenName, sortHandlerNamesNumbers } from "../utils/sort";
+import { sortHandlerNamesNumbers } from "../utils/sort";
 import { handleSimilarityScores } from "../utils/similarityScoring";
-import { getParticipantData } from "../utils/getParticipantData";
 import { setStorage, retrieveStorage } from "../utils/storage";
 import { cipherText, decryptText } from "../utils/encrypt";
 
@@ -20,11 +19,13 @@ const ViewCopyLists = lazy(() => import("./ViewCopyLists"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
 
 function Attendance() {
-  const [participantsNonMutable, setParticipantsOriginal] = useState([]); //original array
-  const [participantsMutable, setParticipantsMutable] = useState(); //mutable copy of original
-  const [isRenderable, SetIsRenderable] = useState(false);
-
-  const [retrieveDate, setRetrieveDate] = useState(false);
+  const {
+    handleInvokeApi,
+    participantsMutable,
+    participantsNonMutable,
+    isRenderable,
+    retrieveDate,
+  } = useContext(ParticipantContext);
   const [isSubmitIconDisplayable, setIsSubmitIconDisplayable] = useState(false);
   const [isRetrieveIconDiplayable, setIsRetrieveIconDisplayable] =
     useState(false);
@@ -53,48 +54,10 @@ function Attendance() {
     }
   }, [attendeeRoster, matchResults]);
 
-  //INITIAL API CALL
-  useEffect(() => {
-    //todo
-    // timeout allows the api to configure preventing error
-    setTimeout(() => {
-      handleInvokeApi();
-      SetIsRenderable(true); //used to update date/time
-    }, 1000);
-    /* eslint-disable */
-  }, []);
-
-  // CREATE participantsNonMutable ARRAY & SORT
-  useEffect(() => {
-    setParticipantsMutable(participantsNonMutable);
-    /* eslint-disable */
-  }, [participantsNonMutable]);
-
   // DISPLAY RETRIEVE ICON
   useEffect(() => {
     displayRetrieveIcon();
   }, []);
-
-  // GET PARTICIPANT DATA FROM API
-  const handleInvokeApi = async () => {
-    try {
-      let clientResponse = await getParticipantData("getMeetingParticipants");
-
-      //todo //prod = clientResponse.participants; dev = mockParticipationData
-      // const mode = "dev";
-      const mode = "prod";
-
-      let sortedParticipants = sortHandlerScreenName(
-        mode === "dev" ? mockParticipantData : clientResponse.participants
-      );
-
-      setParticipantsOriginal(sortedParticipants);
-      setParticipantsMutable(sortedParticipants); //todo remove
-      setRetrieveDate(!retrieveDate); //get timestamp info
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
   // MARK HANLDERS
   const checkHandler = (event) => {
@@ -360,6 +323,7 @@ function Attendance() {
       }
     });
   };
+
   //TODO END
 
   return (
@@ -379,26 +343,34 @@ function Attendance() {
         />
         <CountInfo
           contentDescription="Roster"
-          contentLength={matchResults?.length ? matchResults.length.toLocaleString() : "..."}
+          contentLength={
+            matchResults?.length ? matchResults.length.toLocaleString() : "..."
+          }
           spanLeft="93px"
         />
       </section>
       <section style={{ display: "flex", width: "300px" }}>
         <CountInfo
           contentDescription="Present"
-          contentLength={presentResults?.length ? presentResults.length.toLocaleString() : "..."}
+          contentLength={
+            presentResults?.length
+              ? presentResults.length.toLocaleString()
+              : "..."
+          }
           spanLeft="98px"
         />
         <CountInfo
           contentDescription="Absent"
-          contentLength={absentResults?.length ? absentResults.length.toLocaleString() : "..."}
+          contentLength={
+            absentResults?.length
+              ? absentResults.length.toLocaleString()
+              : "..."
+          }
           spanLeft="93px"
         />
       </section>
 
       <HorizontalLine height="" backgroundColor="#0d6efd" margin="0 0 7px 0" />
-
-      {/* //todo start */}
 
       <AttendeeInput
         handleAttendeeInput={handleAttendeeInput}
@@ -409,7 +381,6 @@ function Attendance() {
         isRetrieveIconDiplayable={isRetrieveIconDiplayable}
         setIsRetrieveIconDisplayable={setIsRetrieveIconDisplayable}
       />
-      {/* //todo END */}
 
       <AttendeeList
         isRenderable={isRenderable}

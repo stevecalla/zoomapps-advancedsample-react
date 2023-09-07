@@ -13,7 +13,7 @@ function ViewCopyItem({ eventKeyProp, copyData, buttonContent, buttonType }) {
 
   //CONVERT DATA TO STRING; DATA IS PRESORTED
   let copyString = JSON.stringify(
-    copyData?.map((list) => (list.screenName ? list.screenName : list))
+    copyData?.map((list) => (list?.screenName ? list?.screenName : list))
   );
 
   //SETS ACCORDION BUTTON STYLE; NOT AVAILABLE IN BOOTSTRAP STRUCTURE
