@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext } from "react";
 
 import Participants from "./Participants";
 import Attendance from "./Attendance";
@@ -9,6 +9,8 @@ import { sortHandlerScreenName } from "../utils/sort";
 
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
+
+export const ParticipantContext = createContext(null);
 
 export const MainPortal = () => {
   const [participantsNonMutable, setParticipantsOriginal] = useState([]); //original array
@@ -53,39 +55,34 @@ export const MainPortal = () => {
   };
 
   return (
-    <Tabs
-      // defaultActiveKey="attendance"
-      defaultActiveKey="participants"
-      id="justify-tab-example"
-      className="mb-3 flex-nowrap"
-      fill
-      style={{ flexWrap: "nowrap", width: "300px" }}
+    <ParticipantContext.Provider
+      value={{
+        handleInvokeApi,
+        participantsMutable,
+        participantsNonMutable,
+        setParticipantsMutable,
+        isRenderable,
+        isUndoDeleteButtonDisabled,
+        setIsUndoDeleteButtonDisabled,
+        retrieveDate,
+      }}
     >
-      <Tab eventKey="participants" title="Participants">
-        <Participants
-          handleInvokeApi={handleInvokeApi}
-          participantsMutable={participantsMutable}
-          participantsNonMutable={participantsNonMutable}
-          setParticipantsMutable={setParticipantsMutable}
-          isRenderable={isRenderable}
-          isUndoDeleteButtonDisabled={isUndoDeleteButtonDisabled}
-          setIsUndoDeleteButtonDisabled={setIsUndoDeleteButtonDisabled}
-          retrieveDate={retrieveDate}
-        />
-      </Tab>
-      <Tab eventKey="attendance" title="Attendance">
-        <Attendance
-          handleInvokeApi={handleInvokeApi}
-          participantsMutable={participantsMutable}
-          participantsNonMutable={participantsNonMutable}
-          setParticipantsMutable={setParticipantsMutable}
-          isRenderable={isRenderable}
-          isUndoDeleteButtonDisabled={isUndoDeleteButtonDisabled}
-          setIsUndoDeleteButtonDisabled={setIsUndoDeleteButtonDisabled}
-          retrieveDate={retrieveDate}
-        />
-      </Tab>
-    </Tabs>
+      <Tabs
+        defaultActiveKey="participants"
+        // defaultActiveKey="attendance"
+        id="justify-tab-example"
+        className="mb-3 flex-nowrap"
+        fill
+        style={{ flexWrap: "nowrap", width: "300px" }}
+      >
+        <Tab eventKey="participants" title="Participants">
+          <Participants />
+        </Tab>
+        <Tab eventKey="attendance" title="Attendance">
+          <Attendance />
+        </Tab>
+      </Tabs>
+    </ParticipantContext.Provider>
   );
 };
 

@@ -1,4 +1,5 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useContext } from "react";
+import { ParticipantContext } from "./MainPortal";
 
 import AttendeeList from "./AttendeeList";
 import SearchInput from "./SearchInput";
@@ -12,16 +13,18 @@ import "./ApiScrollview.css";
 const ViewCopyLists = lazy(() => import("./ViewCopyLists"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
 
-function Participants({
-  handleInvokeApi,
-  participantsMutable,
-  participantsNonMutable = [],
-  setParticipantsMutable,
-  isRenderable,
-  isUndoDeleteButtonDisabled,
-  setIsUndoDeleteButtonDisabled,
-  retrieveDate,
-}) {
+function Participants() {
+  const {
+    handleInvokeApi,
+    participantsMutable,
+    participantsNonMutable,
+    setParticipantsMutable,
+    isRenderable,
+    isUndoDeleteButtonDisabled,
+    setIsUndoDeleteButtonDisabled,
+    retrieveDate,
+  } = useContext(ParticipantContext);
+
   // MARK HANLDERS
   const checkHandler = (event) => {
     //todo
@@ -119,7 +122,8 @@ function Participants({
     setIsUndoDeleteButtonDisabled(true);
   };
 
-  const clearSearchHandler = () => {//todo is it working
+  const clearSearchHandler = () => {
+    //todo is it working
     let searchInputText = document.getElementById("api-scrollview-input");
     searchInputText.value = null;
     setParticipantsMutable(participantsNonMutable);

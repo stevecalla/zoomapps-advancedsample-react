@@ -1,4 +1,5 @@
-import React, { useState, useEffect, Suspense, lazy } from "react";
+import React, { useState, useEffect, Suspense, lazy, useContext } from "react";
+import { ParticipantContext } from "./MainPortal";
 
 import AttendeeList from "./AttendeeList";
 import CountInfo from "./CountInfo";
@@ -17,14 +18,14 @@ import "./ApiScrollview.css";
 const ViewCopyLists = lazy(() => import("./ViewCopyLists"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
 
-function Attendance({
-  handleInvokeApi,
-  participantsMutable,
-  participantsNonMutable = [],
-  setParticipantsMutable,
-  isRenderable,
-  retrieveDate,
-}) {
+function Attendance() {
+  const {
+    handleInvokeApi,
+    participantsMutable,
+    participantsNonMutable,
+    isRenderable,
+    retrieveDate,
+  } = useContext(ParticipantContext);
   const [isSubmitIconDisplayable, setIsSubmitIconDisplayable] = useState(false);
   const [isRetrieveIconDiplayable, setIsRetrieveIconDisplayable] =
     useState(false);
@@ -322,7 +323,7 @@ function Attendance({
       }
     });
   };
-  
+
   //TODO END
 
   return (
@@ -342,19 +343,29 @@ function Attendance({
         />
         <CountInfo
           contentDescription="Roster"
-          contentLength={matchResults?.length ? matchResults.length.toLocaleString() : "..."}
+          contentLength={
+            matchResults?.length ? matchResults.length.toLocaleString() : "..."
+          }
           spanLeft="93px"
         />
       </section>
       <section style={{ display: "flex", width: "300px" }}>
         <CountInfo
           contentDescription="Present"
-          contentLength={presentResults?.length ? presentResults.length.toLocaleString() : "..."}
+          contentLength={
+            presentResults?.length
+              ? presentResults.length.toLocaleString()
+              : "..."
+          }
           spanLeft="98px"
         />
         <CountInfo
           contentDescription="Absent"
-          contentLength={absentResults?.length ? absentResults.length.toLocaleString() : "..."}
+          contentLength={
+            absentResults?.length
+              ? absentResults.length.toLocaleString()
+              : "..."
+          }
           spanLeft="93px"
         />
       </section>
