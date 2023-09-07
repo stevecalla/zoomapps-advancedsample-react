@@ -15,7 +15,8 @@ export const MainPortal = () => {
   const [participantsMutable, setParticipantsMutable] = useState(); //mutable copy of original
 
   const [isRenderable, setIsRenderable] = useState(false); //render list or spinner
-  const [isUndoDeleteButtonDisabled, setIsUndoDeleteButtonDisabled] = useState(true); //enable delete button
+  const [isUndoDeleteButtonDisabled, setIsUndoDeleteButtonDisabled] =
+    useState(true); //enable delete button
   const [retrieveDate, setRetrieveDate] = useState(false);
 
   //INITIAL API CALL
@@ -53,8 +54,8 @@ export const MainPortal = () => {
 
   return (
     <Tabs
-      // defaultActiveKey="attendance"
-      defaultActiveKey="participants"
+      defaultActiveKey="attendance"
+      // defaultActiveKey="participants"
       id="justify-tab-example"
       className="mb-3 flex-nowrap"
       fill
@@ -72,10 +73,19 @@ export const MainPortal = () => {
           retrieveDate={retrieveDate}
         />
       </Tab>
-      {/* <Tab eventKey="attendance" title="Attendance">
-          <Attendance />
-          {console.log(document.URL)}
-        </Tab> */}
+      <Tab eventKey="attendance" title="Attendance">
+        <Attendance
+          handleInvokeApi={handleInvokeApi}
+          participantsMutable={participantsMutable}
+          participantsNonMutable={participantsNonMutable}
+          setParticipantsMutable={setParticipantsMutable}
+          isRenderable={isRenderable}
+          isUndoDeleteButtonDisabled={isUndoDeleteButtonDisabled}
+          setIsUndoDeleteButtonDisabled={setIsUndoDeleteButtonDisabled}
+          retrieveDate={retrieveDate}
+        />
+        {/* {console.log(document.URL)} */}
+      </Tab>
     </Tabs>
   );
 };

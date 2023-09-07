@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense, lazy } from "react";
+import React, { Suspense, lazy } from "react";
 
 import AttendeeList from "./AttendeeList";
 import SearchInput from "./SearchInput";
@@ -6,10 +6,6 @@ import CountInfo from "./CountInfo";
 import HorizontalLine from "./HorizontalLine";
 import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
-
-// import { mockParticipantData } from "../apis";
-// import { getParticipantData } from "../utils/getParticipantData";
-// import { sortHandlerScreenName } from "../utils/sort";
 
 import "./ApiScrollview.css";
 
@@ -25,7 +21,6 @@ function Participants({
   isUndoDeleteButtonDisabled,
   setIsUndoDeleteButtonDisabled,
   retrieveDate,
-
 }) {
   // MARK HANLDERS
   const checkHandler = (event) => {
@@ -186,7 +181,7 @@ function Participants({
         />
         <ButtonData
           content="Get Current Participants"
-          onClickHandler={handleInvokeApi} //fix
+          onClickHandler={handleInvokeApi}
           isUndoDeleteButtonDisabled={false}
         />
 

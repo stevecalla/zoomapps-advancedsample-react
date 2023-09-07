@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
-import { mockParticipantData } from "../apis";
 
 import AttendeeList from "./AttendeeList";
 import CountInfo from "./CountInfo";
@@ -8,9 +7,8 @@ import TimeStamp from "./TimeStamp";
 import ButtonData from "./ButtonData";
 import AttendeeInput from "./AttendeeInput";
 
-import { sortHandlerScreenName, sortHandlerNamesNumbers } from "../utils/sort";
+import { sortHandlerNamesNumbers } from "../utils/sort";
 import { handleSimilarityScores } from "../utils/similarityScoring";
-import { getParticipantData } from "../utils/getParticipantData";
 import { setStorage, retrieveStorage } from "../utils/storage";
 import { cipherText, decryptText } from "../utils/encrypt";
 
@@ -19,12 +17,14 @@ import "./ApiScrollview.css";
 const ViewCopyLists = lazy(() => import("./ViewCopyLists"));
 const BuyACoffee = lazy(() => import("./BuyACoffee"));
 
-function Attendance() {
-  const [participantsNonMutable, setParticipantsOriginal] = useState([]); //original array
-  const [participantsMutable, setParticipantsMutable] = useState(); //mutable copy of original
-  const [isRenderable, SetIsRenderable] = useState(false);
-
-  const [retrieveDate, setRetrieveDate] = useState(false);
+function Attendance({
+  handleInvokeApi,
+  participantsMutable,
+  participantsNonMutable = [],
+  setParticipantsMutable,
+  isRenderable,
+  retrieveDate,
+}) {
   const [isSubmitIconDisplayable, setIsSubmitIconDisplayable] = useState(false);
   const [isRetrieveIconDiplayable, setIsRetrieveIconDisplayable] =
     useState(false);
@@ -53,48 +53,16 @@ function Attendance() {
     }
   }, [attendeeRoster, matchResults]);
 
-  //INITIAL API CALL
-  useEffect(() => {
-    //todo
-    // timeout allows the api to configure preventing error
-    setTimeout(() => {
-      handleInvokeApi();
-      SetIsRenderable(true); //used to update date/time
-    }, 1000);
-    /* eslint-disable */
-  }, []);
-
   // CREATE participantsNonMutable ARRAY & SORT
-  useEffect(() => {
-    setParticipantsMutable(participantsNonMutable);
-    /* eslint-disable */
-  }, [participantsNonMutable]);
+  // useEffect(() => { //fix
+  //   setParticipantsMutable(participantsNonMutable);
+  //   /* eslint-disable */
+  // }, [participantsNonMutable]);
 
   // DISPLAY RETRIEVE ICON
   useEffect(() => {
     displayRetrieveIcon();
   }, []);
-
-  // GET PARTICIPANT DATA FROM API
-  const handleInvokeApi = async () => {
-    try {
-      let clientResponse = await getParticipantData("getMeetingParticipants");
-
-      //todo //prod = clientResponse.participants; dev = mockParticipationData
-      // const mode = "dev";
-      const mode = "prod";
-
-      let sortedParticipants = sortHandlerScreenName(
-        mode === "dev" ? mockParticipantData : clientResponse.participants
-      );
-
-      setParticipantsOriginal(sortedParticipants);
-      setParticipantsMutable(sortedParticipants); //todo remove
-      setRetrieveDate(!retrieveDate); //get timestamp info
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
   // MARK HANLDERS
   const checkHandler = (event) => {
@@ -399,8 +367,6 @@ function Attendance() {
 
       <HorizontalLine height="" backgroundColor="#0d6efd" margin="0 0 7px 0" />
 
-      {/* //todo start */}
-
       <AttendeeInput
         handleAttendeeInput={handleAttendeeInput}
         isSubmitIconDisplayable={isSubmitIconDisplayable}
@@ -410,7 +376,6 @@ function Attendance() {
         isRetrieveIconDiplayable={isRetrieveIconDiplayable}
         setIsRetrieveIconDisplayable={setIsRetrieveIconDisplayable}
       />
-      {/* //todo END */}
 
       <AttendeeList
         isRenderable={isRenderable}
